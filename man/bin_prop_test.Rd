@@ -10,23 +10,36 @@ bin_prop_test(y, ...)
 
 \method{bin_prop_test}{default}(y, ...)
 
-\method{bin_prop_test}{factor}(
-  y,
-  method = c("Clopper-Pearson", "Wald", "mid-p", "score"),
-  level = NULL,
-  p = 0.5,
-  alternative = "two.sided",
-  ...
-)
+\method{bin_prop_test}{factor}(y, level = NULL, p = 0.5, alternative = "two.sided", ...)
 }
 \arguments{
 \item{y}{A factor with two levels.}
 
 \item{...}{Not currently used.}
+
+\item{level}{A single character value for the level of the factor that
+corresponds to the event of interest.}
+
+\item{p}{hypothesized probability of success.}
+
+\item{alternative}{indicates the alternative hypothesis and must be
+    one of \code{"two.sided"}, \code{"greater"} or \code{"less"}.
+    You can specify just the initial letter.}
+}
+\value{
+An object with classes \code{"bin_prop_test"} and \code{"segue_object"} with
+elements
+\itemize{
+\item \code{calls}: contains code in R and SAS for \code{\link[=translate]{translate()}}.
+\item \code{results}: the results of \code{\link[=binom.test]{binom.test()}},
+\item \code{data}: characteristics of the data.
+\item \code{options}: records options that were passed to this function.
+}
 }
 \description{
 Conducts a basic hypothesis test for a single Binomial proportion. This is
-a wrapper around \code{\link[=binom.test]{binom.test()}}.
+a wrapper around \code{\link[=binom.test]{binom.test()}}. Unlike that function, \code{bin_prop_test()}
+takes a factor vector with two levels.
 }
 \examples{
 \donttest{

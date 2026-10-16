@@ -3,8 +3,8 @@
 
 ## usethis namespace: start
 #' @import rlang
-#' @importFrom generics tidy
+#' @importFrom broom tidy
 #' @export
-generics::tidy
+broom::tidy
 ## usethis namespace: end
 NULL

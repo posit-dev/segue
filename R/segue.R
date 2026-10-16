@@ -59,7 +59,7 @@ new_segue <- function(
 
 #' Turn a segue object object into a tidy tibble
 #'
-#' This method tidies the orginal result, if it can.
+#' This method tidies the original result, if it can.
 #'
 #' @inheritParams generics::tidy
 #'

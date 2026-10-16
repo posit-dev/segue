@@ -1,10 +1,20 @@
 #' Test a Single Binomial Proportion
 #'
 #' Conducts a basic hypothesis test for a single Binomial proportion. This is
-#' a wrapper around [binom.test()].
+#' a wrapper around [binom.test()]. Unlike that function, `bin_prop_test()`
+#' takes a factor vector with two levels.
 #'
+#' @inheritParams stats::binom.test
 #' @param y A factor with two levels.
+#' @param level A single character value for the level of the factor that
+#' corresponds to the event of interest.
 #' @param ... Not currently used.
+#' @return An object with classes `"bin_prop_test"` and `"segue_object"` with
+#' elements
+#'   - `calls`: contains code in R and SAS for [translate()].
+#'   - `results`: the results of [binom.test()],
+#'   - `data`: characteristics of the data.
+#'   - `options`: records options that were passed to this function.
 #' @examples
 #' \donttest{
 #' if (rlang::is_installed(c("modeldata"))) {
@@ -34,7 +44,6 @@ bin_prop_test.default <- function(y, ...) {
 #' @export bin_prop_test.factor
 bin_prop_test.factor <- function(
   y,
-  method = c("Clopper-Pearson", "Wald", "mid-p", "score"),
   level = NULL,
   p = 0.5,
   alternative = "two.sided",
@@ -42,10 +51,6 @@ bin_prop_test.factor <- function(
 ) {
   check_factor(y)
   level <- check_level(level, y)
-  method <- rlang::arg_match(
-    method,
-    c("Clopper-Pearson", "Wald", "mid-p", "score")
-  )
   alternative <- rlang::arg_match(
     alternative,
     c("two.sided", "less", "greater")

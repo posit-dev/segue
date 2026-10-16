@@ -1,3 +1,17 @@
+#' Show code in R and SAS for an Analysis
+#'
+#' @param x An object
+#' @param ... Not currently used
+#' @return `x` invisibly.
+#' @examples
+#' \donttest{
+#' if (rlang::is_installed(c("modeldata"))) {
+#'   cog_ability <- modeldata::ad_data$Class
+#'   str(cog_ability)
+#'   test_res <- bin_prop_test(cog_ability)
+#'   translate(test_res)
+#' }
+#' }
 #' @export
 translate <- function(x, ...) {
   UseMethod("translate")
@@ -16,6 +30,7 @@ translate.default <- function(x, ...) {
 #' @export
 #' @export translate.segue_object
 translate.segue_object <- function(x, ...) {
+  check_empty_ellipse(...)
   if (!is.null(x$call$r)) {
     cli::cli_rule("R Code template")
     print(x$call$r)

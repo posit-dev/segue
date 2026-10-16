@@ -15,5 +15,5 @@
 a tibble
 }
 \description{
-This method tidies the orginal result, if it can.
+This method tidies the original result, if it can.
 }
