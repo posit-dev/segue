@@ -61,9 +61,6 @@ bin_prop_test.factor <- function(
   opts <- list(level = level, alternative = alternative, p = p)
   call_opts <- opts[names(opts) != "level"]
 
-  orig_cl <- match.call()
-  var_nm <- orig_cl$y
-
   is_na <- is.na(y)
   num_missing <- sum(is_na)
 
@@ -84,17 +81,17 @@ bin_prop_test.factor <- function(
   sas_code <-
     c(
       "proc freq data=df;",
-      "  table OUTCOME/ binomialOPTIONS;",
+      "  table outcome_column / binomialOPTIONS;",
       "  exact binomial;",
       "run;"
     )
 
-  sas_code <- gsub("OUTCOME", as.character(orig_cl$y), sas_code)
   has_p <- !identical(p, 0.5)
   has_level <- !identical(level, levels(y)[1])
   has_alt <- !identical(alternative, "two.sided")
   sas_opt <- ""
   if (has_p | has_level) {
+    sas_opt <- character(0)
     if (has_p) {
       sas_opt <- c(sas_opt, paste0("p=", p))
     }
@@ -117,7 +114,7 @@ bin_prop_test.factor <- function(
     data = list(
       missing = num_missing,
       events = num_events,
-      total = num_events
+      total = num_total
     ),
     classes = "bin_prop_test"
   )

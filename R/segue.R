@@ -44,7 +44,7 @@ new_segue <- function(
 
   if (!is.list(data)) {
     cli::cli_abort(
-      "The {.arg data} argument should be a list.,
+      "The {.arg data} argument should be a list,
        not {.obj_type_friendly {data}}.",
       call = call
     )
