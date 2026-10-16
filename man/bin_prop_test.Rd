@@ -4,7 +4,7 @@
 \alias{bin_prop_test}
 \alias{bin_prop_test.default}
 \alias{bin_prop_test.factor}
-\title{Test a Single Binomial Proportions}
+\title{Test a Single Binomial Proportion}
 \usage{
 bin_prop_test(y, ...)
 
@@ -14,7 +14,9 @@ bin_prop_test(y, ...)
   y,
   method = c("Clopper-Pearson", "Wald", "mid-p", "score"),
   level = NULL,
-  alt = "two.sided"
+  p = 0.5,
+  alternative = "two.sided",
+  ...
 )
 }
 \arguments{
@@ -23,5 +25,19 @@ bin_prop_test(y, ...)
 \item{...}{Not currently used.}
 }
 \description{
-Test a Single Binomial Proportions
+Conducts a basic hypothesis test for a single Binomial proportion. This is
+a wrapper around \code{\link[=binom.test]{binom.test()}}.
+}
+\examples{
+\donttest{
+if (rlang::is_installed(c("modeldata"))) {
+  cog_ability <- modeldata::ad_data$Class
+  str(cog_ability)
+  test_res <- bin_prop_test(cog_ability)
+  test_res
+}
+}
+}
+\seealso{
+\code{\link[=binom.test]{binom.test()}}
 }
