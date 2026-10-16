@@ -71,4 +71,4 @@ bin_prop_test.factor <- function(
 #'
 #' @return a tibble
 #' @export
-tidy.segue_obj <- function(x, ...) generics::tidy(x$results, ...)
+tidy.segue_obj <- function(x, ...) broom::tidy(x$results, ...)
