@@ -4,14 +4,19 @@
 \alias{sas_round}
 \title{Round numbers the same way as SAS}
 \usage{
-sas_round(x, unit = 1)
+sas_round(x, digits = 0, unit = 10^-digits)
 }
 \arguments{
 \item{x}{A numeric vector.}
 
+\item{digits}{A single whole number between -15 and 15 for the number of
+decimal places, as in \code{\link[=round]{round()}}. Negative values round to a power of ten
+(e.g., \code{digits = -2} rounds to the nearest hundred).}
+
 \item{unit}{A single positive number for the rounding unit (the
-\code{rounding-unit} argument of the SAS function). The default rounds to the
-nearest integer.}
+\code{rounding-unit} argument of the SAS function). The default, \code{10^-digits},
+is determined by \code{digits}. Use \code{unit} for units that are not powers of ten,
+such as 0.25 or 1/7. Supply only one of \code{digits} and \code{unit}.}
 }
 \value{
 A double vector the same length as \code{x}.
@@ -53,8 +58,10 @@ x <- c(0.5, 1.5, 2.5, -2.5)
 round(x)
 sas_round(x)
 
-round(1.005, 2)
-sas_round(1.005, unit = 0.01)
+round(1.005, digits = 2)
+sas_round(1.005, digits = 2)
+
+sas_round(1234.5, digits = -2)
 
 sas_round(pi, unit = 1 / 7) == 22 / 7
 }

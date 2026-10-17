@@ -24,7 +24,14 @@ read_sas_round_cases <- function() {
 
 # Results are named by case id so that failures show which cases differ.
 sas_round_cases <- function(cases) {
-  res <- mapply(sas_round, cases$x, cases$unit, USE.NAMES = FALSE)
+  res <- mapply(
+    function(x, unit) {
+      sas_round(x, unit = unit)
+    },
+    cases$x,
+    cases$unit,
+    USE.NAMES = FALSE
+  )
   names(res) <- cases$id
   res
 }

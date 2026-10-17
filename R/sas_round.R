@@ -3,9 +3,13 @@
 #' `sas_round()` replicates the SAS `ROUND()` function.
 #'
 #' @param x A numeric vector.
+#' @param digits A single whole number between -15 and 15 for the number of
+#' decimal places, as in [round()]. Negative values round to a power of ten
+#' (e.g., `digits = -2` rounds to the nearest hundred).
 #' @param unit A single positive number for the rounding unit (the
-#' `rounding-unit` argument of the SAS function). The default rounds to the
-#' nearest integer.
+#' `rounding-unit` argument of the SAS function). The default, `10^-digits`,
+#' is determined by `digits`. Use `unit` for units that are not powers of ten,
+#' such as 0.25 or 1/7. Supply only one of `digits` and `unit`.
 #' @details
 #' R's [round()] and SAS's `ROUND()` can give different answers for two
 #' reasons:
@@ -40,17 +44,23 @@
 #' round(x)
 #' sas_round(x)
 #'
-#' round(1.005, 2)
-#' sas_round(1.005, unit = 0.01)
+#' round(1.005, digits = 2)
+#' sas_round(1.005, digits = 2)
+#'
+#' sas_round(1234.5, digits = -2)
 #'
 #' sas_round(pi, unit = 1 / 7) == 22 / 7
 #' @export
-sas_round <- function(x, unit = 1) {
+sas_round <- function(x, digits = 0, unit = 10^-digits) {
   if (!is.numeric(x)) {
     cli::cli_abort(
       "{.arg x} should be a numeric vector, not {.obj_type_friendly {x}}."
     )
   }
+  if (!missing(digits) && !missing(unit)) {
+    cli::cli_abort("Supply only one of {.arg digits} and {.arg unit}.")
+  }
+  rlang::check_number_whole(digits, min = -15, max = 15)
   rlang::check_number_decimal(unit, allow_infinite = FALSE)
   if (unit <= 0) {
     cli::cli_abort("{.arg unit} should be a positive number, not {unit}.")
@@ -70,6 +80,52 @@ sas_round <- function(x, unit = 1) {
     res <- round_half_away(x / unit) * unit
   }
   res
+}
+
+#' Format numbers using SAS rounding
+#'
+#' `sas_format()` rounds with [sas_round()] and then formats the result with
+#' [format()], so that the printed values match what SAS would show.
+#'
+#' @param x A numeric vector.
+#' @param digits A single whole number between 0 and 15 for the number of
+#' decimal places to show. As in [round()], and unlike [format()], this is the
+#' number of decimal places and not the number of significant digits.
+#' @param ... Other arguments passed to [format()], such as `width`,
+#' `big.mark`, or `justify`. `nsmall` is set by `sas_format()`. Scientific
+#' notation is not used unless `scientific = TRUE` is passed.
+#' @return A character vector the same length as `x`. As with [format()], the
+#' values share a common width and names are kept.
+#' @seealso [sas_round()]
+#' @examples
+#' format(round(1.005, 2), nsmall = 2)
+#' sas_format(1.005, digits = 2)
+#'
+#' sas_format(c(0.5, 1.5, 2.5, -2.5))
+#' sas_format(1234567.891, digits = 2, big.mark = ",")
+#' @export
+sas_format <- function(x, digits = 0, ...) {
+  if (!is.numeric(x)) {
+    cli::cli_abort(
+      "{.arg x} should be a numeric vector, not {.obj_type_friendly {x}}."
+    )
+  }
+  rlang::check_number_whole(digits, min = 0, max = 15)
+  opts <- list(...)
+  if ("nsmall" %in% names(opts)) {
+    cli::cli_abort(
+      "{.arg nsmall} is set by {.fn sas_format} and cannot be passed to
+       {.fn format}."
+    )
+  }
+  if (!"scientific" %in% names(opts)) {
+    opts$scientific <- FALSE
+  }
+
+  rounded <- sas_round(x, digits = digits)
+  # 15 significant digits shows a rounded double without formatting noise
+  # while keeping format() from rounding it again.
+  rlang::inject(format(rounded, digits = 15, nsmall = digits, !!!opts))
 }
 
 round_half_away <- function(x) {
