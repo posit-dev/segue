@@ -18,6 +18,8 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN status](https://www.r-pkg.org/badges/version/segue)](https://CRAN.R-project.org/package=segue)
+[![R-CMD-check](https://github.com/topepo/segue/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/topepo/segue/actions/workflows/R-CMD-check.yaml)
+[![Codecov test coverage](https://codecov.io/gh/topepo/segue/graph/badge.svg)](https://app.codecov.io/gh/topepo/segue)
 <!-- badges: end -->
 
 segue is a package designed to help people transition from SAS to R with a focus on clinical statistics. Some issues that make that transition difficult are: 
@@ -30,7 +32,7 @@ segue is a package designed to help people transition from SAS to R with a focus
 
 Most of these issues _are not technical problems_. segue is meant to be a way for SAS folks to use R in a way that meets them in the middle. It repackages existing R functions such that: 
 
-- They are **discoverable**. Naming is hard but important, and sugue has a taxonomy built into its names that should make things obvious. 
+- They are **discoverable**. Naming is hard but important, and segue has a taxonomy built into its names that should make things obvious. 
 - The computations for each function are **well documented** so that the user can understand what they will get. We can explicitly show the underlying R code and its SAS analog. 
 - **Compatibility** is also documented. If there are numerical differences between SAS and R implementations of the same thing, how large are they? 
 - **Defaults** are biased towards those from SAS. In almost any case, there is no uniformly "right" choice, but we can make the transition easier with judicious choices. 
