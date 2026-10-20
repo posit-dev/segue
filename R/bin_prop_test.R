@@ -5,7 +5,7 @@
 #' takes a factor vector with two levels.
 #'
 #' @inheritParams stats::binom.test
-#' @param y A factor with two levels.
+#' @param y A factor vector with two levels.
 #' @param level A single character value for the level of the factor that
 #' corresponds to the event of interest.
 #' @param ... Not currently used.
@@ -77,7 +77,8 @@ bin_prop_test.factor <- function(
 
   # ------------------------------------------------------------------------------
 
-  # TODO kind of a mess; figure out a better way of doing this.
+  # TODO kind of a mess; figure out a better way of doing this; a method of
+  # some sort to make these.
   sas_code <-
     c(
       "proc freq data=df;",
@@ -126,11 +127,7 @@ print.bin_prop_test <- function(x, ...) {
   cli::cli_inform("Testing a Single Binomial Proportion")
   cat("\n")
 
-  if (x$data$missing == 0L) {
-    cli::cli_inform("No missing values")
-  } else {
-    cli::cli_alert_info("There {?was/were} {x$data$missing} missing value{?s}")
-  }
+  report_missing_simple(x)
 
   invisible(x)
 }

@@ -13,7 +13,7 @@ bin_prop_test(y, ...)
 \method{bin_prop_test}{factor}(y, level = NULL, p = 0.5, alternative = "two.sided", ...)
 }
 \arguments{
-\item{y}{A factor with two levels.}
+\item{y}{A factor vector with two levels.}
 
 \item{...}{Not currently used.}
 
