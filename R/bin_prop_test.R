@@ -58,8 +58,14 @@ bin_prop_test.factor <- function(
   rlang::check_number_decimal(p, min = 0.0, max = 1.0, allow_infinite = FALSE)
   check_empty_ellipse(...)
 
+  # ----------------------------------------------------------------------------
+  # Spit out options
+
   opts <- list(level = level, alternative = alternative, p = p)
   call_opts <- opts[names(opts) != "level"]
+
+  # ----------------------------------------------------------------------------
+  # Account for missing data
 
   is_na <- is.na(y)
   num_missing <- sum(is_na)
@@ -68,14 +74,8 @@ bin_prop_test.factor <- function(
   num_events <- sum(compl_y == level)
   num_total <- length(compl_y)
 
-  cl <- rlang::call2(
-    "binom.test",
-    x = num_events,
-    n = num_total,
-    !!!call_opts
-  )
-
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
+  # SAS translation
 
   # TODO kind of a mess; figure out a better way of doing this; a method of
   # some sort to make these.
@@ -104,14 +104,16 @@ bin_prop_test.factor <- function(
   }
   sas_code <- gsub("OPTIONS", sas_opt, sas_code)
 
-  # ------------------------------------------------------------------------------
+  # ----------------------------------------------------------------------------
 
-  orig_res <- rlang::eval_tidy(cl)
+  if (method == "exact") {
+    orig_res <- bin_prop_test_exact(num_events, num_total, call_opts)
+  }
 
   res <- new_segue(
-    calls = list(r = cl, sas = sas_code),
+    calls = list(r = orig_res$call, sas = sas_code),
     options = opts,
-    results = orig_res,
+    results = orig_res$results,
     data = list(
       missing = num_missing,
       events = num_events,
@@ -125,9 +127,67 @@ bin_prop_test.factor <- function(
 #' @export
 print.bin_prop_test <- function(x, ...) {
   cli::cli_inform("Testing a Single Binomial Proportion")
+  # print method argument and options
   cat("\n")
-
+  # cli::options("Options:")
   report_missing_simple(x)
-
   invisible(x)
+}
+
+# ------------------------------------------------------------------------------
+# Specific computational methods
+
+bin_prop_test_exact <- function(num_events, num_total, options = list()) {
+  cl <- rlang::call2(
+    "binom.test",
+    .ns = "stats",
+    x = num_events,
+    n = num_total,
+    !!!options
+  )
+  res <- try(rlang::eval_tidy(cl), silent = TRUE)
+  if (inherits(res, "try-error")) {
+    cli::cli_abort("{.fn bin_prop_test} with {.code method = 'exact'}
+                   failed with error: {res}", call = NULL)
+  }
+
+  list(results = res, call = cl)
+}
+
+bin_prop_test_midp <- function(num_events, num_total, options = list()) {
+  rlang::check_installed("exactci")
+  cl <- rlang::call2(
+    "binom.exact",
+    .ns = "exactci",
+    x = num_events,
+    n = num_total,
+    !!!options,
+    tsmethod = "central"
+  )
+  res <- try(rlang::eval_tidy(cl), silent = TRUE)
+  if (inherits(res, "try-error")) {
+    cli::cli_abort("{.fn bin_prop_test} with {.code method = 'midp'}
+                   failed with error: {res}", call = NULL)
+  }
+
+  list(results = res, call = cl)
+}
+
+
+bin_prop_test_score <- function(num_events, num_total, options = list()) {
+  cl <- rlang::call2(
+    "prop.test",
+    .ns = "stats",
+    x = num_events,
+    n = num_total,
+    !!!options,
+    correct = FALSE
+  )
+  res <- try(rlang::eval_tidy(cl), silent = TRUE)
+  if (inherits(res, "try-error")) {
+    cli::cli_abort("{.fn bin_prop_test} with {.code method = 'score'}
+                   failed with error: {res}", call = NULL)
+  }
+
+  list(results = res, call = cl)
 }
