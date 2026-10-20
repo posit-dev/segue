@@ -14,6 +14,8 @@
 #'
 #' @param level A single character value for the level of the factor that
 #' corresponds to the event of interest. The default is the first factor level.
+#' @param alternative A character value indicating the alternative hypothesis
+#' and must be one of `"two.sided"`, `"greater"`, or `"less"`.
 #' @param ... Not currently used.
 #' @return An object with classes `"bin_prop_test"` and `"segue_object"` with
 #' elements
@@ -28,6 +30,9 @@
 #'   str(cog_ability)
 #'   test_res <- bin_prop_test(cog_ability)
 #'   test_res
+#'
+#'   # Can be tidied to obtain a tibble of results:
+#'   tidy(test_res)
 #' }
 #' }
 #' @seealso [binom.test()]
@@ -69,7 +74,12 @@ bin_prop_test.factor <- function(
   # ----------------------------------------------------------------------------
   # Spit out options
 
-  opts <- list(method = method, level = level, alternative = alternative, p = p)
+  opts <- list(
+    method = method,
+    level = level,
+    alternative = alternative,
+    p = p
+  )
   call_opts <- opts[!names(opts) %in% c("method", "level")]
 
   # ----------------------------------------------------------------------------
@@ -83,47 +93,17 @@ bin_prop_test.factor <- function(
   num_total <- length(compl_y)
 
   # ----------------------------------------------------------------------------
-  # SAS translation
-
-  # TODO kind of a mess; figure out a better way of doing this; a method of
-  # some sort to make these.
-  sas_code <-
-    c(
-      "proc freq data=df;",
-      "  table outcome_column / binomialOPTIONS;",
-      "  exact binomial;",
-      "run;"
-    )
-
-  has_p <- !identical(p, 0.5)
-  has_level <- !identical(level, levels(y)[1])
-  has_alt <- !identical(alternative, "two.sided")
-  sas_opt <- ""
-  if (has_p | has_level) {
-    sas_opt <- character(0)
-    if (has_p) {
-      sas_opt <- c(sas_opt, paste0("p=", p))
-    }
-    if (has_level) {
-      sas_opt <- c(sas_opt, paste0("level='", level, "'"))
-    }
-    sas_opt <- paste0(sas_opt, collapse = " ")
-    sas_opt <- paste0("(", sas_opt, ")")
-  }
-  sas_code <- gsub("OPTIONS", sas_opt, sas_code)
-
-  # ----------------------------------------------------------------------------
 
   if (method == "exact") {
     orig_res <- bin_prop_test_exact(num_events, num_total, call_opts)
   } else if (method == "score") {
     orig_res <- bin_prop_test_score(num_events, num_total, call_opts)
-  }else if (method == "midp") {
+  } else if (method == "midp") {
     orig_res <- bin_prop_test_midp(num_events, num_total, call_opts)
   }
 
   res <- new_segue(
-    calls = list(r = orig_res$call, sas = sas_code),
+    calls = orig_res$calls,
     options = opts,
     results = orig_res$results,
     data = list(
@@ -138,7 +118,9 @@ bin_prop_test.factor <- function(
 
 #' @export
 print.bin_prop_test <- function(x, ...) {
-  cli::cli_inform("Testing a Single Binomial Proportion via {x$options$method} Test")
+  cli::cli_inform(
+    "Testing a Single Binomial Proportion via {x$options$method} Test"
+  )
   cat("\n")
   # cli::options("Options:")
   report_missing_simple(x)
@@ -158,11 +140,22 @@ bin_prop_test_exact <- function(num_events, num_total, options = list()) {
   )
   res <- try(rlang::eval_tidy(cl), silent = TRUE)
   if (inherits(res, "try-error")) {
-    cli::cli_abort("{.fn bin_prop_test} with {.code method = 'exact'}
-                   failed with error: {res}", call = NULL)
+    cli::cli_abort(
+      "{.fn bin_prop_test} with {.code method = 'exact'}
+                   failed with error: {res}",
+      call = NULL
+    )
   }
 
-  list(results = res, call = cl)
+  sas_code <-
+    "
+proc freq data = {data set};
+  table {data column} / binomial;
+  exact binomial;
+run;
+"
+
+  list(results = res, calls = list(r = cl, sas = sas_code))
 }
 
 bin_prop_test_midp <- function(num_events, num_total, options = list()) {
@@ -177,11 +170,22 @@ bin_prop_test_midp <- function(num_events, num_total, options = list()) {
   )
   res <- try(rlang::eval_tidy(cl), silent = TRUE)
   if (inherits(res, "try-error")) {
-    cli::cli_abort("{.fn bin_prop_test} with {.code method = 'midp'}
-                   failed with error: {res}", call = NULL)
+    cli::cli_abort(
+      "{.fn bin_prop_test} with {.code method = 'midp'}
+                   failed with error: {res}",
+      call = NULL
+    )
   }
 
-  list(results = res, call = cl)
+  sas_code <-
+    "
+proc freq data = {data set};
+  table {data column} / binomial;
+  exact binomial / midp;
+run;
+"
+
+  list(results = res, calls = list(r = cl, sas = sas_code))
 }
 
 
@@ -196,9 +200,19 @@ bin_prop_test_score <- function(num_events, num_total, options = list()) {
   )
   res <- try(rlang::eval_tidy(cl), silent = TRUE)
   if (inherits(res, "try-error")) {
-    cli::cli_abort("{.fn bin_prop_test} with {.code method = 'score'}
-                   failed with error: {res}", call = NULL)
+    cli::cli_abort(
+      "{.fn bin_prop_test} with {.code method = 'score'}
+                   failed with error: {res}",
+      call = NULL
+    )
   }
 
-  list(results = res, call = cl)
+  sas_code <-
+    "
+proc freq data = {data set};
+  tables {data column} / binomial(cl=score);
+run;
+"
+
+  list(results = res, calls = list(r = cl, sas = sas_code))
 }

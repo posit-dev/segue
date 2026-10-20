@@ -37,9 +37,8 @@ corresponds to the event of interest. The default is the first factor level.}
 
 \item{p}{hypothesized probability of success.}
 
-\item{alternative}{indicates the alternative hypothesis and must be
-    one of \code{"two.sided"}, \code{"greater"} or \code{"less"}.
-    You can specify just the initial letter.}
+\item{alternative}{A character value indicating the alternative hypothesis
+and must be one of \code{"two.sided"}, \code{"greater"}, or \code{"less"}.}
 }
 \value{
 An object with classes \code{"bin_prop_test"} and \code{"segue_object"} with
@@ -63,6 +62,9 @@ if (rlang::is_installed(c("modeldata"))) {
   str(cog_ability)
   test_res <- bin_prop_test(cog_ability)
   test_res
+
+  # Can be tidied to obtain a tibble of results:
+  tidy(test_res)
 }
 }
 }

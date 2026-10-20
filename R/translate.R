@@ -33,6 +33,7 @@ translate.segue_object <- function(x, ...) {
   check_empty_ellipse(...)
   if (!is.null(x$calls$r)) {
     cli::cli_rule("R Code template")
+    cat("\n")
     print(x$calls$r)
   }
   cat("\n")
