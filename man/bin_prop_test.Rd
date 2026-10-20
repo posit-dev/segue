@@ -10,15 +10,30 @@ bin_prop_test(y, ...)
 
 \method{bin_prop_test}{default}(y, ...)
 
-\method{bin_prop_test}{factor}(y, level = NULL, p = 0.5, alternative = "two.sided", ...)
+\method{bin_prop_test}{factor}(
+  y,
+  method = c("exact", "score", "midp"),
+  level = NULL,
+  p = 0.5,
+  alternative = "two.sided",
+  ...
+)
 }
 \arguments{
 \item{y}{A factor vector with two levels.}
 
 \item{...}{Not currently used.}
 
+\item{method}{A single character string with possible values:
+\itemize{
+\item \code{"exact"}: An exact test via \code{\link[=binom.test]{binom.test()}}.
+\item \code{"score"}: An asymptotic score test via \code{\link[=prop.test]{prop.test()}}.
+\item \code{"midp"}: An exact test geared for small sample sizes via
+\code{\link[exactci:binom.exact]{exactci::binom.exact()}}
+}}
+
 \item{level}{A single character value for the level of the factor that
-corresponds to the event of interest.}
+corresponds to the event of interest. The default is the first factor level.}
 
 \item{p}{hypothesized probability of success.}
 
@@ -31,15 +46,15 @@ An object with classes \code{"bin_prop_test"} and \code{"segue_object"} with
 elements
 \itemize{
 \item \code{calls}: contains code in R and SAS for \code{\link[=translate]{translate()}}.
-\item \code{results}: the results of \code{\link[=binom.test]{binom.test()}},
+\item \code{results}: the results,
 \item \code{data}: characteristics of the data.
-\item \code{options}: records options that were passed to this function.
+\item \code{options}: records options that were used by the function.
 }
 }
 \description{
 Conducts a basic hypothesis test for a single Binomial proportion. This is
-a wrapper around \code{\link[=binom.test]{binom.test()}}. Unlike that function, \code{bin_prop_test()}
-takes a factor vector with two levels.
+a wrapper around functions such as \code{\link[=binom.test]{binom.test()}} but takes a factor vector
+with two levels.
 }
 \examples{
 \donttest{

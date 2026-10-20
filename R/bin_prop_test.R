@@ -1,20 +1,26 @@
 #' Test a Single Binomial Proportion
 #'
 #' Conducts a basic hypothesis test for a single Binomial proportion. This is
-#' a wrapper around [binom.test()]. Unlike that function, `bin_prop_test()`
-#' takes a factor vector with two levels.
+#' a wrapper around functions such as [binom.test()] but takes a factor vector
+#' with two levels.
 #'
 #' @inheritParams stats::binom.test
 #' @param y A factor vector with two levels.
+#' @param method A single character string with possible values:
+#'   - `"exact"`: An exact test via [binom.test()].
+#'   - `"score"`: An asymptotic score test via [prop.test()].
+#'   - `"midp"`: An exact test geared for small sample sizes via
+#'               [exactci::binom.exact()]
+#'
 #' @param level A single character value for the level of the factor that
-#' corresponds to the event of interest.
+#' corresponds to the event of interest. The default is the first factor level.
 #' @param ... Not currently used.
 #' @return An object with classes `"bin_prop_test"` and `"segue_object"` with
 #' elements
 #'   - `calls`: contains code in R and SAS for [translate()].
-#'   - `results`: the results of [binom.test()],
+#'   - `results`: the results,
 #'   - `data`: characteristics of the data.
-#'   - `options`: records options that were passed to this function.
+#'   - `options`: records options that were used by the function.
 #' @examples
 #' \donttest{
 #' if (rlang::is_installed(c("modeldata"))) {
@@ -44,6 +50,7 @@ bin_prop_test.default <- function(y, ...) {
 #' @export bin_prop_test.factor
 bin_prop_test.factor <- function(
   y,
+  method = c("exact", "score", "midp"),
   level = NULL,
   p = 0.5,
   alternative = "two.sided",
@@ -51,6 +58,7 @@ bin_prop_test.factor <- function(
 ) {
   check_factor(y)
   level <- check_level(level, y)
+  method <- rlang::arg_match(method, c("exact", "score", "midp"))
   alternative <- rlang::arg_match(
     alternative,
     c("two.sided", "less", "greater")
@@ -61,8 +69,8 @@ bin_prop_test.factor <- function(
   # ----------------------------------------------------------------------------
   # Spit out options
 
-  opts <- list(level = level, alternative = alternative, p = p)
-  call_opts <- opts[names(opts) != "level"]
+  opts <- list(method = method, level = level, alternative = alternative, p = p)
+  call_opts <- opts[!names(opts) %in% c("method", "level")]
 
   # ----------------------------------------------------------------------------
   # Account for missing data
@@ -108,6 +116,10 @@ bin_prop_test.factor <- function(
 
   if (method == "exact") {
     orig_res <- bin_prop_test_exact(num_events, num_total, call_opts)
+  } else if (method == "score") {
+    orig_res <- bin_prop_test_score(num_events, num_total, call_opts)
+  }else if (method == "midp") {
+    orig_res <- bin_prop_test_midp(num_events, num_total, call_opts)
   }
 
   res <- new_segue(
@@ -126,8 +138,7 @@ bin_prop_test.factor <- function(
 
 #' @export
 print.bin_prop_test <- function(x, ...) {
-  cli::cli_inform("Testing a Single Binomial Proportion")
-  # print method argument and options
+  cli::cli_inform("Testing a Single Binomial Proportion via {x$options$method} Test")
   cat("\n")
   # cli::options("Options:")
   report_missing_simple(x)

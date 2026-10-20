@@ -12,16 +12,17 @@ Description: 'SAS' and 'R' are different in many ways. To ease the
     users. The emphasis is on ease of use, compatibility, and
     discoverability.
 License: MIT + file LICENSE
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
+Imports: 
+    broom,
+    cli,
+    rlang (>= 1.1.0)
 Suggests: 
+    exactci,
     modeldata,
     spelling,
     testthat (>= 3.0.0)
-Language: en-US
-Imports: 
-    broom,
-    cli,    
-    rlang (>= 1.1.0)
 Config/roxygen2/version: 8.1.0
 Config/testthat/edition: 3
+Encoding: UTF-8
+Language: en-US
+Roxygen: list(markdown = TRUE)
