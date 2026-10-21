@@ -98,10 +98,10 @@ sas_proc <- function(proc, ..., data = "&dsn", options = NULL) {
     )
   }
 
-  proc <- tolower(proc)
-  stmts <- list(...)
-  keywords <- names(stmts)
-  if (length(stmts) > 0 && (is.null(keywords) || any(keywords == ""))) {
+  proc_name <- tolower(proc)
+  user_stmts <- list(...)
+  keywords <- names2(user_stmts)
+  if (any(keywords == "")) {
     cli::cli_abort(
       c(
         "All statements in {.arg ...} must be named.",
@@ -109,29 +109,36 @@ sas_proc <- function(proc, ..., data = "&dsn", options = NULL) {
       )
     )
   }
-  bad <- purrr::detect_index(stmts, function(x) !is.null(x) && !is.character(x))
+  bad <- purrr::detect_index(
+    user_stmts,
+    function(x) !is.null(x) && !is.character(x)
+  )
   if (bad > 0) {
     cli::cli_abort(
       "The {.arg {keywords[bad]}} statement must be a character vector, not
-       {obj_type_friendly(stmts[[bad]])}."
+       {obj_type_friendly(user_stmts[[bad]])}."
     )
   }
 
-  defaults <- sas_proc_defaults[[proc]]
-  missing <- defaults[!names(defaults) %in% tolower(keywords)]
-  stmts <- purrr::compact(c(missing, stmts))
+  # Add the default statements that the user left out.
+  defaults <- sas_proc_defaults[[proc_name]]
+  unset_defaults <- defaults[!names(defaults) %in% tolower(keywords)]
+  stmts <- purrr::compact(c(unset_defaults, user_stmts))
 
-  # Unnamed options are written as they are. Named options become name=value.
-  opt_names <- names2(options)
-  options <- as.character(options)
-  options <- ifelse(opt_names == "", options, paste0(opt_names, "=", options))
+  # Named options become name=value. Unnamed options are written as they are.
+  proc_options <- paste(
+    sub("^=", "", paste0(names2(options), "=", options)),
+    collapse = " "
+  )
+
+  proc_stmts <- purrr::map2(names(stmts), stmts, sas_stmt)
 
   structure(
     list(
-      proc = proc,
+      proc = proc_name,
       data = data,
-      options = paste(options, collapse = " "),
-      statements = purrr::map2(names(stmts), stmts, sas_stmt)
+      options = proc_options,
+      statements = proc_stmts
     ),
     class = "sas_proc"
   )
@@ -164,8 +171,11 @@ format.sas_proc <- function(x, indent = "  ", color = FALSE, ...) {
     body <- paste0(indent, body)
   }
 
-  end <- if (x$proc %in% sas_quit_procs) "quit" else "run"
-  end <- glue::glue("{sas_paint(end, 'proc', color)};")
+  end_word <- "run"
+  if (x$proc %in% sas_quit_procs) {
+    end_word <- "quit"
+  }
+  end <- glue::glue("{sas_paint(end_word, 'proc', color)};")
 
   paste(c(head, body, end), collapse = "\n")
 }
@@ -190,8 +200,16 @@ sas_quit_procs <- c("reg", "glm", "anova", "sql")
 # get rank 3, so they go after the main statements, in the order given.
 sas_stmt_order <- list(
   class = 1,
-  tables = 2, var = 2, model = 2, time = 2, paired = 2,
-  by = 4, where = 4, weight = 4, freq = 4, id = 4,
+  tables = 2,
+  var = 2,
+  model = 2,
+  time = 2,
+  paired = 2,
+  by = 4,
+  where = 4,
+  weight = 4,
+  freq = 4,
+  id = 4,
   output = 5
 )
 
@@ -269,9 +287,9 @@ sas_paint_text <- function(x, color) {
     return(x)
   }
   pattern <- paste(
-    "'[^']*'|\"[^\"]*\"",          # quoted strings
+    "'[^']*'|\"[^\"]*\"", # quoted strings
     "&[A-Za-z_][A-Za-z0-9_]*\\.?", # macro variables
-    "\\b[0-9]+(\\.[0-9]+)?\\b",    # numbers
+    "\\b[0-9]+(\\.[0-9]+)?\\b", # numbers
     sep = "|"
   )
   m <- gregexpr(pattern, x, perl = TRUE)
