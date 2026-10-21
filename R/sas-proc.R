@@ -183,10 +183,10 @@ format.sas_proc <- function(x, indent = "  ", color = FALSE, ...) {
     x$statements,
     function(stmt) sas_stmt_order[[stmt$keyword]] %||% 3
   )
-  body <- purrr::map_chr(x$statements[order(rank)], sas_format_stmt, color)
-  if (length(body) > 0) {
-    body <- paste0(indent, body)
-  }
+  body <- purrr::map_chr(
+    x$statements[order(rank)],
+    function(stmt) paste0(indent, sas_format_stmt(stmt, color))
+  )
 
   end_word <- "run"
   if (x$proc %in% sas_quit_procs) {
@@ -250,15 +250,14 @@ sas_proc_defaults <- list(
 # Make one statement from a keyword and its text. Text after the first slash
 # that is not inside quotes becomes the options.
 sas_stmt <- function(keyword, text) {
-  text <- trimws(paste(text, collapse = " "))
+  stmt_text <- trimws(paste(text, collapse = " "))
   parts <- regmatches(
-    text,
-    regexec("^((?:[^'\"/]|'[^']*'|\"[^\"]*\")*)/(.*)$", text, perl = TRUE)
+    stmt_text,
+    regexec("^((?:[^'\"/]|'[^']*'|\"[^\"]*\")*)/(.*)$", stmt_text, perl = TRUE)
   )[[1]]
-  if (length(parts) == 0) {
-    args <- text
-    options <- ""
-  } else {
+  args <- stmt_text
+  options <- ""
+  if (length(parts) > 0) {
     args <- trimws(parts[2])
     options <- trimws(parts[3])
   }
@@ -293,7 +292,10 @@ sas_colors <- list(
 )
 
 sas_paint <- function(x, type, color) {
-  if (color) as.character(sas_colors[[type]](x)) else x
+  if (!color) {
+    return(x)
+  }
+  as.character(sas_colors[[type]](x))
 }
 
 # Color quoted strings, macro variables, and numbers in free text. All three
@@ -314,11 +316,19 @@ sas_paint_text <- function(x, color) {
   if (length(tokens) == 0) {
     return(x)
   }
-  type <- ifelse(
-    grepl("^['\"]", tokens),
-    "string",
-    ifelse(startsWith(tokens, "&"), "macro", "number")
-  )
-  regmatches(x, m) <- list(purrr::map2_chr(tokens, type, sas_paint, color))
-  x
+  token_types <- purrr::map_chr(tokens, function(token) {
+    if (grepl("^['\"]", token)) {
+      return("string")
+    }
+    if (startsWith(token, "&")) {
+      return("macro")
+    }
+    "number"
+  })
+  painted <- purrr::map2_chr(tokens, token_types, sas_paint, color)
+
+  # The text between tokens has one more piece than the tokens, so add an
+  # empty string to put the pieces back together in order.
+  between <- regmatches(x, m, invert = TRUE)[[1]]
+  paste0(between, c(painted, ""), collapse = "")
 }
