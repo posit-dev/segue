@@ -1,11 +1,12 @@
 #' Write SAS code for a procedure
 #'
 #' @description
-#' Writes the SAS code for one procedure (proc) as text. Each statement is
-#' one argument: the argument name is the SAS keyword, and the value is the
-#' rest of the statement, written as you would write it in SAS. The most
-#' common statements have their own arguments, and you can pass any other
-#' statement by name in `...`.
+#' Writes the SAS code for one statistical procedure (proc) as text. Each
+#' statement is one argument: the argument name is the SAS keyword, and the
+#' value is the rest of the statement, written as you would write it in SAS.
+#' The most common
+#' statements, such as `model` and `class`, have their own arguments. Any
+#' other statement can also be passed by name.
 #'
 #' @details
 #' Statements are written in this order, no matter the order you pass them:

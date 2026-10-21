@@ -49,11 +49,12 @@ syntax colors. Use \code{as.character()} to get the code as plain text, for
 example to write it to a \code{.sas} file.
 }
 \description{
-Writes the SAS code for one procedure (proc) as text. Each statement is
-one argument: the argument name is the SAS keyword, and the value is the
-rest of the statement, written as you would write it in SAS. The most
-common statements have their own arguments, and you can pass any other
-statement by name in \code{...}.
+Writes the SAS code for one statistical procedure (proc) as text. Each
+statement is one argument: the argument name is the SAS keyword, and the
+value is the rest of the statement, written as you would write it in SAS.
+The most common
+statements, such as \code{model} and \code{class}, have their own arguments. Any
+other statement can also be passed by name.
 }
 \details{
 Statements are written in this order, no matter the order you pass them:
