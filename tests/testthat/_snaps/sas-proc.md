@@ -38,6 +38,12 @@
     Output
       proc sgplot;
       run;
+    Code
+      sas_proc("catmod", data = "mtcars", model = "cyl = am")
+    Output
+      proc catmod data=mtcars;
+        model cyl = am;
+      quit;
 
 # printing uses syntax colors
 

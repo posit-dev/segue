@@ -29,6 +29,8 @@ test_that("code is written in SAS order with defaults", {
     sas_proc("REG")
     # Unknown proc, no data
     sas_proc("sgplot", data = NULL)
+    # Interactive categorical proc ends with quit
+    sas_proc("catmod", data = "mtcars", model = "cyl = am")
   })
 })
 

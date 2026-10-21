@@ -65,8 +65,8 @@ Statements are written in this order, no matter the order you pass them:
 \item \code{output}
 }
 
-The code ends with \code{quit;} for the interactive procs (\code{reg}, \code{glm},
-\code{anova}, and \code{sql}), and with \code{run;} for all other procs.
+The code ends with \code{quit;} for the interactive procs (\code{anova}, \code{catmod},
+\code{glm}, and \code{reg}), and with \code{run;} for all other procs.
 }
 \section{Default statements}{
 

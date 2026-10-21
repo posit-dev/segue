@@ -16,8 +16,8 @@
 #' 4. `by`, `where`, `weight`, `freq`, and `id`
 #' 5. `output`
 #'
-#' The code ends with `quit;` for the interactive procs (`reg`, `glm`,
-#' `anova`, and `sql`), and with `run;` for all other procs.
+#' The code ends with `quit;` for the interactive procs (`anova`, `catmod`,
+#' `glm`, and `reg`), and with `run;` for all other procs.
 #'
 #' @section Default statements:
 #' If you leave out a statement that the proc needs, `sas_proc()` adds it.
@@ -210,7 +210,7 @@ as.character.sas_proc <- function(x, ...) {
 # ---- Proc settings -----------------------------------------------------------
 
 # Procs that end with quit instead of run.
-sas_quit_procs <- c("reg", "glm", "anova", "sql")
+sas_quit_procs <- c("anova", "catmod", "glm", "reg")
 
 # Order of statements inside a proc. Statements that are not in this list
 # get rank 3, so they go after the main statements, in the order given.
