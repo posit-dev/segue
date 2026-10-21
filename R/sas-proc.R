@@ -91,7 +91,12 @@
 sas_proc <- function(proc, ..., data = "&dsn", options = NULL) {
   check_string(proc)
   check_string(data, allow_null = TRUE)
-  check_sas_options(options)
+  if (!is.null(options) && (!is.atomic(options) || is.logical(options))) {
+    cli::cli_abort(
+      "{.arg options} must be a character or numeric vector, not
+       {obj_type_friendly(options)}."
+    )
+  }
 
   proc <- tolower(proc)
   stmts <- list(...)
@@ -116,11 +121,16 @@ sas_proc <- function(proc, ..., data = "&dsn", options = NULL) {
   missing <- defaults[!names(defaults) %in% tolower(keywords)]
   stmts <- purrr::compact(c(missing, stmts))
 
+  # Unnamed options are written as they are. Named options become name=value.
+  opt_names <- names2(options)
+  options <- as.character(options)
+  options <- ifelse(opt_names == "", options, paste0(opt_names, "=", options))
+
   structure(
     list(
       proc = proc,
       data = data,
-      options = sas_options(options),
+      options = paste(options, collapse = " "),
       statements = purrr::map2(names(stmts), stmts, sas_stmt)
     ),
     class = "sas_proc"
@@ -145,7 +155,10 @@ format.sas_proc <- function(x, indent = "  ", color = FALSE, ...) {
   )
 
   # order() keeps the given order when ranks are equal.
-  rank <- purrr::map_dbl(x$statements, sas_stmt_rank)
+  rank <- purrr::map_dbl(
+    x$statements,
+    function(stmt) sas_stmt_order[[stmt$keyword]] %||% 3
+  )
   body <- purrr::map_chr(x$statements[order(rank)], sas_format_stmt, color)
   if (length(body) > 0) {
     body <- paste0(indent, body)
@@ -217,10 +230,6 @@ sas_stmt <- function(keyword, text) {
   list(keyword = tolower(keyword), args = args, options = options)
 }
 
-sas_stmt_rank <- function(stmt) {
-  sas_stmt_order[[stmt$keyword]] %||% 3
-}
-
 sas_format_stmt <- function(stmt, color = FALSE) {
   args <- ""
   if (nzchar(stmt$args)) {
@@ -235,29 +244,6 @@ sas_format_stmt <- function(stmt, color = FALSE) {
   as.character(
     glue::glue("{sas_paint(stmt$keyword, 'keyword', color)}{args}{options};")
   )
-}
-
-# ---- Proc options ------------------------------------------------------------
-
-check_sas_options <- function(x, call = caller_env()) {
-  if (is.null(x) || (is.atomic(x) && !is.logical(x))) {
-    return(invisible(NULL))
-  }
-  cli::cli_abort(
-    "{.arg options} must be a character or numeric vector, not
-     {obj_type_friendly(x)}.",
-    call = call
-  )
-}
-
-# Unnamed values are written as they are. Named values become name=value.
-sas_options <- function(x) {
-  if (length(x) == 0) {
-    return("")
-  }
-  nms <- names2(x)
-  x <- as.character(x)
-  paste(ifelse(nms == "", x, paste0(nms, "=", x)), collapse = " ")
 }
 
 # ---- Syntax colors -----------------------------------------------------------
