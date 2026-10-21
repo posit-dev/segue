@@ -14,7 +14,7 @@
     Condition
       Error in `sas_proc()`:
       ! All statements in `...` must be named.
-      i For example: `model = "&y = &x"`.
+      i For example: `lsmeans = "&trt / diff"`.
     Code
       sas_proc("freq", tables = 1)
     Condition

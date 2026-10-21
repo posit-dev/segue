@@ -2,8 +2,9 @@
 #'
 #' @description
 #' `sas_proc()` writes the SAS code for one procedure (proc) as text. Each
-#' named argument in `...` is one statement: the name is the SAS keyword, and
-#' the value is the rest of the line, written as you would write it in SAS.
+#' statement argument, such as `model` or `tables`, is one statement: the
+#' name is the SAS keyword, and the value is the rest of the line, written as
+#' you would write it in SAS. Pass other statements by name in `...`.
 #'
 #' Statements are printed in a fixed order: `class` first, then the main
 #' statement (such as `tables`, `var`, `model`, or `time`), then other
@@ -44,11 +45,13 @@
 #'
 #' @param proc A single string with the name of the proc, such as `"freq"`
 #'   or `"mixed"`.
-#' @param ... Named statements. Each value is a string, or a character vector
-#'   that is joined with spaces. Use a slash for statement options, as in SAS,
-#'   for example `model = "&y = &x / solution"`. Use the same name more than
-#'   once to repeat a statement. A `NULL` or empty value leaves the statement
-#'   out.
+#' @param ... Other statements, such as `lsmeans`, `strata`, or `output`,
+#'   passed by name. Use the same name more than once to repeat a statement.
+#' @param class,model,tables,var,by,where Common statements. Each value is a
+#'   string, or a character vector that is joined with spaces. Use a slash for
+#'   statement options, as in SAS, for example
+#'   `model = "&y = &x / solution"`. When a statement is not passed, the proc
+#'   default is used, if there is one. Pass `NULL` to leave a statement out.
 #' @param data A single string with the data set name, or `NULL` to leave out
 #'   `data=`.
 #' @param options Options for the `proc` line. Unnamed values are written as
@@ -88,7 +91,18 @@
 #' # Plain text
 #' cat(as.character(sas_proc("reg", model = "&outcome = &x1 &x2 / clb")))
 #' @export
-sas_proc <- function(proc, ..., data = "&dsn", options = NULL) {
+sas_proc <- function(
+  proc,
+  ...,
+  class = NULL,
+  model = NULL,
+  tables = NULL,
+  var = NULL,
+  by = NULL,
+  where = NULL,
+  data = "&dsn",
+  options = NULL
+) {
   check_string(proc)
   check_string(data, allow_null = TRUE)
   if (!is.null(options) && (!is.atomic(options) || is.logical(options))) {
@@ -99,16 +113,29 @@ sas_proc <- function(proc, ..., data = "&dsn", options = NULL) {
   }
 
   proc_name <- tolower(proc)
-  user_stmts <- list(...)
-  keywords <- names2(user_stmts)
-  if (any(keywords == "")) {
+  extra_stmts <- list(...)
+  if (any(names2(extra_stmts) == "")) {
     cli::cli_abort(
       c(
         "All statements in {.arg ...} must be named.",
-        "i" = "For example: {.code model = \"&y = &x\"}."
+        "i" = "For example: {.code lsmeans = \"&trt / diff\"}."
       )
     )
   }
+
+  # Keep only the statement arguments the user passed, including NULLs.
+  named_stmts <- list(
+    class = class,
+    model = model,
+    tables = tables,
+    var = var,
+    by = by,
+    where = where
+  )
+  passed <- names(named_stmts) %in% names(match.call())
+  user_stmts <- c(named_stmts[passed], extra_stmts)
+  keywords <- names(user_stmts)
+
   bad <- purrr::detect_index(
     user_stmts,
     function(x) !is.null(x) && !is.character(x)

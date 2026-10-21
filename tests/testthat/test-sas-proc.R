@@ -49,6 +49,41 @@ test_that("default statements are added when left out", {
   )
 })
 
+test_that("named statement arguments work like other statements", {
+  # Passed statements replace the default, others keep it
+  expect_equal(
+    as.character(sas_proc("mixed", model = "&y = &trt &visit")),
+    paste(
+      "proc mixed data=&dsn;",
+      "  class &trt &subj;",
+      "  model &y = &trt &visit;",
+      "run;",
+      sep = "\n"
+    )
+  )
+  # A variable holding NULL also leaves out the default
+  no_class <- NULL
+  expect_no_match(
+    as.character(sas_proc("ttest", class = no_class)),
+    "class"
+  )
+  # Named and extra statements are sorted together
+  expect_equal(
+    as.character(
+      sas_proc("phreg", strata = "&site", by = "&study", where = "&age > 18")
+    ),
+    paste(
+      "proc phreg data=&dsn;",
+      "  model &time*&censor(0) = &trt;",
+      "  strata &site;",
+      "  by &study;",
+      "  where &age > 18;",
+      "run;",
+      sep = "\n"
+    )
+  )
+})
+
 test_that("statement options are split on the first unquoted slash", {
   res <- sas_proc(
     "logistic",
@@ -81,7 +116,10 @@ test_that("vector statements and proc options are joined", {
 
 test_that("printing uses syntax colors", {
   local_reproducible_output(crayon = TRUE)
-  expect_snapshot(sas_proc("logistic", model = "&y(event='1') = age / alpha=0.05"))
+  expect_snapshot(sas_proc(
+    "logistic",
+    model = "&y(event='1') = age / alpha=0.05"
+  ))
 })
 
 test_that("bad input gives informative errors", {

@@ -4,17 +4,31 @@
 \alias{sas_proc}
 \title{Write SAS code for a procedure}
 \usage{
-sas_proc(proc, ..., data = "&dsn", options = NULL)
+sas_proc(
+  proc,
+  ...,
+  class = NULL,
+  model = NULL,
+  tables = NULL,
+  var = NULL,
+  by = NULL,
+  where = NULL,
+  data = "&dsn",
+  options = NULL
+)
 }
 \arguments{
 \item{proc}{A single string with the name of the proc, such as \code{"freq"}
 or \code{"mixed"}.}
 
-\item{...}{Named statements. Each value is a string, or a character vector
-that is joined with spaces. Use a slash for statement options, as in SAS,
-for example \code{model = "&y = &x / solution"}. Use the same name more than
-once to repeat a statement. A \code{NULL} or empty value leaves the statement
-out.}
+\item{...}{Other statements, such as \code{lsmeans}, \code{strata}, or \code{output},
+passed by name. Use the same name more than once to repeat a statement.}
+
+\item{class, model, tables, var, by, where}{Common statements. Each value is a
+string, or a character vector that is joined with spaces. Use a slash for
+statement options, as in SAS, for example
+\code{model = "&y = &x / solution"}. When a statement is not passed, the proc
+default is used, if there is one. Pass \code{NULL} to leave a statement out.}
 
 \item{data}{A single string with the data set name, or \code{NULL} to leave out
 \verb{data=}.}
@@ -30,8 +44,9 @@ example to write it to a \code{.sas} file.
 }
 \description{
 \code{sas_proc()} writes the SAS code for one procedure (proc) as text. Each
-named argument in \code{...} is one statement: the name is the SAS keyword, and
-the value is the rest of the line, written as you would write it in SAS.
+statement argument, such as \code{model} or \code{tables}, is one statement: the
+name is the SAS keyword, and the value is the rest of the line, written as
+you would write it in SAS. Pass other statements by name in \code{...}.
 
 Statements are printed in a fixed order: \code{class} first, then the main
 statement (such as \code{tables}, \code{var}, \code{model}, or \code{time}), then other
