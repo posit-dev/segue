@@ -21,7 +21,6 @@ Language: en-US
 Imports: 
     cli,
     generics,
-    glue,
     purrr,
     rlang (>= 1.2.0),
     tibble

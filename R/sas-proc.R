@@ -164,7 +164,7 @@ sas_proc <- function(
 format.sas_proc <- function(x, indent = "  ", color = FALSE, ...) {
   data <- ""
   if (!is.null(x$data) && nzchar(x$data)) {
-    data <- glue::glue(
+    data <- cli::format_inline(
       " {sas_paint('data', 'keyword', color)}={sas_paint_text(x$data, color)}"
     )
   }
@@ -172,7 +172,7 @@ format.sas_proc <- function(x, indent = "  ", color = FALSE, ...) {
   if (nzchar(x$options)) {
     options <- paste0(" ", sas_paint_text(x$options, color))
   }
-  head <- glue::glue(
+  head <- cli::format_inline(
     "{sas_paint('proc', 'proc', color)} ",
     "{sas_paint(x$proc, 'proc', color)}{data}{options};"
   )
@@ -191,7 +191,7 @@ format.sas_proc <- function(x, indent = "  ", color = FALSE, ...) {
   if (x$proc %in% sas_quit_procs) {
     end_word <- "quit"
   }
-  end <- glue::glue("{sas_paint(end_word, 'proc', color)};")
+  end <- cli::format_inline("{sas_paint(end_word, 'proc', color)};")
 
   paste(c(head, body, end), collapse = "\n")
 }
@@ -271,12 +271,12 @@ sas_format_stmt <- function(stmt, color = FALSE) {
   }
   options <- ""
   if (nzchar(stmt$options)) {
-    options <- glue::glue(
+    options <- cli::format_inline(
       " {sas_paint('/', 'slash', color)} {sas_paint_text(stmt$options, color)}"
     )
   }
-  as.character(
-    glue::glue("{sas_paint(stmt$keyword, 'keyword', color)}{args}{options};")
+  cli::format_inline(
+    "{sas_paint(stmt$keyword, 'keyword', color)}{args}{options};"
   )
 }
 
