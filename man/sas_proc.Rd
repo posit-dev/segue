@@ -19,23 +19,29 @@ sas_proc(
 }
 \arguments{
 \item{proc}{A single string with the name of the proc, such as \code{"freq"}
-or \code{"mixed"}.}
+or \code{"mixed"}. Any proc name works, but only the procs listed in
+"Default statements" get default statements.}
 
-\item{...}{Other statements, such as \code{lsmeans}, \code{strata}, or \code{output},
-passed by name. Use the same name more than once to repeat a statement.}
+\item{...}{Other statements, passed by name, such as \code{lsmeans}, \code{strata},
+or \code{output}. Their values work the same way as for \code{class} and the other
+common statements. Use the same name more than once to repeat a
+statement.}
 
 \item{class, model, tables, var, by, where}{Common statements. Each value is a
 string, or a character vector that is joined with spaces. Use a slash for
-statement options, as in SAS, for example
-\code{model = "&y = &x / solution"}. When a statement is not passed, the proc
-default is used, if there is one. Pass \code{NULL} to leave a statement out.}
+statement options, as in SAS, for example \code{model = "mpg = wt / clb"}. If
+you do not pass a statement, the proc default is used, if there is one.
+Pass \code{NULL} to leave the statement out.}
 
 \item{data}{A single string with the data set name, or \code{NULL} to leave out
-\verb{data=}.}
+\verb{data=}. The default is the \verb{&dsn} placeholder. The data set must exist
+in SAS when you run the code, for example after you import \code{mtcars} from
+a CSV file.}
 
-\item{options}{Options for the \code{proc} line. Unnamed values are written as
-they are, and named values are written as \code{name=value}. For example,
-\code{c("n", "mean", alpha = 0.05)} gives \verb{n mean alpha=0.05}.}
+\item{options}{A character or numeric vector of options for the \code{proc}
+line. Unnamed values are written as they are, and named values are
+written as \code{name=value}. For example, \code{c("n", "mean", alpha = 0.05)}
+gives \verb{n mean alpha=0.05}.}
 }
 \value{
 An object of class \code{sas_proc}. Printing it shows the code with
@@ -43,34 +49,30 @@ syntax colors. Use \code{as.character()} to get the code as plain text, for
 example to write it to a \code{.sas} file.
 }
 \description{
-\code{sas_proc()} writes the SAS code for one procedure (proc) as text. Each
-statement argument, such as \code{model} or \code{tables}, is one statement: the
-name is the SAS keyword, and the value is the rest of the line, written as
-you would write it in SAS. Pass other statements by name in \code{...}.
-
-Statements are printed in a fixed order: \code{class} first, then the main
-statement (such as \code{tables}, \code{var}, \code{model}, or \code{time}), then other
-statements in the order you give them, then \code{by}, \code{where}, \code{weight},
-\code{freq}, and \code{id}, and \code{output} last. The code ends with \code{quit;} for
-interactive procs (\code{reg}, \code{glm}, \code{anova}, \code{sql}) and with \code{run;} for all
-other procs.
+Writes the SAS code for one procedure (proc) as text. Each statement is
+one argument: the argument name is the SAS keyword, and the value is the
+rest of the statement, written as you would write it in SAS. The most
+common statements have their own arguments, and you can pass any other
+statement by name in \code{...}.
 }
-\section{Placeholders}{
-
-Placeholders use SAS macro variables, such as \verb{&dsn} or \verb{&outcome}. This
-means that the code is valid SAS. Set the values with \verb{\%let} statements
-before you run it:
-
-\if{html}{\out{<div class="sourceCode sas">}}\preformatted{\%let dsn = adsl;
-\%let row = trt01p;
-\%let col = sex;
-}\if{html}{\out{</div>}}
+\details{
+Statements are written in this order, no matter the order you pass them:
+\enumerate{
+\item \code{class}
+\item The main statement: \code{tables}, \code{var}, \code{model}, \code{time}, or \code{paired}
+\item All other statements, in the order you pass them
+\item \code{by}, \code{where}, \code{weight}, \code{freq}, and \code{id}
+\item \code{output}
 }
 
+The code ends with \code{quit;} for the interactive procs (\code{reg}, \code{glm},
+\code{anova}, and \code{sql}), and with \code{run;} for all other procs.
+}
 \section{Default statements}{
 
-If you leave out a statement that the proc needs, \code{sas_proc()} adds it with
-placeholders:\tabular{ll}{
+If you leave out a statement that the proc needs, \code{sas_proc()} adds it.
+Default statements use SAS macro variables, such as \verb{&row}, as
+placeholders for the variable names.\tabular{ll}{
    Proc \tab Default statements \cr
    \code{freq} \tab \verb{tables &row*&col} \cr
    \code{means}, \code{univariate} \tab \code{var &var} \cr
@@ -84,36 +86,23 @@ placeholders:\tabular{ll}{
 }
 
 
-To leave out a default statement, set it to \code{NULL}, for example
-\code{class = NULL}.
+Other procs have no default statements. To leave out a default statement,
+set it to \code{NULL}, for example \code{class = NULL}.
 }
 
 \examples{
-# Default statements only
+# Default statements with placeholders
 sas_proc("freq")
 
-sas_proc(
-  "freq",
-  tables = "&row*&col / chisq exact",
-  weight = "&count"
-)
+# lm(mpg ~ wt + hp, data = mtcars), with confidence limits
+sas_proc("reg", data = "mtcars", model = "mpg = wt hp / clb")
 
+# t.test(mpg ~ am, data = mtcars, conf.level = 0.90)
 sas_proc(
-  "means",
-  var = "&outcome",
-  class = "&trt",
-  options = c("n", "mean", "std", "clm", alpha = 0.05)
+  "ttest",
+  data = "mtcars",
+  class = "am",
+  var = "mpg",
+  options = c(alpha = 0.1)
 )
-
-sas_proc(
-  "mixed",
-  class    = c("&trt", "&visit", "&subj"),
-  model    = "&outcome = &trt &visit &trt*&visit / solution ddfm=kr",
-  repeated = "&visit / subject=&subj type=un",
-  lsmeans  = "&trt*&visit / diff cl",
-  options  = c(method = "reml")
-)
-
-# Plain text
-cat(as.character(sas_proc("reg", model = "&outcome = &x1 &x2 / clb")))
 }

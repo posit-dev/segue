@@ -1,95 +1,84 @@
 #' Write SAS code for a procedure
 #'
 #' @description
-#' `sas_proc()` writes the SAS code for one procedure (proc) as text. Each
-#' statement argument, such as `model` or `tables`, is one statement: the
-#' name is the SAS keyword, and the value is the rest of the line, written as
-#' you would write it in SAS. Pass other statements by name in `...`.
+#' Writes the SAS code for one procedure (proc) as text. Each statement is
+#' one argument: the argument name is the SAS keyword, and the value is the
+#' rest of the statement, written as you would write it in SAS. The most
+#' common statements have their own arguments, and you can pass any other
+#' statement by name in `...`.
 #'
-#' Statements are printed in a fixed order: `class` first, then the main
-#' statement (such as `tables`, `var`, `model`, or `time`), then other
-#' statements in the order you give them, then `by`, `where`, `weight`,
-#' `freq`, and `id`, and `output` last. The code ends with `quit;` for
-#' interactive procs (`reg`, `glm`, `anova`, `sql`) and with `run;` for all
-#' other procs.
+#' @details
+#' Statements are written in this order, no matter the order you pass them:
 #'
-#' @section Placeholders:
-#' Placeholders use SAS macro variables, such as `&dsn` or `&outcome`. This
-#' means that the code is valid SAS. Set the values with `%let` statements
-#' before you run it:
+#' 1. `class`
+#' 2. The main statement: `tables`, `var`, `model`, `time`, or `paired`
+#' 3. All other statements, in the order you pass them
+#' 4. `by`, `where`, `weight`, `freq`, and `id`
+#' 5. `output`
 #'
-#' ```sas
-#' %let dsn = adsl;
-#' %let row = trt01p;
-#' %let col = sex;
-#' ```
+#' The code ends with `quit;` for the interactive procs (`reg`, `glm`,
+#' `anova`, and `sql`), and with `run;` for all other procs.
 #'
 #' @section Default statements:
-#' If you leave out a statement that the proc needs, `sas_proc()` adds it with
-#' placeholders:
+#' If you leave out a statement that the proc needs, `sas_proc()` adds it.
+#' Default statements use SAS macro variables, such as `&row`, as
+#' placeholders for the variable names.
 #'
-#' | Proc                   | Default statements                         |
-#' |------------------------|--------------------------------------------|
-#' | `freq`                 | `tables &row*&col`                         |
-#' | `means`, `univariate`  | `var &var`                                 |
-#' | `ttest`                | `class &group`, `var &var`                 |
-#' | `reg`                  | `model &outcome = &x`                      |
-#' | `glm`                  | `class &group`, `model &outcome = &group`  |
-#' | `logistic`             | `model &outcome(event='1') = &x`           |
-#' | `mixed`                | `class &trt &subj`, `model &outcome = &trt`|
-#' | `lifetest`             | `time &time*&censor(0)`                    |
-#' | `phreg`                | `model &time*&censor(0) = &trt`            |
+#' | Proc                  | Default statements                          |
+#' |-----------------------|---------------------------------------------|
+#' | `freq`                | `tables &row*&col`                          |
+#' | `means`, `univariate` | `var &var`                                  |
+#' | `ttest`               | `class &group`, `var &var`                  |
+#' | `reg`                 | `model &outcome = &x`                       |
+#' | `glm`                 | `class &group`, `model &outcome = &group`   |
+#' | `logistic`            | `model &outcome(event='1') = &x`            |
+#' | `mixed`               | `class &trt &subj`, `model &outcome = &trt` |
+#' | `lifetest`            | `time &time*&censor(0)`                     |
+#' | `phreg`               | `model &time*&censor(0) = &trt`             |
 #'
-#' To leave out a default statement, set it to `NULL`, for example
-#' `class = NULL`.
+#' Other procs have no default statements. To leave out a default statement,
+#' set it to `NULL`, for example `class = NULL`.
 #'
 #' @param proc A single string with the name of the proc, such as `"freq"`
-#'   or `"mixed"`.
-#' @param ... Other statements, such as `lsmeans`, `strata`, or `output`,
-#'   passed by name. Use the same name more than once to repeat a statement.
+#'   or `"mixed"`. Any proc name works, but only the procs listed in
+#'   "Default statements" get default statements.
+#' @param ... Other statements, passed by name, such as `lsmeans`, `strata`,
+#'   or `output`. Their values work the same way as for `class` and the other
+#'   common statements. Use the same name more than once to repeat a
+#'   statement.
 #' @param class,model,tables,var,by,where Common statements. Each value is a
 #'   string, or a character vector that is joined with spaces. Use a slash for
-#'   statement options, as in SAS, for example
-#'   `model = "&y = &x / solution"`. When a statement is not passed, the proc
-#'   default is used, if there is one. Pass `NULL` to leave a statement out.
+#'   statement options, as in SAS, for example `model = "mpg = wt / clb"`. If
+#'   you do not pass a statement, the proc default is used, if there is one.
+#'   Pass `NULL` to leave the statement out.
 #' @param data A single string with the data set name, or `NULL` to leave out
-#'   `data=`.
-#' @param options Options for the `proc` line. Unnamed values are written as
-#'   they are, and named values are written as `name=value`. For example,
-#'   `c("n", "mean", alpha = 0.05)` gives `n mean alpha=0.05`.
+#'   `data=`. The default is the `&dsn` placeholder. The data set must exist
+#'   in SAS when you run the code, for example after you import `mtcars` from
+#'   a CSV file.
+#' @param options A character or numeric vector of options for the `proc`
+#'   line. Unnamed values are written as they are, and named values are
+#'   written as `name=value`. For example, `c("n", "mean", alpha = 0.05)`
+#'   gives `n mean alpha=0.05`.
 #'
 #' @returns An object of class `sas_proc`. Printing it shows the code with
 #'   syntax colors. Use `as.character()` to get the code as plain text, for
 #'   example to write it to a `.sas` file.
 #'
 #' @examples
-#' # Default statements only
+#' # Default statements with placeholders
 #' sas_proc("freq")
 #'
-#' sas_proc(
-#'   "freq",
-#'   tables = "&row*&col / chisq exact",
-#'   weight = "&count"
-#' )
+#' # lm(mpg ~ wt + hp, data = mtcars), with confidence limits
+#' sas_proc("reg", data = "mtcars", model = "mpg = wt hp / clb")
 #'
+#' # t.test(mpg ~ am, data = mtcars, conf.level = 0.90)
 #' sas_proc(
-#'   "means",
-#'   var = "&outcome",
-#'   class = "&trt",
-#'   options = c("n", "mean", "std", "clm", alpha = 0.05)
+#'   "ttest",
+#'   data = "mtcars",
+#'   class = "am",
+#'   var = "mpg",
+#'   options = c(alpha = 0.1)
 #' )
-#'
-#' sas_proc(
-#'   "mixed",
-#'   class    = c("&trt", "&visit", "&subj"),
-#'   model    = "&outcome = &trt &visit &trt*&visit / solution ddfm=kr",
-#'   repeated = "&visit / subject=&subj type=un",
-#'   lsmeans  = "&trt*&visit / diff cl",
-#'   options  = c(method = "reml")
-#' )
-#'
-#' # Plain text
-#' cat(as.character(sas_proc("reg", model = "&outcome = &x1 &x2 / clb")))
 #' @export
 sas_proc <- function(
   proc,
