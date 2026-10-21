@@ -15,11 +15,15 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Suggests: 
-    spelling
+    spelling,
+    testthat (>= 3.0.0)
 Language: en-US
 Imports: 
     cli,
     generics,
-    rlang (>= 1.1.0),
+    glue,
+    purrr,
+    rlang (>= 1.2.0),
     tibble
 Config/roxygen2/version: 8.1.0
+Config/testthat/edition: 3
