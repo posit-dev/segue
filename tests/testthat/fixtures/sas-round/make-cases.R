@@ -143,7 +143,21 @@ explore <- rbind(
   new_cases("explore", c(2^52 + 1, 2^53, 1e15 + 0.5, 1e17), 1),
   new_cases("explore", c(1e15 + 0.5, 123456789012.345), 0.01),
   new_cases("explore", c(1.5e-20, 2.5e-20, 3.49999e-20), 1e-20),
-  new_cases("explore", c(0.0001234, 0.00012345), 1e-7)
+  new_cases("explore", c(0.0001234, 0.00012345), 1e-7),
+  # x / unit overflows
+  new_cases("explore", c(1e300, -1e300), 1e-15),
+  new_cases("explore", 5e9, 1e-300),
+  new_cases("explore", 1.7e308, c(0.1111, 0.11111)),
+  # 1 / unit overflows
+  new_cases("explore", 1, c(1e-320, 5e-324)),
+  # Negative values that round to zero, to see if SAS returns -0
+  new_cases("explore", c(-0.4, -0.04), c(1, 0.1)),
+  # The reciprocal of the unit is 20 ulps from 7, more than the "three or four
+  # least significant bits" in the documentation.
+  new_cases("explore", pi, 1 / (7 + 80 * .Machine$double.eps)),
+  # A unit with five decimal places and results with four
+  new_cases("explore", c(0.0015, 0.0033), 0.00015),
+  new_cases("explore", 0.0121, 0.00055)
 )
 
 # ------------------------------------------------------------------------------

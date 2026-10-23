@@ -27,6 +27,15 @@ test_that("sas_round() matches documented SAS examples", {
   expect_identical(sas_round(pi, unit = 1 / 7), 22 / 7)
 })
 
+test_that("sas_round() matches decimal results with at most four places", {
+  skip("Confirm expected values with SAS: fixture cases 538-540.")
+  # The documentation's condition is on the expected result, not on the unit:
+  # 0.00015 has five decimal places but 10 * 0.00015 = 0.0015 has four.
+  expect_identical(sas_round(0.0015, unit = 0.00015), 0.0015)
+  expect_identical(sas_round(0.0033, unit = 0.00015), 0.0033)
+  expect_identical(sas_round(0.0121, unit = 0.00055), 0.0121)
+})
+
 test_that("sas_round() gives the same results with digits or unit", {
   x <- c(1234.56789, -0.285, 1.005)
   for (digits in -3:5) {
@@ -54,6 +63,33 @@ test_that("sas_round() returns large values unchanged", {
   expect_identical(sas_round(2^52 + 1), 2^52 + 1)
   expect_identical(sas_round(2^53), 2^53)
   expect_identical(sas_round(-(2^52 + 1)), -(2^52 + 1))
+})
+
+test_that("sas_round() returns large values unchanged when x / unit overflows", {
+  expect_true(is.finite(sas_round(1e300, digits = 15)))
+  expect_true(is.finite(sas_round(5e9, unit = 1e-300)))
+  expect_true(is.finite(sas_round(1.7e308, unit = 0.1111)))
+  expect_true(is.finite(sas_round(1.7e308, unit = 0.11111)))
+
+  skip("Confirm expected values with SAS: fixture cases 528-532.")
+  expect_identical(sas_round(1e300, digits = 15), 1e300)
+  expect_identical(sas_round(-1e300, digits = 15), -1e300)
+  expect_identical(sas_round(5e9, unit = 1e-300), 5e9)
+  expect_identical(sas_round(1.7e308, unit = 0.1111), 1.7e308)
+  expect_identical(sas_round(1.7e308, unit = 0.11111), 1.7e308)
+})
+
+test_that("sas_round() works with very large units", {
+  expect_identical(sas_round(1, unit = 1e308), 0)
+})
+
+test_that("sas_round() works with units whose reciprocal overflows", {
+  expect_no_error(sas_round(1, unit = 1e-320))
+  expect_no_error(sas_round(1, unit = 5e-324))
+
+  skip("Confirm expected values with SAS: fixture cases 533-534.")
+  expect_identical(sas_round(1, unit = 1e-320), 1)
+  expect_identical(sas_round(1, unit = 5e-324), 1)
 })
 
 test_that("sas_round() matches cases with documented or decimal answers", {
@@ -115,6 +151,14 @@ test_that("sas_format() shows the requested decimal places", {
   expect_identical(sas_format(0.1 + 0.2, digits = 15), "0.300000000000000")
   expect_identical(sas_format(1e-10, digits = 2), "0.00")
   expect_identical(sas_format(1e10 + 0.125, digits = 2), "10000000000.13")
+})
+
+test_that("sas_format() pads with zeros beyond 15 significant digits", {
+  skip("Confirm with SAS: `put x 20.10;` for x = 123456789.123456.")
+  expect_identical(
+    sas_format(123456789.123456, digits = 10),
+    "123456789.1234560000"
+  )
 })
 
 test_that("sas_format() behaves like format()", {

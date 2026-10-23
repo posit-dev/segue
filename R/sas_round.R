@@ -79,6 +79,10 @@ sas_round <- function(x, digits = 0, unit = 10^-digits) {
   } else {
     res <- round_half_away(x / unit) * unit
   }
+  # When x / unit is this large, x is already a multiple of unit at double
+  # precision, and scaling it could lose precision or overflow.
+  is_large <- !is.na(x) & abs(x / unit) >= 2^52
+  res[is_large] <- x[is_large]
   res
 }
 
@@ -131,21 +135,16 @@ sas_format <- function(x, digits = 0, ...) {
 round_half_away <- function(x) {
   abs_x <- abs(x)
   fuzz <- pmin(1e-6, abs_x * 1e-12)
-  res <- floor(abs_x + 0.5 + fuzz)
-  # Doubles this large are already whole numbers and adding 0.5 could change
-  # them.
-  is_large <- !is.na(abs_x) & abs_x >= 2^52
-  res[is_large] <- abs_x[is_large]
-  sign(x) * res
+  sign(x) * floor(abs_x + 0.5 + fuzz)
 }
 
 # SAS treats `unit` as the reciprocal of an integer when 1 / unit is within
 # "three or four least significant bits" of an integer.
 reciprocal_integer <- function(unit) {
-  if (unit >= 1) {
+  recip <- 1 / unit
+  if (unit >= 1 || is.infinite(recip)) {
     return(NULL)
   }
-  recip <- 1 / unit
   recip_int <- round(recip)
   if (abs(recip - recip_int) > 16 * .Machine$double.eps * recip_int) {
     return(NULL)
@@ -154,6 +153,9 @@ reciprocal_integer <- function(unit) {
 }
 
 decimal_places <- function(unit) {
+  if (unit == round(unit)) {
+    return(NULL)
+  }
   for (places in 1:4) {
     scaled <- unit * 10^places
     if (abs(scaled - round(scaled)) <= 16 * .Machine$double.eps * scaled) {
