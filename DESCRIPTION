@@ -15,7 +15,10 @@ License: MIT + file LICENSE
 Imports: 
     broom,
     cli,
-    rlang (>= 1.1.0)
+    generics,
+    purrr,
+    rlang (>= 1.2.0),
+    tibble
 Suggests: 
     exactci,
     modeldata,
