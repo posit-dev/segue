@@ -5,6 +5,7 @@
 #' with two levels.
 #'
 #' @inheritParams stats::binom.test
+#' @family Binomial Outcomes
 #' @param y A factor vector with two levels.
 #' @param method A single character string with possible values:
 #'   - `"exact"`: An exact test via [binom.test()].
@@ -17,6 +18,15 @@
 #' @param alternative A character value indicating the alternative hypothesis
 #' and must be one of `"two.sided"`, `"greater"`, or `"less"`.
 #' @param ... Not currently used.
+#'
+#' @details
+#'
+#' This function performs one of several Frequentist hypothesis tests on a
+#' single Binomial proportion.
+#'
+#' @includeRmd rmd/bin_prop_test.Rmd
+#'
+#'
 #' @return An object with classes `"bin_prop_test"` and `"segue_object"` with
 #' elements
 #'   - `calls`: contains code in R and SAS for [translate()].
@@ -35,7 +45,8 @@
 #'   tidy(test_res)
 #' }
 #' }
-#' @seealso [binom.test()]
+#' @seealso [binom.test()], [prop.test()], [exactci::binom.exact()],
+#' [broom:::tidy.htest()]
 #' @export
 bin_prop_test <- function(y, ...) {
   UseMethod("bin_prop_test")

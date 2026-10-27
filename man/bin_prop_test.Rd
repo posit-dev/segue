@@ -55,6 +55,31 @@ Conducts a basic hypothesis test for a single Binomial proportion. This is
 a wrapper around functions such as \code{\link[=binom.test]{binom.test()}} but takes a factor vector
 with two levels.
 }
+\details{
+This function performs one of several Frequentist hypothesis tests on a
+single Binomial proportion.
+
+\subsection{\code{method = "exact"}}{
+
+R’s \code{\link[=binom.test]{binom.test()}} implements the exact test described
+in Section 1.4 of Agresti (2012). Once the data have been transformed
+into the number of events and the total number of non-missing values,
+the code using default argument values is
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{binom.test(num_events, num_total, alternative = "two.sided", p = 0.5)
+}\if{html}{\out{</div>}}
+
+The corresponding SAS code is
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{proc freq data=\{data set\};
+  tables \{analysis column\} / binomial;
+  exact binomial;
+run;
+}\if{html}{\out{</div>}}
+
+Equivalence between these two implementations is TODO.
+}
+}
 \examples{
 \donttest{
 if (rlang::is_installed(c("modeldata"))) {
@@ -69,5 +94,7 @@ if (rlang::is_installed(c("modeldata"))) {
 }
 }
 \seealso{
-\code{\link[=binom.test]{binom.test()}}
+\code{\link[=binom.test]{binom.test()}}, \code{\link[=prop.test]{prop.test()}}, \code{\link[exactci:binom.exact]{exactci::binom.exact()}},
+\code{\link[broom:::tidy.htest]{broom::::tidy.htest()}}
 }
+\concept{Binomial Outcomes}
