@@ -155,8 +155,7 @@ bin_prop_test_exact <- function(num_events, num_total, options = list()) {
   res <- try(rlang::eval_tidy(cl), silent = TRUE)
   if (inherits(res, "try-error")) {
     cli::cli_abort(
-      "{.fn bin_prop_test} with {.code method = 'exact'}
-                   failed with error: {res}",
+      "{.fn bin_prop_test} with {.code method = 'exact'} failed with error: {res}",
       call = NULL
     )
   }
@@ -185,8 +184,7 @@ bin_prop_test_midp <- function(num_events, num_total, options = list()) {
   res <- try(rlang::eval_tidy(cl), silent = TRUE)
   if (inherits(res, "try-error")) {
     cli::cli_abort(
-      "{.fn bin_prop_test} with {.code method = 'midp'}
-                   failed with error: {res}",
+      "{.fn bin_prop_test} with {.code method = 'midp'} failed with error: {res}",
       call = NULL
     )
   }
@@ -215,8 +213,7 @@ bin_prop_test_score <- function(num_events, num_total, options = list()) {
   res <- try(rlang::eval_tidy(cl), silent = TRUE)
   if (inherits(res, "try-error")) {
     cli::cli_abort(
-      "{.fn bin_prop_test} with {.code method = 'score'}
-                   failed with error: {res}",
+      "{.fn bin_prop_test} with {.code method = 'score'} failed with error: {res}",
       call = NULL
     )
   }
