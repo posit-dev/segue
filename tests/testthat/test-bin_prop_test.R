@@ -55,13 +55,24 @@ test_that("bin_prop_test() passes options to binom.test()", {
 test_that("bin_prop_test() creates SAS code", {
   y <- factor(c("a", "b", "a", "a", "b", "a"))
 
-  expect_snapshot(cat(bin_prop_test(y)$code$sas, sep = "\n"))
-  expect_snapshot(cat(bin_prop_test(y, null_value = 0.2)$code$sas, sep = "\n"))
-  expect_snapshot(cat(bin_prop_test(y, event_level = "b")$code$sas, sep = "\n"))
+  expect_snapshot(rlang::exec("sas_proc", !!!(bin_prop_test(y)$code$sas)))
+
   expect_snapshot(
-    cat(
-      bin_prop_test(y, event_level = "b", null_value = 0.2)$code$sas,
-      sep = "\n"
+    rlang::exec(
+      "sas_proc",
+      !!!(bin_prop_test(y, null_value = 0.2)$code$sas)
+    )
+  )
+  expect_snapshot(
+    rlang::exec(
+      "sas_proc",
+      !!!(bin_prop_test(y, event_level = "b")$code$sas)
+    )
+  )
+  expect_snapshot(
+    rlang::exec(
+      "sas_proc",
+      !!!(bin_prop_test(y, event_level = "b", null_value = 0.2)$code$sas)
     )
   )
 })

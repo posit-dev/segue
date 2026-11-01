@@ -161,12 +161,11 @@ bin_prop_test_exact <- function(num_events, num_total, options = list()) {
   }
 
   sas_code <-
-    "
-proc freq data = {data set};
-  table {data column} / binomial;
-  exact binomial;
-run;
-"
+    list(
+      proc = "freq",
+      data = "{data set}",
+      tables = "{analysis column} / binomial"
+    )
 
   list(results = res, code = list(r = cl, sas = sas_code))
 }
@@ -190,12 +189,12 @@ bin_prop_test_midp <- function(num_events, num_total, options = list()) {
   }
 
   sas_code <-
-    "
-proc freq data = {data set};
-  table {data column} / binomial;
-  exact binomial / midp;
-run;
-"
+    list(
+      proc = "freq",
+      data = "{data set}",
+      tables = "{analysis column} / binomial",
+      exact = "exact binomial / midp"
+    )
 
   list(results = res, code = list(r = cl, sas = sas_code))
 }
@@ -219,11 +218,11 @@ bin_prop_test_score <- function(num_events, num_total, options = list()) {
   }
 
   sas_code <-
-    "
-proc freq data = {data set};
-  tables {data column} / binomial(cl=score);
-run;
-"
+    list(
+      proc = "freq",
+      data = "{data set}",
+      tables = "{analysis column} / binomial(cl=score)"
+    )
 
   list(results = res, code = list(r = cl, sas = sas_code))
 }

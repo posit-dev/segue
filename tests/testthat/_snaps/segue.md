@@ -17,7 +17,7 @@
 ---
 
     Code
-      new_segue(code = list(r = 1, sas = "run;"))
+      new_segue(code = list(r = 1, sas = list()))
     Condition
       Error:
       ! The "r" element of `code` should be a call or NULL, not a number.
@@ -27,8 +27,8 @@
     Code
       new_segue(code = list(r = quote(f(x)), sas = 1))
     Condition
-      Error in `new_segue()`:
-      ! `code$sas` must be a character vector or `NULL`, not the number 1.
+      Error:
+      ! The `sas` element of `code` argument should be a list, not a number
 
 ---
 

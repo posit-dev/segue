@@ -7,7 +7,7 @@ test_that("translate() shows R and SAS code", {
 })
 
 test_that("translate() skips missing code", {
-  res <- new_segue(code = list(r = NULL, sas = NULL))
+  res <- new_segue(code = list(r = NULL, sas = list()))
   expect_snapshot(translate(res))
 })
 

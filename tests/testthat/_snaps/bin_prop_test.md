@@ -1,50 +1,39 @@
 # bin_prop_test() creates SAS code
 
     Code
-      cat(bin_prop_test(y)$code$sas, sep = "\n")
+      rlang::exec("sas_proc", !!!(bin_prop_test(y)$code$sas))
     Output
-      
-      proc freq data = {data set};
-        table {data column} / binomial;
-        exact binomial;
+      proc freq data={data set};
+        tables {analysis column} / binomial;
       run;
-      
 
 ---
 
     Code
-      cat(bin_prop_test(y, null_value = 0.2)$code$sas, sep = "\n")
+      rlang::exec("sas_proc", !!!(bin_prop_test(y, null_value = 0.2)$code$sas))
     Output
-      
-      proc freq data = {data set};
-        table {data column} / binomial;
-        exact binomial;
+      proc freq data={data set};
+        tables {analysis column} / binomial;
       run;
-      
 
 ---
 
     Code
-      cat(bin_prop_test(y, event_level = "b")$code$sas, sep = "\n")
+      rlang::exec("sas_proc", !!!(bin_prop_test(y, event_level = "b")$code$sas))
     Output
-      
-      proc freq data = {data set};
-        table {data column} / binomial;
-        exact binomial;
+      proc freq data={data set};
+        tables {analysis column} / binomial;
       run;
-      
 
 ---
 
     Code
-      cat(bin_prop_test(y, event_level = "b", null_value = 0.2)$code$sas, sep = "\n")
+      rlang::exec("sas_proc", !!!(bin_prop_test(y, event_level = "b", null_value = 0.2)$
+        code$sas))
     Output
-      
-      proc freq data = {data set};
-        table {data column} / binomial;
-        exact binomial;
+      proc freq data={data set};
+        tables {analysis column} / binomial;
       run;
-      
 
 # bin_prop_test() validates inputs
 

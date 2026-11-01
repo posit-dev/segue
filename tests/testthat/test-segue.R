@@ -1,23 +1,23 @@
 test_that("new_segue() creates objects", {
   res <- new_segue(
-    code = list(r = quote(f(x)), sas = "run;"),
+    code = list(r = quote(f(x)), sas = list()),
     classes = "thing"
   )
   expect_s3_class(res, c("thing", "segue_object"))
   expect_named(res, c("code", "results", "options", "data_characteristics"))
 
-  res_null <- new_segue(code = list(r = NULL, sas = NULL))
+  res_null <- new_segue(code = list(r = NULL, sas = list()))
   expect_s3_class(res_null, "segue_object")
   expect_null(res_null$code$r)
-  expect_null(res_null$code$sas)
+  expect_equal(res_null$code$sas, list())
 })
 
 test_that("new_segue() validates inputs", {
-  cls <- list(r = quote(f(x)), sas = "run;")
+  cls <- list(r = quote(f(x)), sas = list())
 
   expect_snapshot(error = TRUE, new_segue(code = 1))
   expect_snapshot(error = TRUE, new_segue(code = list(r = NULL)))
-  expect_snapshot(error = TRUE, new_segue(code = list(r = 1, sas = "run;")))
+  expect_snapshot(error = TRUE, new_segue(code = list(r = 1, sas = list())))
   expect_snapshot(
     error = TRUE,
     new_segue(code = list(r = quote(f(x)), sas = 1))

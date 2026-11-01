@@ -33,14 +33,12 @@ translate.segue_object <- function(x, ...) {
   rlang::check_dots_empty()
   if (!is.null(x$code$r)) {
     cli::cli_rule("R Code template")
-    cat("\n")
     print(x$code$r)
   }
-  cat("\n")
-  if (!is.null(x$code$sas)) {
+  cli::cli_text("")
+  if (length(x$code$sas) > 0) {
     cli::cli_rule("SAS Code template")
-    cat(x$code$sas, sep = "\n")
+    print(rlang::exec("sas_proc", !!!x$code$sas))
   }
-  cat("\n")
   invisible(x)
 }

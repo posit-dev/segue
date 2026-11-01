@@ -24,7 +24,13 @@ new_segue <- function(
       call = call
     )
   }
-  check_character(code$sas, allow_null = TRUE, allow_na = FALSE)
+  if (!is.list(code$sas)) {
+    cli::cli_abort(
+      "The {.arg sas} element of {.arg code} argument should be a list,
+       not {.obj_type_friendly {code$sas}}",
+      call = call
+    )
+  }
 
   if (!is.list(options)) {
     cli::cli_abort(

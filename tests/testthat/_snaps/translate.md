@@ -5,27 +5,21 @@
     Message
       -- R Code template -------------------------------------------------------------
     Output
-      
       stats::binom.test(x = 3L, n = 4L, alternative = "two.sided", 
           p = 0.5)
-      
     Message
+      
       -- SAS Code template -----------------------------------------------------------
     Output
-      
-      proc freq data = {data set};
-        table {data column} / binomial;
-        exact binomial;
+      proc freq data={data set};
+        tables {analysis column} / binomial;
       run;
-      
-      
 
 # translate() skips missing code
 
     Code
       translate(res)
-    Output
-      
+    Message
       
 
 # translate() validates inputs
