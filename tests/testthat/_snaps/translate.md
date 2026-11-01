@@ -42,5 +42,7 @@
       translate(res, extra = TRUE)
     Condition
       Error in `translate()`:
-      ! The ellipses are not used for this function. The following options were passed to them: `extra`.
+      ! `...` must be empty.
+      x Problematic argument:
+      * extra = TRUE
 

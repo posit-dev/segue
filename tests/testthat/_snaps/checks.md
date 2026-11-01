@@ -4,7 +4,7 @@
       check_factor(letters)
     Condition
       Error:
-      ! Argument `y` should be a <factor>, not a character vector.
+      ! `letters` must be a factor, not a character vector.
 
 ---
 
@@ -12,15 +12,15 @@
       check_factor(factor("a"))
     Condition
       Error:
-      ! Argument `y` should be a <factor> with at least two levels.
+      ! Argument `factor("a")` should be a <factor> with at least two levels.
 
 ---
 
     Code
-      check_factor(1:2, nm = "outcome")
+      check_factor(1:2, arg = "outcome")
     Condition
       Error:
-      ! Argument `outcome` should be a <factor>, not an integer vector.
+      ! `outcome` must be a factor, not an integer vector.
 
 # check_level() validates levels
 
@@ -28,7 +28,7 @@
       check_level(c("a", "b"), y)
     Condition
       Error:
-      ! Argument `event_level` should be a single character value, not a character vector.
+      ! `c("a", "b")` must be a single character value, not a character vector.
 
 ---
 
@@ -36,7 +36,7 @@
       check_level(NA_character_, y)
     Condition
       Error:
-      ! Argument `event_level` should be a single character value, not a character `NA`.
+      ! `NA_character_` must be a single character value, not a character `NA`.
 
 ---
 
@@ -44,13 +44,5 @@
       check_level("c", y)
     Condition
       Error:
-      ! Argument `event_level` must be one of "b" and "a".
-
-# check_empty_ellipse() catches extra arguments
-
-    Code
-      check_empty_ellipse(a = 1, b = 2)
-    Condition
-      Error:
-      ! The ellipses are not used for this function. The following options were passed to them: `a` and `b`.
+      ! Argument `"c"` must be one of "b" and "a".
 

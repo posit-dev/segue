@@ -5,3 +5,4 @@
 ^cran-comments\.md$
 ^CODE_OF_CONDUCT\.md$
 ^\.covrignore$
+^man/_rmd$

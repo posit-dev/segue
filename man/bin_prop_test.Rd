@@ -98,6 +98,6 @@ if (rlang::is_installed(c("modeldata"))) {
 }
 \seealso{
 \code{\link[=binom.test]{binom.test()}}, \code{\link[=prop.test]{prop.test()}}, \code{\link[exactci:binom.exact]{exactci::binom.exact()}},
-\code{\link[broom:::tidy.htest]{broom::::tidy.htest()}}
+\code{\link[broom:tidy.htest]{broom::tidy.htest()}}
 }
 \concept{Binomial Outcomes}

@@ -93,7 +93,9 @@
       bin_prop_test(y, conf.level = 0.9)
     Condition
       Error in `bin_prop_test()`:
-      ! The ellipses are not used for this function. The following options were passed to them: `conf.level`.
+      ! `...` must be empty.
+      x Problematic argument:
+      * conf.level = 0.9
 
 # bin_prop_test() print method
 
@@ -101,9 +103,6 @@
       res <- print(bin_prop_test(y))
     Message
       Testing a Single Binomial Proportion via exact Test
-    Output
-      
-    Message
       No missing values
 
 ---
@@ -112,9 +111,6 @@
       print(bin_prop_test(y_miss))
     Message
       Testing a Single Binomial Proportion via exact Test
-    Output
-      
-    Message
       i There were 2 missing cases that were removed prior to analysis.
 
 ---
@@ -123,8 +119,5 @@
       print(bin_prop_test(y_one))
     Message
       Testing a Single Binomial Proportion via exact Test
-    Output
-      
-    Message
       i There was 1 missing case that was removed prior to analysis.
 

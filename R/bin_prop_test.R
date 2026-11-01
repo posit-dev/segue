@@ -27,7 +27,7 @@
 #' This function performs one of several Frequentist hypothesis tests on a
 #' single Binomial proportion.
 #'
-#' @includeRmd rmd/bin_prop_test.Rmd
+#' @includeRmd man/_rmd/bin_prop_test.Rmd
 #'
 #'
 #' @return An object with classes `"bin_prop_test"` and `"segue_object"` with
@@ -49,7 +49,7 @@
 #' }
 #' }
 #' @seealso [binom.test()], [prop.test()], [exactci::binom.exact()],
-#' [broom:::tidy.htest()]
+#' [broom::tidy.htest()]
 #' @export
 bin_prop_test <- function(y, ...) {
   UseMethod("bin_prop_test")
@@ -84,7 +84,7 @@ bin_prop_test.factor <- function(
     max = 1.0,
     allow_infinite = FALSE
   )
-  check_empty_ellipse(...)
+  rlang::check_dots_empty()
 
   # ----------------------------------------------------------------------------
   # Spit out options
@@ -110,13 +110,12 @@ bin_prop_test.factor <- function(
 
   # ----------------------------------------------------------------------------
 
-  if (method == "exact") {
-    orig_res <- bin_prop_test_exact(num_events, num_total, call_opts)
-  } else if (method == "score") {
-    orig_res <- bin_prop_test_score(num_events, num_total, call_opts)
-  } else if (method == "midp") {
-    orig_res <- bin_prop_test_midp(num_events, num_total, call_opts)
-  }
+  orig_res <- switch(
+    method,
+    exact = bin_prop_test_exact(num_events, num_total, call_opts),
+    score = bin_prop_test_score(num_events, num_total, call_opts),
+    midp = bin_prop_test_midp(num_events, num_total, call_opts)
+  )
 
   res <- new_segue(
     code = orig_res$code,
@@ -137,8 +136,6 @@ print.bin_prop_test <- function(x, ...) {
   cli::cli_inform(
     "Testing a Single Binomial Proportion via {x$options$method} Test"
   )
-  cat("\n")
-  # cli::options("Options:")
   report_missing_simple(x)
   invisible(x)
 }

@@ -1,60 +1,45 @@
 check_factor <- function(
   x,
-  nm = "y",
   mult_lvls = TRUE,
+  arg = rlang::caller_arg(x),
   call = rlang::caller_env()
 ) {
-  if (!isTRUE(is.factor(x))) {
+  if (!is.factor(x)) {
+    rlang::stop_input_type(x, "a factor", arg = arg, call = call)
+  }
+  if (mult_lvls && length(levels(x)) < 2) {
     cli::cli_abort(
-      "Argument {.arg {nm}} should be a {.cls factor}, not {.obj_type_friendly {x}}.",
+      "Argument {.arg {arg}} should be a {.cls factor} with at least two levels.",
       call = call
     )
-  }
-  if (mult_lvls) {
-    num_lvls <- length(levels(x))
-    if (num_lvls < 2) {
-      cli::cli_abort(
-        "Argument {.arg {nm}} should be a {.cls factor} with at least two levels.",
-        call = call
-      )
-    }
   }
   invisible(NULL)
 }
 
-
-check_level <- function(lvl, y, nm = "event_level", call = rlang::caller_env()) {
+# Returns the validated level (or the first level when `lvl` is `NULL`).
+check_level <- function(
+  lvl,
+  y,
+  arg = rlang::caller_arg(lvl),
+  call = rlang::caller_env()
+) {
+  lvls <- levels(y)
   if (is.null(lvl)) {
-    return(levels(y)[1])
+    return(lvls[1])
   }
-  num_lvl <- length(lvl)
-  if (num_lvl != 1 || is.na(lvl)) {
-    cli::cli_abort(
-      "Argument {.arg {nm}} should be a single character value, not {.obj_type_friendly {lvl}}.",
+  if (!rlang::is_string(lvl) || is.na(lvl)) {
+    rlang::stop_input_type(
+      lvl,
+      "a single character value",
+      arg = arg,
       call = call
     )
   }
-
-  lvls <- levels(y)
   if (!lvl %in% lvls) {
     cli::cli_abort(
-      "Argument {.arg {nm}} must be one of {.val {lvls}}.",
+      "Argument {.arg {arg}} must be one of {.val {lvls}}.",
       call = call
     )
   }
-
-  invisible(lvl)
-}
-
-check_empty_ellipse <- function(..., call = rlang::caller_env()) {
-  terms <- rlang::quos(...)
-  nms <- names(terms)
-  if (!is_empty(terms)) {
-    cli::cli_abort(
-      "The ellipses are not used for this function. The following options were
-      passed to them: {.arg {nms}}.",
-      call = call
-    )
-  }
-  terms
+  lvl
 }

@@ -30,7 +30,7 @@ translate.default <- function(x, ...) {
 #' @export
 #' @export translate.segue_object
 translate.segue_object <- function(x, ...) {
-  check_empty_ellipse(...)
+  rlang::check_dots_empty()
   if (!is.null(x$code$r)) {
     cli::cli_rule("R Code template")
     cat("\n")
