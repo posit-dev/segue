@@ -6,3 +6,5 @@
 ^CODE_OF_CONDUCT\.md$
 ^\.covrignore$
 ^man/_rmd$
+^\.github$
+^codecov\.yml$
