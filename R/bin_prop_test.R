@@ -80,7 +80,8 @@ bin_prop_test.factor <- function(
   method <- rlang::arg_match(method, c("exact", "score", "midp"))
   stats_alternative <- convert_alternative(alternative)
   rlang::check_number_decimal(
-    null_value,   min = 0.0,
+    null_value,
+    min = 0.0,
     max = 1.0,
     allow_infinite = FALSE
   )
