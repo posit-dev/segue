@@ -8,3 +8,5 @@
 ^man/_rmd$
 ^\.github$
 ^codecov\.yml$
+^[.]?air[.]toml$
+^\.vscode$
