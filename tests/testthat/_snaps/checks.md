@@ -28,7 +28,7 @@
       check_level(c("a", "b"), y)
     Condition
       Error:
-      ! Argument `level` should be a single character value, not a character vector.
+      ! Argument `event_level` should be a single character value, not a character vector.
 
 ---
 
@@ -36,7 +36,7 @@
       check_level(NA_character_, y)
     Condition
       Error:
-      ! Argument `level` should be a single character value, not a character `NA`.
+      ! Argument `event_level` should be a single character value, not a character `NA`.
 
 ---
 
@@ -44,7 +44,7 @@
       check_level("c", y)
     Condition
       Error:
-      ! Argument `level` must be one of "b" and "a".
+      ! Argument `event_level` must be one of "b" and "a".
 
 # check_empty_ellipse() catches extra arguments
 

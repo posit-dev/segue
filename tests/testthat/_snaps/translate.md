@@ -5,15 +5,19 @@
     Message
       -- R Code template -------------------------------------------------------------
     Output
-      binom.test(x = 3L, n = 4L, alternative = "two.sided", p = 0.5)
+      
+      stats::binom.test(x = 3L, n = 4L, alternative = "two.sided", 
+          p = 0.5)
       
     Message
       -- SAS Code template -----------------------------------------------------------
     Output
-      proc freq data=df;
-        table outcome_column / binomial;
+      
+      proc freq data = {data set};
+        table {data column} / binomial;
         exact binomial;
       run;
+      
       
 
 # translate() skips missing code

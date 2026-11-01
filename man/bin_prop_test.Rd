@@ -13,9 +13,9 @@ bin_prop_test(y, ...)
 \method{bin_prop_test}{factor}(
   y,
   method = c("exact", "score", "midp"),
-  level = NULL,
-  p = 0.5,
-  alternative = "two.sided",
+  event_level = NULL,
+  null_value = 0.5,
+  alternative = "two_sided",
   ...
 )
 }
@@ -32,21 +32,24 @@ bin_prop_test(y, ...)
 \code{\link[exactci:binom.exact]{exactci::binom.exact()}}
 }}
 
-\item{level}{A single character value for the level of the factor that
+\item{event_level}{A single character value for the level of the factor that
 corresponds to the event of interest. The default is the first factor level.}
 
-\item{p}{hypothesized probability of success.}
+\item{null_value}{A single number in \verb{[0, 1]} for the proportion under the
+null hypothesis.}
 
 \item{alternative}{A character value indicating the alternative hypothesis
-and must be one of \code{"two.sided"}, \code{"greater"}, or \code{"less"}.}
+and must be one of \code{"two_sided"}, \code{"greater"}, or \code{"lesser"}. See
+\code{\link[=convert_alternative]{convert_alternative()}} for the translation to the values used by
+\code{\link[stats:binom.test]{stats::binom.test()}}.}
 }
 \value{
 An object with classes \code{"bin_prop_test"} and \code{"segue_object"} with
 elements
 \itemize{
-\item \code{calls}: contains code in R and SAS for \code{\link[=translate]{translate()}}.
+\item \code{code}: contains code in R and SAS for \code{\link[=translate]{translate()}}.
 \item \code{results}: the results,
-\item \code{data}: characteristics of the data.
+\item \code{data_characteristics}: characteristics of the data.
 \item \code{options}: records options that were used by the function.
 }
 }

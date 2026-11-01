@@ -31,15 +31,15 @@ translate.default <- function(x, ...) {
 #' @export translate.segue_object
 translate.segue_object <- function(x, ...) {
   check_empty_ellipse(...)
-  if (!is.null(x$calls$r)) {
+  if (!is.null(x$code$r)) {
     cli::cli_rule("R Code template")
     cat("\n")
-    print(x$calls$r)
+    print(x$code$r)
   }
   cat("\n")
-  if (!is.null(x$calls$sas)) {
+  if (!is.null(x$code$sas)) {
     cli::cli_rule("SAS Code template")
-    cat(x$calls$sas, sep = "\n")
+    cat(x$code$sas, sep = "\n")
   }
   cat("\n")
   invisible(x)

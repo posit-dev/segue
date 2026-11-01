@@ -4,7 +4,6 @@
 #' a wrapper around functions such as [binom.test()] but takes a factor vector
 #' with two levels.
 #'
-#' @inheritParams stats::binom.test
 #' @family Binomial Outcomes
 #' @param y A factor vector with two levels.
 #' @param method A single character string with possible values:
@@ -13,10 +12,14 @@
 #'   - `"midp"`: An exact test geared for small sample sizes via
 #'               [exactci::binom.exact()]
 #'
-#' @param level A single character value for the level of the factor that
+#' @param event_level A single character value for the level of the factor that
 #' corresponds to the event of interest. The default is the first factor level.
 #' @param alternative A character value indicating the alternative hypothesis
-#' and must be one of `"two.sided"`, `"greater"`, or `"less"`.
+#' and must be one of `"two_sided"`, `"greater"`, or `"lesser"`. See
+#' [convert_alternative()] for the translation to the values used by
+#' [stats::binom.test()].
+#' @param null_value A single number in `[0, 1]` for the proportion under the
+#' null hypothesis.
 #' @param ... Not currently used.
 #'
 #' @details
@@ -29,9 +32,9 @@
 #'
 #' @return An object with classes `"bin_prop_test"` and `"segue_object"` with
 #' elements
-#'   - `calls`: contains code in R and SAS for [translate()].
+#'   - `code`: contains code in R and SAS for [translate()].
 #'   - `results`: the results,
-#'   - `data`: characteristics of the data.
+#'   - `data_characteristics`: characteristics of the data.
 #'   - `options`: records options that were used by the function.
 #' @examples
 #' \donttest{
@@ -67,19 +70,20 @@ bin_prop_test.default <- function(y, ...) {
 bin_prop_test.factor <- function(
   y,
   method = c("exact", "score", "midp"),
-  level = NULL,
-  p = 0.5,
-  alternative = "two.sided",
+  event_level = NULL,
+  null_value = 0.5,
+  alternative = "two_sided",
   ...
 ) {
   check_factor(y)
-  level <- check_level(level, y)
+  event_level <- check_level(event_level, y)
   method <- rlang::arg_match(method, c("exact", "score", "midp"))
-  alternative <- rlang::arg_match(
-    alternative,
-    c("two.sided", "less", "greater")
+  stats_alternative <- convert_alternative(alternative)
+  rlang::check_number_decimal(
+    null_value,   min = 0.0,
+    max = 1.0,
+    allow_infinite = FALSE
   )
-  rlang::check_number_decimal(p, min = 0.0, max = 1.0, allow_infinite = FALSE)
   check_empty_ellipse(...)
 
   # ----------------------------------------------------------------------------
@@ -87,11 +91,12 @@ bin_prop_test.factor <- function(
 
   opts <- list(
     method = method,
-    level = level,
+    event_level = event_level,
     alternative = alternative,
-    p = p
+    null_value = null_value
   )
-  call_opts <- opts[!names(opts) %in% c("method", "level")]
+  # Argument names and values used by the underlying stats functions
+  call_opts <- list(alternative = stats_alternative, p = null_value)
 
   # ----------------------------------------------------------------------------
   # Account for missing data
@@ -100,7 +105,7 @@ bin_prop_test.factor <- function(
   num_missing <- sum(is_na)
 
   compl_y <- y[!is_na]
-  num_events <- sum(compl_y == level)
+  num_events <- sum(compl_y == event_level)
   num_total <- length(compl_y)
 
   # ----------------------------------------------------------------------------
@@ -114,10 +119,10 @@ bin_prop_test.factor <- function(
   }
 
   res <- new_segue(
-    calls = orig_res$calls,
+    code = orig_res$code,
     options = opts,
     results = orig_res$results,
-    data = list(
+    data_characteristics = list(
       missing = num_missing,
       events = num_events,
       total = num_total
@@ -166,7 +171,7 @@ proc freq data = {data set};
 run;
 "
 
-  list(results = res, calls = list(r = cl, sas = sas_code))
+  list(results = res, code = list(r = cl, sas = sas_code))
 }
 
 bin_prop_test_midp <- function(num_events, num_total, options = list()) {
@@ -196,7 +201,7 @@ proc freq data = {data set};
 run;
 "
 
-  list(results = res, calls = list(r = cl, sas = sas_code))
+  list(results = res, code = list(r = cl, sas = sas_code))
 }
 
 
@@ -225,5 +230,5 @@ proc freq data = {data set};
 run;
 "
 
-  list(results = res, calls = list(r = cl, sas = sas_code))
+  list(results = res, code = list(r = cl, sas = sas_code))
 }

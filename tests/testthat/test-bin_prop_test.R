@@ -3,24 +3,30 @@ test_that("bin_prop_test() returns a segue object", {
   res <- bin_prop_test(y)
 
   expect_s3_class(res, c("bin_prop_test", "segue_object"))
-  expect_named(res, c("calls", "results", "options", "data"))
-  expect_named(res$calls, c("r", "sas"))
+  expect_named(res, c("code", "results", "options", "data_characteristics"))
+  expect_named(res$code, c("r", "sas"))
   expect_equal(
     res$options,
-    list(level = "a", alternative = "two.sided", p = 0.5)
+    list(
+      method = "exact",
+      event_level = "a",
+      alternative = "two_sided",
+      null_value = 0.5
+    )
   )
-  expect_equal(res$data$missing, 1L)
-  expect_equal(res$data$events, 4L)
-  expect_equal(res$data$total, 6L)
+  expect_equal(res$data_characteristics$missing, 1L)
+  expect_equal(res$data_characteristics$events, 4L)
+  expect_equal(res$data_characteristics$total, 6L)
   expect_s3_class(res$results, "htest")
   expect_equal(
     res$results$p.value,
     stats::binom.test(4, 6)$p.value
   )
   expect_equal(
-    res$calls$r,
+    res$code$r,
     rlang::call2(
       "binom.test",
+      .ns = "stats",
       x = 4L,
       n = 6L,
       alternative = "two.sided",
@@ -31,10 +37,15 @@ test_that("bin_prop_test() returns a segue object", {
 
 test_that("bin_prop_test() passes options to binom.test()", {
   y <- factor(c("a", "b", "a", "a", "b", "a"))
-  res <- bin_prop_test(y, level = "b", p = 0.2, alternative = "greater")
+  res <- bin_prop_test(
+    y,
+    event_level = "b",
+    null_value = 0.2,
+    alternative = "greater"
+  )
 
-  expect_equal(res$data$events, 2L)
-  expect_equal(res$data$missing, 0L)
+  expect_equal(res$data_characteristics$events, 2L)
+  expect_equal(res$data_characteristics$missing, 0L)
   expect_equal(
     res$results$p.value,
     stats::binom.test(2, 6, p = 0.2, alternative = "greater")$p.value
@@ -44,11 +55,11 @@ test_that("bin_prop_test() passes options to binom.test()", {
 test_that("bin_prop_test() creates SAS code", {
   y <- factor(c("a", "b", "a", "a", "b", "a"))
 
-  expect_snapshot(cat(bin_prop_test(y)$calls$sas, sep = "\n"))
-  expect_snapshot(cat(bin_prop_test(y, p = 0.2)$calls$sas, sep = "\n"))
-  expect_snapshot(cat(bin_prop_test(y, level = "b")$calls$sas, sep = "\n"))
+  expect_snapshot(cat(bin_prop_test(y)$code$sas, sep = "\n"))
+  expect_snapshot(cat(bin_prop_test(y, null_value = 0.2)$code$sas, sep = "\n"))
+  expect_snapshot(cat(bin_prop_test(y, event_level = "b")$code$sas, sep = "\n"))
   expect_snapshot(
-    cat(bin_prop_test(y, level = "b", p = 0.2)$calls$sas, sep = "\n")
+    cat(bin_prop_test(y, event_level = "b", null_value = 0.2)$code$sas, sep = "\n")
   )
 })
 
@@ -57,9 +68,9 @@ test_that("bin_prop_test() validates inputs", {
 
   expect_snapshot(error = TRUE, bin_prop_test(1:3))
   expect_snapshot(error = TRUE, bin_prop_test(factor(c("a", "a"))))
-  expect_snapshot(error = TRUE, bin_prop_test(y, level = "c"))
-  expect_snapshot(error = TRUE, bin_prop_test(y, alternative = "two"))
-  expect_snapshot(error = TRUE, bin_prop_test(y, p = 2))
+  expect_snapshot(error = TRUE, bin_prop_test(y, event_level = "c"))
+  expect_snapshot(error = TRUE, bin_prop_test(y, alternative = "two.sided"))
+  expect_snapshot(error = TRUE, bin_prop_test(y, null_value = 2))
   expect_snapshot(error = TRUE, bin_prop_test(y, conf.level = 0.9))
 })
 

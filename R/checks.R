@@ -23,7 +23,7 @@ check_factor <- function(
 }
 
 
-check_level <- function(lvl, y, nm = "level", call = rlang::caller_env()) {
+check_level <- function(lvl, y, nm = "event_level", call = rlang::caller_env()) {
   if (is.null(lvl)) {
     return(levels(y)[1])
   }
