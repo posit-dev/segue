@@ -3,5 +3,6 @@
 S3method(as.character,sas_proc)
 S3method(format,sas_proc)
 S3method(print,sas_proc)
+export(bin_prop_test_exact_sas)
 export(sas_proc)
 import(rlang)

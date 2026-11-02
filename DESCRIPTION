@@ -21,6 +21,7 @@ Imports:
     rlang (>= 1.2.0),
     tibble
 Suggests: 
+    haven,
     spelling,
     testthat (>= 3.0.0)
 Config/roxygen2/version: 8.1.0
