@@ -23,15 +23,15 @@ difficult are:
   there are many options, picking the one that is optimal.
 - SAS has a very unified syntax; R does not. Overall, there is a huge
   strength for R, but for someone new, it can be a nightmare.
-- Defaults between the two can be different and produce different
-  results.
+- There are methodological differences between the languages, even for
+  commonly used methods. Also, defaults between the two can be different
+  and produce different results.
 - SAS has copious amounts of generally good documentation. R often has
   fantastic documentation, but more often than not, it is lacking or
   poorly written for users.
 - R revels in lazy computations; it often gives you a minimal amount of
   returned values and printed output, and you can ask for more. SAS
   tends to dump everything on you, even if you didn’t really need it.
-  segue tries to give you more verbose results.
 
 Most of these issues *are not technical problems*. segue is meant to be
 a way for SAS folks to use R in a way that meets them in the middle. It
