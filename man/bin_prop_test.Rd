@@ -12,7 +12,7 @@ bin_prop_test(y, ...)
 
 \method{bin_prop_test}{factor}(
   y,
-  method = c("exact", "score", "midp"),
+  method = c("exact_r", "score", "midp"),
   event_level = NULL,
   null_value = 0.5,
   alternative = "two_sided",
@@ -26,7 +26,7 @@ bin_prop_test(y, ...)
 
 \item{method}{A single character string with possible values:
 \itemize{
-\item \code{"exact"}: An exact test via \code{\link[=binom.test]{binom.test()}}.
+\item \code{"exact_r"}: An exact test via \code{\link[=binom.test]{binom.test()}}.
 \item \code{"score"}: An asymptotic score test via \code{\link[=prop.test]{prop.test()}}.
 \item \code{"midp"}: An exact test geared for small sample sizes via
 \code{\link[exactci:binom.exact]{exactci::binom.exact()}}
@@ -62,7 +62,7 @@ with two levels.
 This function performs one of several Frequentist hypothesis tests on a
 single Binomial proportion.
 
-\subsection{\code{method = "exact"}}{
+\subsection{\code{method = "exact_r"}}{
 
 R’s \code{\link[=binom.test]{binom.test()}} implements the exact test described
 in Section 1.4 of Agresti (2012). Once the data have been transformed

@@ -7,7 +7,7 @@
 #' @family Binomial Outcomes
 #' @param y A factor vector with two levels.
 #' @param method A single character string with possible values:
-#'   - `"exact"`: An exact test via [binom.test()].
+#'   - `"exact_r"`: An exact test via [binom.test()].
 #'   - `"score"`: An asymptotic score test via [prop.test()].
 #'   - `"midp"`: An exact test geared for small sample sizes via
 #'               [exactci::binom.exact()]
@@ -69,7 +69,7 @@ bin_prop_test.default <- function(y, ...) {
 #' @export bin_prop_test.factor
 bin_prop_test.factor <- function(
   y,
-  method = c("exact", "score", "midp"),
+  method = c("exact_r", "score", "midp"),
   event_level = NULL,
   null_value = 0.5,
   alternative = "two_sided",
@@ -77,7 +77,7 @@ bin_prop_test.factor <- function(
 ) {
   check_factor(y)
   event_level <- check_level(event_level, y)
-  method <- rlang::arg_match(method, c("exact", "score", "midp"))
+  method <- rlang::arg_match(method, c("exact_r", "score", "midp"))
   stats_alternative <- convert_alternative(alternative)
   rlang::check_number_decimal(
     null_value,
@@ -113,7 +113,7 @@ bin_prop_test.factor <- function(
 
   orig_res <- switch(
     method,
-    exact = bin_prop_test_exact(num_events, num_total, call_opts),
+    exact_r = bin_prop_test_exact_r(num_events, num_total, call_opts),
     score = bin_prop_test_score(num_events, num_total, call_opts),
     midp = bin_prop_test_midp(num_events, num_total, call_opts)
   )
@@ -144,7 +144,7 @@ print.bin_prop_test <- function(x, ...) {
 # ------------------------------------------------------------------------------
 # Specific computational methods
 
-bin_prop_test_exact <- function(num_events, num_total, options = list()) {
+bin_prop_test_exact_r <- function(num_events, num_total, options = list()) {
   cl <- rlang::call2(
     "binom.test",
     .ns = "stats",
@@ -155,17 +155,12 @@ bin_prop_test_exact <- function(num_events, num_total, options = list()) {
   res <- try(rlang::eval_tidy(cl), silent = TRUE)
   if (inherits(res, "try-error")) {
     cli::cli_abort(
-      "{.fn bin_prop_test} with {.code method = 'exact'} failed with error: {res}",
+      "{.fn bin_prop_test} with {.code method = 'exact_r'} failed with error: {res}",
       call = NULL
     )
   }
 
-  sas_code <-
-    list(
-      proc = "freq",
-      data = "{data set}",
-      tables = "{analysis column} / binomial"
-    )
+  sas_code <- list()
 
   list(results = res, code = list(r = cl, sas = sas_code))
 }

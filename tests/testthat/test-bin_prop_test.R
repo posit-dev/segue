@@ -8,7 +8,7 @@ test_that("bin_prop_test() returns a segue object", {
   expect_equal(
     res$options,
     list(
-      method = "exact",
+      method = "exact_r",
       event_level = "a",
       alternative = "two_sided",
       null_value = 0.5
@@ -53,6 +53,7 @@ test_that("bin_prop_test() passes options to binom.test()", {
 })
 
 test_that("bin_prop_test() creates SAS code", {
+  skip("until new methods available")
   y <- factor(c("a", "b", "a", "a", "b", "a"))
 
   expect_snapshot(rlang::exec("sas_proc", !!!(bin_prop_test(y)$code$sas)))

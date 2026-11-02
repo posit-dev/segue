@@ -1,4 +1,4 @@
-## `method = "exact"`
+## `method = "exact_r"`
 
 R's [binom.test()] implements the exact test described in Section 1.4 of Agresti (2012). Once the data have been transformed into the number of events and the total number of non-missing values, the code using default argument values is 
 

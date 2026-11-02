@@ -31,14 +31,18 @@ translate.default <- function(x, ...) {
 #' @export translate.segue_object
 translate.segue_object <- function(x, ...) {
   rlang::check_dots_empty()
+  cli::cli_rule("R Code template")
   if (!is.null(x$code$r)) {
-    cli::cli_rule("R Code template")
     print(x$code$r)
+  } else {
+    cli::cli_text("No known R equivalent")
   }
   cli::cli_text("")
+  cli::cli_rule("SAS Code template")
   if (length(x$code$sas) > 0) {
-    cli::cli_rule("SAS Code template")
     print(rlang::exec("sas_proc", !!!x$code$sas))
+  } else {
+    cli::cli_text("No known SAS equivalent")
   }
   invisible(x)
 }

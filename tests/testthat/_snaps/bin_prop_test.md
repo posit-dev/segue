@@ -91,7 +91,7 @@
     Code
       res <- print(bin_prop_test(y))
     Message
-      Testing a Single Binomial Proportion via exact Test
+      Testing a Single Binomial Proportion via exact_r Test
       No missing values
 
 ---
@@ -99,7 +99,7 @@
     Code
       print(bin_prop_test(y_miss))
     Message
-      Testing a Single Binomial Proportion via exact Test
+      Testing a Single Binomial Proportion via exact_r Test
       i There were 2 missing cases that were removed prior to analysis.
 
 ---
@@ -107,6 +107,6 @@
     Code
       print(bin_prop_test(y_one))
     Message
-      Testing a Single Binomial Proportion via exact Test
+      Testing a Single Binomial Proportion via exact_r Test
       i There was 1 missing case that was removed prior to analysis.
 

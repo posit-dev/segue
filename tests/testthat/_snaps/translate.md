@@ -10,17 +10,18 @@
     Message
       
       -- SAS Code template -----------------------------------------------------------
-    Output
-      proc freq data={data set};
-        tables {analysis column} / binomial;
-      run;
+      No known SAS equivalent
 
 # translate() skips missing code
 
     Code
       translate(res)
     Message
+      -- R Code template -------------------------------------------------------------
+      No known R equivalent
       
+      -- SAS Code template -----------------------------------------------------------
+      No known SAS equivalent
 
 # translate() validates inputs
 
