@@ -1,11 +1,11 @@
 # PROC FREQ results written by
-# fixtures/bin-prop-test-exact-sas/bin_prop_test.sas. The SAS data set stores
+# fixtures/exact-binom-test-sas/bin_prop_test.sas. The SAS data set stores
 # 8-byte doubles, so haven reads the values exactly as SAS computed them.
 read_sas_binom_fixture <- function() {
   skip_if_not_installed("haven")
   path <- test_path(
     "fixtures",
-    "bin-prop-test-exact-sas",
+    "exact-binom-test-sas",
     "bin_prop_test_sas.sas7bdat"
   )
   cases <- haven::read_sas(path)
@@ -20,12 +20,12 @@ read_sas_binom_fixture <- function() {
   )
 }
 
-# Runs bin_prop_test_exact_sas() for every row of the fixture.
+# Runs exact_binom_test_sas() for every row of the fixture.
 sas_binom_fixture_results <- function(cases) {
   res <- purrr::pmap(
     list(cases$x, cases$n, cases$p, cases$alternative),
     function(x, n, p, alternative) {
-      bin_prop_test_exact_sas(x, n, p = p, alternative = alternative)
+      exact_binom_test_sas(x, n, p = p, alternative = alternative)
     }
   )
   data.frame(

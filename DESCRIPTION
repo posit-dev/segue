@@ -16,10 +16,8 @@ Description: 'SAS' and 'R' are different in many ways. To ease the
 License: MIT + file LICENSE
 Imports: 
     cli,
-    generics,
     purrr,
-    rlang (>= 1.2.0),
-    tibble
+    rlang (>= 1.2.0)
 Suggests: 
     haven,
     spelling,

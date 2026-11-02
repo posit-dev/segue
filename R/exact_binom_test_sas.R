@@ -1,7 +1,7 @@
 #' Exact binomial test, computed as SAS PROC FREQ does
 #'
 #' @description
-#' `bin_prop_test_exact_sas()` takes the similar arguments as
+#' `exact_binom_test_sas()` takes the similar arguments as
 #' [stats::binom.test()] but returns the p-values that SAS PROC FREQ reports for
 #'
 #' ```
@@ -43,7 +43,7 @@
 #'   right tail (`XPR_BIN`) is missing.
 #' - Otherwise, the right tail is reported and the left tail is missing.
 #'
-#' `bin_prop_test_exact_sas()` does the same. With `alternative = "less"`,
+#' `exact_binom_test_sas()` does the same. With `alternative = "less"`,
 #' `p.value` is \eqn{p_L} when it is the smaller tail and `NA` otherwise. With
 #' `alternative = "greater"`, `p.value` is \eqn{p_R} when it is the smaller
 #' tail and `NA` otherwise. Since \eqn{p_L + p_R = 1 + \Pr(X = x) > 1}{p_L + p_R = 1 + Pr(X = x) > 1}, the
@@ -81,7 +81,7 @@
 #' usual 15 or 16. Right tails below about
 #' \eqn{10^{-16}}{1e-16} come out as exactly 0.
 #'
-#' `bin_prop_test_exact_sas()` uses the same subtraction,
+#' `exact_binom_test_sas()` uses the same subtraction,
 #' `1 - pbinom(x - 1, n, p)`, so that it returns these values too.
 #'
 #' The results are not identical to PROC FREQ's to the last bit. R's
@@ -90,7 +90,7 @@
 #' the last place (at most a few hundred). This is random rounding error
 #' in both, not a bias in either. Over 11,466 combinations of
 #' \eqn{1 \le x \le n \le 50} and \eqn{p_0 \in \{0.01, 0.25, 0.5\}}{p_0 = 0.01, 0.25, or 0.5}, the
-#' p-values from `bin_prop_test_exact_sas()` are within
+#' p-values from `exact_binom_test_sas()` are within
 #' \eqn{5.5 \times 10^{-14}}{5.5e-14} (absolute) of PROC FREQ's. Because of the
 #' cancellation, the agreement for small right tails is only absolute: a right
 #' tail that is 0 in one can be about \eqn{10^{-16}}{1e-16} in the other.
@@ -100,7 +100,7 @@
 #' When \eqn{p_0 = 0.5} and \eqn{x = n / 2}, the two tails are exactly equal,
 #' and which tail is reported depends on rounding error. PROC FREQ reported the
 #' right tail for some even \eqn{n} and the left tail for others, and
-#' `bin_prop_test_exact_sas()` can choose differently. For the 25 ties with
+#' `exact_binom_test_sas()` can choose differently. For the 25 ties with
 #' \eqn{n \le 50}{n <= 50}, PROC FREQ reported the right tail in 14, so the
 #' `NA` is on the other alternative in those cases. The reported values differ
 #' from PROC FREQ's by at most \eqn{1.2 \times 10^{-14}}{1.2e-14}, as in the
@@ -151,19 +151,19 @@
 #'
 #' @examples
 #' # The two-sided p-values differ by definition
-#' bin_prop_test_exact_sas(5, 10, p = 0.25)
+#' exact_binom_test_sas(5, 10, p = 0.25)
 #' binom.test(5, 10, p = 0.25)$p.value
 #'
 #' # Only the smaller tail is reported
-#' bin_prop_test_exact_sas(5, 10, p = 0.25, alternative = "greater")$p.value
-#' bin_prop_test_exact_sas(5, 10, p = 0.25, alternative = "less")$p.value
+#' exact_binom_test_sas(5, 10, p = 0.25, alternative = "greater")$p.value
+#' exact_binom_test_sas(5, 10, p = 0.25, alternative = "less")$p.value
 #'
 #' # A small right tail loses precision, as in SAS
-#' bin_prop_test_exact_sas(6, 6, p = 0.01, alternative = "greater")$p.value
+#' exact_binom_test_sas(6, 6, p = 0.01, alternative = "greater")$p.value
 #' binom.test(6, 6, p = 0.01, alternative = "greater")$p.value
 #' @keywords internal
 #' @export
-bin_prop_test_exact_sas <- function(
+exact_binom_test_sas <- function(
   x,
   n,
   p = 0.5,
