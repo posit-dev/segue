@@ -9,6 +9,9 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/segue)](https://CRAN.R-project.org/package=segue)
+[![R-CMD-check](https://github.com/topepo/segue/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/topepo/segue/actions/workflows/R-CMD-check.yaml)
+[![Codecov test
+coverage](https://codecov.io/gh/topepo/segue/graph/badge.svg)](https://app.codecov.io/gh/topepo/segue)
 <!-- badges: end -->
 
 segue is a package designed to help people transition from SAS to R with
@@ -34,7 +37,7 @@ Most of these issues *are not technical problems*. segue is meant to be
 a way for SAS folks to use R in a way that meets them in the middle. It
 repackages existing R functions such that:
 
-- They are **discoverable**. Naming is hard but important, and sugue has
+- They are **discoverable**. Naming is hard but important, and segue has
   a taxonomy built into its names that should make things obvious.
 - The computations for each function are **well documented** so that the
   user can understand what they will get. We can explicitly show the
