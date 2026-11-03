@@ -129,9 +129,8 @@ The results agree with \verb{Proc Freq} to about 1e-13 but are not identical
 to the last bit, because R and SAS use different algorithms for the
 binomial distribution function.
 
-The underlying R function for this method is
-\code{\link[=binom_test_sas]{binom_test_sas()}}, which gives more details for the
-comparison to SAS.
+The underlying R function for this method is \verb{[binom_test_sas()]}, which
+gives more details for the comparison to SAS.
 }
 
 \subsection{\code{method = "score"}}{
@@ -143,7 +142,7 @@ a single degree of freedom. For a one-sided test, use the Z statistic
 and compare it to the appropriate standard normal tail.
 
 This method’s defaults does not use a continuity correction (\emph{for SAS
-compatability}) and is is equivalent to
+compatibility}) and is is equivalent to
 
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{prop.test(num_events, num_total, alternative = "two.sided", p = 0.5, correct = FALSE)
 }\if{html}{\out{</div>}}
