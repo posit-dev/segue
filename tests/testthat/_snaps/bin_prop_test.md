@@ -1,40 +1,3 @@
-# bin_prop_test() creates SAS code
-
-    Code
-      rlang::exec("sas_proc", !!!(bin_prop_test(y)$code$sas))
-    Output
-      proc freq data={data set};
-        tables {analysis column} / binomial;
-      run;
-
----
-
-    Code
-      rlang::exec("sas_proc", !!!(bin_prop_test(y, null_value = 0.2)$code$sas))
-    Output
-      proc freq data={data set};
-        tables {analysis column} / binomial;
-      run;
-
----
-
-    Code
-      rlang::exec("sas_proc", !!!(bin_prop_test(y, event_level = "b")$code$sas))
-    Output
-      proc freq data={data set};
-        tables {analysis column} / binomial;
-      run;
-
----
-
-    Code
-      rlang::exec("sas_proc", !!!(bin_prop_test(y, event_level = "b", null_value = 0.2)$
-        code$sas))
-    Output
-      proc freq data={data set};
-        tables {analysis column} / binomial;
-      run;
-
 # bin_prop_test() validates inputs
 
     Code
@@ -91,7 +54,7 @@
     Code
       res <- print(bin_prop_test(y))
     Message
-      Testing a Single Binomial Proportion via exact_r Test
+      Testing a Single Binomial Proportion via exact Test
       No missing values
 
 ---
@@ -99,7 +62,7 @@
     Code
       print(bin_prop_test(y_miss))
     Message
-      Testing a Single Binomial Proportion via exact_r Test
+      Testing a Single Binomial Proportion via exact Test
       i There were 2 missing cases that were removed prior to analysis.
 
 ---
@@ -107,6 +70,6 @@
     Code
       print(bin_prop_test(y_one))
     Message
-      Testing a Single Binomial Proportion via exact_r Test
+      Testing a Single Binomial Proportion via exact Test
       i There was 1 missing case that was removed prior to analysis.
 

@@ -12,7 +12,7 @@ bin_prop_test(y, ...)
 
 \method{bin_prop_test}{factor}(
   y,
-  method = c("exact_r", "score", "midp"),
+  method = c("exact", "score"),
   event_level = NULL,
   null_value = 0.5,
   alternative = "two_sided",
@@ -26,10 +26,8 @@ bin_prop_test(y, ...)
 
 \item{method}{A single character string with possible values:
 \itemize{
-\item \code{"exact_r"}: An exact test via \code{\link[=binom.test]{binom.test()}}.
+\item \code{"exact"}: An exact test via \code{\link[=binom.test]{binom.test()}}.
 \item \code{"score"}: An asymptotic score test via \code{\link[=prop.test]{prop.test()}}.
-\item \code{"midp"}: An exact test geared for small sample sizes via
-\code{\link[exactci:binom.exact]{exactci::binom.exact()}}
 }}
 
 \item{event_level}{A single character value for the level of the factor that
@@ -39,9 +37,7 @@ corresponds to the event of interest. The default is the first factor level.}
 null hypothesis.}
 
 \item{alternative}{A character value indicating the alternative hypothesis
-and must be one of \code{"two_sided"}, \code{"greater"}, or \code{"lesser"}. See
-\code{\link[=convert_alternative]{convert_alternative()}} for the translation to the values used by
-\code{\link[stats:binom.test]{stats::binom.test()}}.}
+and must be one of \code{"two_sided"}, \code{"greater"}, or \code{"lesser"}.}
 }
 \value{
 An object with classes \code{"bin_prop_test"} and \code{"segue_object"} with
@@ -62,7 +58,7 @@ with two levels.
 This function performs one of several Frequentist hypothesis tests on a
 single Binomial proportion.
 
-\subsection{\code{method = "exact_r"}}{
+\subsection{\code{method = "exact"}}{
 
 R’s \code{\link[=binom.test]{binom.test()}} implements the exact test described
 in Section 1.4 of Agresti (2012). Once the data have been transformed
@@ -72,7 +68,42 @@ the code using default argument values is
 \if{html}{\out{<div class="sourceCode r">}}\preformatted{binom.test(num_events, num_total, alternative = "two.sided", p = 0.5)
 }\if{html}{\out{</div>}}
 
-The corresponding SAS code is
+There is no corresponding \verb{Proc Freq} code; there are several
+methodological differences between the exact test produced by SAS and
+\code{\link[=binom.test]{binom.test()}}:
+\enumerate{
+\item One-sided p-values. Both use the same tail sums, \eqn{P(X \le
+x)}{P(X <= x)} and \eqn{P(X \ge x)}{P(X >= x)}.
+}
+\itemize{
+\item \code{\link[=binom.test]{binom.test()}} returns whichever tail you ask for.
+\item \verb{Proc Freq} keeps only the smaller tail, in variables \code{XPL_BIN} or
+\code{XPR_BIN}, and leaves the other variable missing.
+}
+\enumerate{
+\item Two-sided p-values.\
+}
+\itemize{
+\item \code{\link[=binom.test]{binom.test()}} uses the “minlike” method: it adds the
+probabilities of every outcome no more likely than the observed one.
+\item SAS uses the “central” method: twice the smaller tail, capped at 1.
+The two agree only when \eqn{p_0 = 0.5}, where the null distribution
+is symmetric.
+}
+\enumerate{
+\item Numerical calculation (not a definition difference).
+}
+\itemize{
+\item SAS’s right tail behaves as if it were computed as \eqn{1 - P(X \le
+x - 1)}{1 - P(X <= x - 1)}. That subtraction leaves an absolute error
+of about 1e-14.
+\item R computes the upper tail directly.
+}
+}
+
+\subsection{\code{method = "exact_sas"}}{
+
+This method mimics the results produced by:
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{proc freq data=\{data set\};
   tables \{analysis column\} / binomial;
@@ -80,7 +111,49 @@ The corresponding SAS code is
 run;
 }\if{html}{\out{</div>}}
 
-Equivalence between these two implementations is TODO.
+In the terms of Fay (2010), \verb{Proc Freq} uses the “central” method: twice
+the smaller tail, capped at 1. This is also called “doubling” or “TST”
+by Hirji (2006).
+\itemize{
+\item One-sided p-values: only the smaller of the two tails is reported. If
+the requested tail is the larger one, the p-value is \code{NA}, as it is
+missing in SAS.
+\item Two-sided p-value: twice the smaller tail, capped at 1 (the “central”
+method).
+\item The right tail is computed as \eqn{1 - P(X \le x - 1)}{1 - P(X <= x -
+1)}, as SAS does, so very small right tails lose precision and can be
+exactly 0.
+}
+
+The results agree with \verb{Proc Freq} to about 1e-13 but are not identical
+to the last bit, because R and SAS use different algorithms for the
+binomial distribution function.
+
+The underlying R function for this method is
+\code{\link[=binom_test_sas]{binom_test_sas()}}, which gives more details for the
+comparison to SAS.
+}
+
+\subsection{\code{method = "score"}}{
+
+The score test produces a Z statistic that uses the null value to
+compute the variance in the denominator. To compute a two-sided p-value,
+compare the square of the Z statistic to a chi-squared distribution with
+a single degree of freedom. For a one-sided test, use the Z statistic
+and compare it to the appropriate standard normal tail.
+
+This method’s defaults does not use a continuity correction (\emph{for SAS
+compatability}) and is is equivalent to
+
+\if{html}{\out{<div class="sourceCode r">}}\preformatted{prop.test(num_events, num_total, alternative = "two.sided", p = 0.5, correct = FALSE)
+}\if{html}{\out{</div>}}
+
+The equivalent SAS code is
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{proc freq data=\{data set\};
+  tables \{analysis column\} / binomial(cl=score);
+run;
+}\if{html}{\out{</div>}}
 }
 }
 \examples{
@@ -97,7 +170,7 @@ if (rlang::is_installed(c("modeldata"))) {
 }
 }
 \seealso{
-\code{\link[=binom.test]{binom.test()}}, \code{\link[=prop.test]{prop.test()}}, \code{\link[exactci:binom.exact]{exactci::binom.exact()}},
+\code{\link[=binom.test]{binom.test()}}, \code{\link[=prop.test]{prop.test()}},
 \code{\link[broom:tidy.htest]{broom::tidy.htest()}}
 }
 \concept{Binomial Outcomes}

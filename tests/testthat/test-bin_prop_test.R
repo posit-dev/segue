@@ -8,7 +8,7 @@ test_that("bin_prop_test() returns a segue object", {
   expect_equal(
     res$options,
     list(
-      method = "exact_r",
+      method = "exact",
       event_level = "a",
       alternative = "two_sided",
       null_value = 0.5

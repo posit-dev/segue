@@ -7,17 +7,13 @@
 #' @family Binomial Outcomes
 #' @param y A factor vector with two levels.
 #' @param method A single character string with possible values:
-#'   - `"exact_r"`: An exact test via [binom.test()].
+#'   - `"exact"`: An exact test via [binom.test()].
 #'   - `"score"`: An asymptotic score test via [prop.test()].
-#'   - `"midp"`: An exact test geared for small sample sizes via
-#'               [exactci::binom.exact()]
 #'
 #' @param event_level A single character value for the level of the factor that
 #' corresponds to the event of interest. The default is the first factor level.
 #' @param alternative A character value indicating the alternative hypothesis
-#' and must be one of `"two_sided"`, `"greater"`, or `"lesser"`. See
-#' [convert_alternative()] for the translation to the values used by
-#' [stats::binom.test()].
+#' and must be one of `"two_sided"`, `"greater"`, or `"lesser"`.
 #' @param null_value A single number in `[0, 1]` for the proportion under the
 #' null hypothesis.
 #' @param ... Not currently used.
@@ -48,7 +44,7 @@
 #'   tidy(test_res)
 #' }
 #' }
-#' @seealso [binom.test()], [prop.test()], [exactci::binom.exact()],
+#' @seealso [binom.test()], [prop.test()],
 #' [broom::tidy.htest()]
 #' @export
 bin_prop_test <- function(y, ...) {
@@ -69,7 +65,7 @@ bin_prop_test.default <- function(y, ...) {
 #' @export bin_prop_test.factor
 bin_prop_test.factor <- function(
   y,
-  method = c("exact_r", "score", "midp"),
+  method = c("exact", "score"),
   event_level = NULL,
   null_value = 0.5,
   alternative = "two_sided",
@@ -77,7 +73,7 @@ bin_prop_test.factor <- function(
 ) {
   check_factor(y)
   event_level <- check_level(event_level, y)
-  method <- rlang::arg_match(method, c("exact_r", "score", "midp"))
+  method <- rlang::arg_match(method, c("exact", "score"))
   stats_alternative <- convert_alternative(alternative)
   rlang::check_number_decimal(
     null_value,
@@ -113,9 +109,8 @@ bin_prop_test.factor <- function(
 
   orig_res <- switch(
     method,
-    exact_r = bin_prop_test_exact_r(num_events, num_total, call_opts),
-    score = bin_prop_test_score(num_events, num_total, call_opts),
-    midp = bin_prop_test_midp(num_events, num_total, call_opts)
+    exact = bin_prop_test_exact_r(num_events, num_total, call_opts),
+    score = bin_prop_test_score(num_events, num_total, call_opts)
   )
 
   res <- new_segue(
@@ -155,7 +150,7 @@ bin_prop_test_exact_r <- function(num_events, num_total, options = list()) {
   res <- try(rlang::eval_tidy(cl), silent = TRUE)
   if (inherits(res, "try-error")) {
     cli::cli_abort(
-      "{.fn bin_prop_test} with {.code method = 'exact_r'} failed with error: {res}",
+      "{.fn bin_prop_test} with {.code method = 'exact'} failed with error: {res}",
       call = NULL
     )
   }
@@ -164,36 +159,6 @@ bin_prop_test_exact_r <- function(num_events, num_total, options = list()) {
 
   list(results = res, code = list(r = cl, sas = sas_code))
 }
-
-bin_prop_test_midp <- function(num_events, num_total, options = list()) {
-  rlang::check_installed("exactci")
-  cl <- rlang::call2(
-    "binom.exact",
-    .ns = "exactci",
-    x = num_events,
-    n = num_total,
-    !!!options,
-    tsmethod = "central"
-  )
-  res <- try(rlang::eval_tidy(cl), silent = TRUE)
-  if (inherits(res, "try-error")) {
-    cli::cli_abort(
-      "{.fn bin_prop_test} with {.code method = 'midp'} failed with error: {res}",
-      call = NULL
-    )
-  }
-
-  sas_code <-
-    list(
-      proc = "freq",
-      data = "{data set}",
-      tables = "{analysis column} / binomial",
-      exact = "exact binomial / midp"
-    )
-
-  list(results = res, code = list(r = cl, sas = sas_code))
-}
-
 
 bin_prop_test_score <- function(num_events, num_total, options = list()) {
   cl <- rlang::call2(
