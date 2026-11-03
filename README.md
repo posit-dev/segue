@@ -9,9 +9,9 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/segue)](https://CRAN.R-project.org/package=segue)
-[![R-CMD-check](https://github.com/topepo/segue/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/topepo/segue/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/posit-dev/segue/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/posit-dev/segue/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/topepo/segue/graph/badge.svg)](https://app.codecov.io/gh/topepo/segue)
+coverage](https://codecov.io/gh/posit-dev/segue/graph/badge.svg)](https://app.codecov.io/gh/posit-dev/segue)
 <!-- badges: end -->
 
 segue is a package designed to help people transition from SAS to R with
