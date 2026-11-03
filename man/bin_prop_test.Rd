@@ -81,7 +81,7 @@ x)}{P(X <= x)} and \eqn{P(X \ge x)}{P(X >= x)}.
 \code{XPR_BIN}, and leaves the other variable missing.
 }
 \enumerate{
-\item Two-sided p-values.\
+\item Two-sided p-values.
 }
 \itemize{
 \item \code{\link[=binom.test]{binom.test()}} uses the “minlike” method: it adds the

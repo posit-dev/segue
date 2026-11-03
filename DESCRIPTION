@@ -21,8 +21,6 @@ Imports:
     rlang (>= 1.2.0)
 Suggests: 
     modeldata,
-    purrr,
-    rlang (>= 1.2.0),
     spelling,
     testthat (>= 3.0.0)
 Config/roxygen2/version: 8.1.0
