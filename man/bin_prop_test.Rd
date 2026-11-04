@@ -153,6 +153,42 @@ The equivalent SAS code is
   tables \{analysis column\} / binomial(cl=score);
 run;
 }\if{html}{\out{</div>}}
+
+The SAS output data set has \code{Z_BIN} (the statistic), \code{P2_BIN} (two-sided
+p-value), \code{PL_BIN} (left-sided p-value) and \code{PR_BIN} (right-sided
+p-value). \verb{Proc Freq} only reports one of the two one-sided p-values for
+each test: the one in the direction of the observed deviation. The other
+is missing.\tabular{llll}{
+   Sign of z \tab \code{PL_BIN} (\code{less}) \tab \code{PR_BIN} (\code{greater}) \tab \code{P2_BIN} (\code{two.sided}) \cr
+   z > 0 \tab missing \tab reported \tab reported \cr
+   z < 0 \tab reported \tab missing \tab reported \cr
+   z = 0 \tab reported (0.5) \tab missing \tab reported \cr
+}
+
+
+The reported one-sided p-value is always the smaller tail, so it is
+never above 0.5. The larger tail is never produced. In the results,
+3,822 of 11,466 rows are missing a p-value. Each of them is a one-sided
+test that points away from the data. No two-sided test’s p-value is
+missing. Some examples:\tabular{llllll}{
+   events \tab total \tab null p \tab z \tab alternative \tab p_value \cr
+   1 \tab 2 \tab 0.01 \tab 6.96 \tab greater \tab 1.6e-12 \cr
+   1 \tab 2 \tab 0.01 \tab 6.96 \tab less \tab missing \cr
+   1 \tab 2 \tab 0.01 \tab 6.96 \tab two.sided \tab 3.3e-12 \cr
+   1 \tab 50 \tab 0.25 \tab -3.76 \tab greater \tab missing \cr
+   1 \tab 50 \tab 0.25 \tab -3.76 \tab less \tab 8.6e-05 \cr
+   1 \tab 50 \tab 0.25 \tab -3.76 \tab two.sided \tab 1.73e-04 \cr
+}
+
+
+To assess the level of equivalence, each was tested at three null values
+(0.01, 0.25, 0.5) and three alternatives, which gives 11,466 tests per
+language. SAS has no value for 3,822 one-sided tests. The comparison
+drops those, leaving 7,644 tests: 3,822 two-sided, 2,897 greater and 925
+lesser. R has no missing p-values.
+
+The two methods showed good concordance, with absolute differences
+ranging from -1.2e-15 to 8.3e-16.
 }
 }
 \examples{

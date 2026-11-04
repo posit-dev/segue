@@ -69,3 +69,29 @@ sas_proc(
     tables = "{analysis column} / binomial(cl=score)"
 )
 ```
+
+The SAS output data set has `Z_BIN` (the statistic), `P2_BIN` (two-sided p-value), `PL_BIN` (left-sided p-value) and `PR_BIN` (right-sided p-value). `Proc Freq` only reports one of the two one-sided p-values for each test: the one in the direction of the observed deviation. The other is missing. 
+
+
+| Sign of z | `PL_BIN` (`less`) | `PR_BIN` (`greater`) | `P2_BIN` (`two.sided`) |
+|---|---|---|---|
+| z > 0 | missing | reported | reported |
+| z < 0 | reported | missing | reported |
+| z = 0 | reported (0.5) | missing | reported |
+
+The reported one-sided p-value is always the smaller tail, so it is never above 0.5. The larger tail is never produced. In the results, 3,822 of 11,466 rows are missing a p-value. Each of them is a one-sided test that points away from the data. No two-sided test's p-value is missing. Some examples: 
+
+| events | total | null p | z | alternative | p_value |
+|---|---|---|---|---|---|
+| 1 | 2 | 0.01 | 6.96 | greater | 1.6e-12 |
+| 1 | 2 | 0.01 | 6.96 | less | missing |
+| 1 | 2 | 0.01 | 6.96 | two.sided | 3.3e-12 |
+| 1 | 50 | 0.25 | -3.76 | greater | missing |
+| 1 | 50 | 0.25 | -3.76 | less | 8.6e-05 |
+| 1 | 50 | 0.25 | -3.76 | two.sided | 1.73e-04 |
+
+
+To assess the level of equivalence, each was tested at three null values (0.01, 0.25, 0.5) and three alternatives, which gives 11,466 tests per language. SAS has no value for 3,822 one-sided tests. The comparison drops those, leaving 7,644 tests: 3,822 two-sided, 2,897 greater and 925 lesser. R has no missing p-values.
+
+The two methods showed good concordance, with absolute differences ranging from -1.2e-15 to 8.3e-16. 
+
