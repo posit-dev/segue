@@ -24,12 +24,10 @@ translate(x, ...)
 Show code in R and SAS for an Analysis
 }
 \examples{
-\donttest{
-if (rlang::is_installed(c("modeldata"))) {
-  cog_ability <- modeldata::ad_data$Class
-  str(cog_ability)
-  test_res <- bin_prop_test(cog_ability)
-  translate(test_res)
-}
-}
+\dontshow{if (rlang::is_installed("modeldata")) withAutoprint(\{ # examplesIf}
+cog_ability <- modeldata::ad_data$Class
+str(cog_ability)
+test_res <- bin_prop_test(cog_ability)
+translate(test_res)
+\dontshow{\}) # examplesIf}
 }

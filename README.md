@@ -54,6 +54,12 @@ repackages existing R functions such that:
 
 ## Installation
 
+You can install segue from CRAN with:
+
+``` r
+install.packages("segue")
+```
+
 You can install the development version of segue like so:
 
 ``` r
@@ -62,6 +68,48 @@ pak::pak("posit-dev/segue")
 ```
 
 ## Example
+
+`bin_prop_test()` tests a single binomial proportion using a two-level
+factor. Here, we test whether the proportion of patients with cognitive
+impairment is 0.5:
+
+``` r
+library(segue)
+
+cog_ability <- modeldata::ad_data$Class
+table(cog_ability)
+#> cog_ability
+#> Impaired  Control 
+#>       91      242
+
+test_res <- bin_prop_test(cog_ability)
+test_res
+#> Testing a Single Binomial Proportion via exact Test
+#> No missing values
+```
+
+The results can be tidied into a tibble:
+
+``` r
+tidy(test_res)
+#> # A tibble: 1 × 8
+#>   estimate statistic  p.value parameter conf.low conf.high method    alternative
+#>      <dbl>     <dbl>    <dbl>     <dbl>    <dbl>     <dbl> <chr>     <chr>      
+#> 1    0.273        91 5.86e-17       333    0.226     0.325 Exact bi… two.sided
+```
+
+`translate()` shows the R code that was used, along with the analogous
+SAS code:
+
+``` r
+translate(test_res)
+#> ── R Code template ─────────────────────────────────────────────────────────────
+#> stats::binom.test(x = 91L, n = 333L, alternative = "two.sided", 
+#>     p = 0.5)
+#> 
+#> ── SAS Code template ───────────────────────────────────────────────────────────
+#> No known SAS equivalent
+```
 
 ## Code of Conduct
 

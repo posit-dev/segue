@@ -12,8 +12,15 @@
 \item{...}{Additional arguments to tidying method.}
 }
 \value{
-a tibble
+A tibble.
 }
 \description{
 This method tidies the original result, if it can.
+}
+\examples{
+\dontshow{if (rlang::is_installed("modeldata")) withAutoprint(\{ # examplesIf}
+cog_ability <- modeldata::ad_data$Class
+test_res <- bin_prop_test(cog_ability)
+tidy(test_res)
+\dontshow{\}) # examplesIf}
 }

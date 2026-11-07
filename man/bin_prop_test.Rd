@@ -192,17 +192,15 @@ ranging from -1.2e-15 to 8.3e-16.
 }
 }
 \examples{
-\donttest{
-if (rlang::is_installed(c("modeldata"))) {
-  cog_ability <- modeldata::ad_data$Class
-  str(cog_ability)
-  test_res <- bin_prop_test(cog_ability)
-  test_res
+\dontshow{if (rlang::is_installed("modeldata")) withAutoprint(\{ # examplesIf}
+cog_ability <- modeldata::ad_data$Class
+str(cog_ability)
+test_res <- bin_prop_test(cog_ability)
+test_res
 
-  # Can be tidied to obtain a tibble of results:
-  tidy(test_res)
-}
-}
+# Can be tidied to obtain a tibble of results:
+tidy(test_res)
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 \code{\link[=binom.test]{binom.test()}}, \code{\link[=prop.test]{prop.test()}},

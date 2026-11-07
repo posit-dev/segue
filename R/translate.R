@@ -3,15 +3,11 @@
 #' @param x An object
 #' @param ... Not currently used
 #' @return `x` invisibly.
-#' @examples
-#' \donttest{
-#' if (rlang::is_installed(c("modeldata"))) {
-#'   cog_ability <- modeldata::ad_data$Class
-#'   str(cog_ability)
-#'   test_res <- bin_prop_test(cog_ability)
-#'   translate(test_res)
-#' }
-#' }
+#' @examplesIf rlang::is_installed("modeldata")
+#' cog_ability <- modeldata::ad_data$Class
+#' str(cog_ability)
+#' test_res <- bin_prop_test(cog_ability)
+#' translate(test_res)
 #' @export
 translate <- function(x, ...) {
   UseMethod("translate")

@@ -11,4 +11,4 @@
 ^[.]?air[.]toml$
 ^\.vscode$
 ^AGENTS\.md$
-
+^\.panache-cache$

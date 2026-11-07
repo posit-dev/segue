@@ -32,18 +32,14 @@
 #'   - `results`: the results,
 #'   - `data_characteristics`: characteristics of the data.
 #'   - `options`: records options that were used by the function.
-#' @examples
-#' \donttest{
-#' if (rlang::is_installed(c("modeldata"))) {
-#'   cog_ability <- modeldata::ad_data$Class
-#'   str(cog_ability)
-#'   test_res <- bin_prop_test(cog_ability)
-#'   test_res
+#' @examplesIf rlang::is_installed("modeldata")
+#' cog_ability <- modeldata::ad_data$Class
+#' str(cog_ability)
+#' test_res <- bin_prop_test(cog_ability)
+#' test_res
 #'
-#'   # Can be tidied to obtain a tibble of results:
-#'   tidy(test_res)
-#' }
-#' }
+#' # Can be tidied to obtain a tibble of results:
+#' tidy(test_res)
 #' @seealso [binom.test()], [prop.test()],
 #' [broom::tidy.htest()]
 #' @export

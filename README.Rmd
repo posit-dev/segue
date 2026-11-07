@@ -61,6 +61,12 @@ existing R functions such that:
 
 ## Installation
 
+You can install segue from CRAN with:
+
+```r
+install.packages("segue")
+```
+
 You can install the development version of segue like so:
 
 ```r
@@ -69,6 +75,33 @@ pak::pak("posit-dev/segue")
 ```
 
 ## Example
+
+`bin_prop_test()` tests a single binomial proportion using a two-level factor. Here, we test whether the proportion of patients with cognitive impairment is 0.5:
+
+```{r}
+#| label: example
+library(segue)
+
+cog_ability <- modeldata::ad_data$Class
+table(cog_ability)
+
+test_res <- bin_prop_test(cog_ability)
+test_res
+```
+
+The results can be tidied into a tibble:
+
+```{r}
+#| label: example-tidy
+tidy(test_res)
+```
+
+`translate()` shows the R code that was used, along with the analogous SAS code:
+
+```{r}
+#| label: example-translate
+translate(test_res)
+```
 
 ## Code of Conduct
 

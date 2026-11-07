@@ -74,7 +74,11 @@ new_segue <- function(
 #'
 #' @inheritParams generics::tidy
 #'
-#' @return a tibble
+#' @return A tibble.
+#' @examplesIf rlang::is_installed("modeldata")
+#' cog_ability <- modeldata::ad_data$Class
+#' test_res <- bin_prop_test(cog_ability)
+#' tidy(test_res)
 #' @export
 tidy.segue_object <- function(x, ...) {
   broom::tidy(x$results, ...)
