@@ -21,6 +21,7 @@ Imports:
     purrr,
     rlang (>= 1.2.0)
 Suggests: 
+    haven,
     modeldata,
     spelling,
     testthat (>= 3.0.0)

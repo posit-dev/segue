@@ -1,3 +1,3 @@
-# segue (development version)
+# segue 0.0.1
 
 * Initial CRAN submission.
