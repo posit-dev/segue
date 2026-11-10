@@ -1,7 +1,7 @@
 #' Exact binomial test, computed as SAS PROC FREQ does
 #'
 #' @description
-#' `exact_binom_test_sas()` takes the similar arguments as
+#' `exact_binom_test_sas()` takes similar arguments as
 #' [stats::binom.test()] but returns the p-values that SAS PROC FREQ reports for
 #'
 #' ```
