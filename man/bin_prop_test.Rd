@@ -12,7 +12,7 @@ bin_prop_test(y, ...)
 
 \method{bin_prop_test}{factor}(
   y,
-  method = c("exact", "score"),
+  method = c("exact", "exact_sas", "score"),
   event_level = NULL,
   null_value = 0.5,
   alternative = "two_sided",
@@ -27,6 +27,8 @@ bin_prop_test(y, ...)
 \item{method}{A single character string with possible values:
 \itemize{
 \item \code{"exact"}: An exact test via \code{\link[=binom.test]{binom.test()}}.
+\item \code{"exact_sas"}: An exact test via \code{\link[=exact_binom_test_sas]{exact_binom_test_sas()}} that emulates
+SAS's \verb{Proc Freq} results.
 \item \code{"score"}: An asymptotic score test via \code{\link[=prop.test]{prop.test()}}.
 }}
 

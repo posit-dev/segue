@@ -8,6 +8,8 @@
 #' @param y A factor vector with two levels.
 #' @param method A single character string with possible values:
 #'   - `"exact"`: An exact test via [binom.test()].
+#'   - `"exact_sas"`: An exact test via [exact_binom_test_sas()] that emulates
+#'      SAS's `Proc Freq` results.
 #'   - `"score"`: An asymptotic score test via [prop.test()].
 #'
 #' @param event_level A single character value for the level of the factor that
@@ -61,7 +63,7 @@ bin_prop_test.default <- function(y, ...) {
 #' @export bin_prop_test.factor
 bin_prop_test.factor <- function(
   y,
-  method = c("exact", "score"),
+  method = c("exact", "exact_sas", "score"),
   event_level = NULL,
   null_value = 0.5,
   alternative = "two_sided",
@@ -69,7 +71,7 @@ bin_prop_test.factor <- function(
 ) {
   check_factor(y)
   event_level <- check_level(event_level, y)
-  method <- rlang::arg_match(method, c("exact", "score"))
+  method <- rlang::arg_match(method, c("exact", "exact_sas", "score"))
   stats_alternative <- convert_alternative(alternative)
   rlang::check_number_decimal(
     null_value,
@@ -106,6 +108,7 @@ bin_prop_test.factor <- function(
   orig_res <- switch(
     method,
     exact = bin_prop_test_exact_r(num_events, num_total, call_opts),
+    exact_sas = bin_prop_test_exact_sas(num_events, num_total, call_opts),
     score = bin_prop_test_score(num_events, num_total, call_opts)
   )
 
@@ -152,6 +155,32 @@ bin_prop_test_exact_r <- function(num_events, num_total, options = list()) {
   }
 
   sas_code <- list()
+
+  list(results = res, code = list(r = cl, sas = sas_code))
+}
+
+
+bin_prop_test_exact_sas <- function(num_events, num_total, options = list()) {
+  cl <- rlang::call2(
+    "exact_binom_test_sas",
+    .ns = "segue",
+    x = num_events,
+    n = num_total,
+    !!!options
+  )
+  res <- try(rlang::eval_tidy(cl), silent = TRUE)
+  if (inherits(res, "try-error")) {
+    cli::cli_abort(
+      "{.fn bin_prop_test} with {.code method = 'exact_sas'} failed with error: {res}",
+      call = NULL
+    )
+  }
+
+  sas_code <- list(
+    proc = "freq",
+    tables = "resp / binomial",
+    exact = "binomial"
+  )
 
   list(results = res, code = list(r = cl, sas = sas_code))
 }
