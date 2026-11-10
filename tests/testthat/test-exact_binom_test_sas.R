@@ -60,7 +60,7 @@ test_that("tied tails report one tail with the Proc Freq value", {
   res <- purrr::map(n, function(n) {
     exact_binom_test_sas(n / 2, n)
   })
-  tails <- purrr::map(res, "tails")
+  tails <- purrr::map(n, function(n) reported_tails(n / 2, n))
   expect_all_equal(purrr::map_int(tails, function(x) sum(!is.na(x))), 1L)
   expect_lt(
     max(abs(
@@ -87,7 +87,10 @@ test_that("an exactly representable left tail is close to the exact value", {
   exact <- 1909251 / 4194304
   res <- exact_binom_test_sas(2, 11, p = 0.25, alternative = "less")
   expect_lte(abs(res$p.value - exact), 64 * 2^-54)
-  expect_identical(res$tails[["greater"]], NA_real_)
+  expect_identical(
+    exact_binom_test_sas(2, 11, p = 0.25, alternative = "greater")$p.value,
+    NA_real_
+  )
 })
 
 test_that("a small right tail is computed by subtraction", {
@@ -108,15 +111,16 @@ test_that("reported one-sided p-values match binom.test()", {
     p <- grid$p[i]
     for (x in 0:n) {
       res <- exact_binom_test_sas(x, n, p = p)
-      if (!is.na(res$tails[["less"]])) {
+      tails <- reported_tails(x, n, p = p)
+      if (!is.na(tails[["less"]])) {
         expect_identical(
-          res$tails[["less"]],
+          tails[["less"]],
           stats::binom.test(x, n, p, alternative = "less")$p.value
         )
       } else {
         expect_lt(
           max(abs(
-            res$tails[["greater"]] -
+            tails[["greater"]] -
               stats::binom.test(x, n, p, alternative = "greater")$p.value
           )),
           1e-13
@@ -124,7 +128,7 @@ test_that("reported one-sided p-values match binom.test()", {
       }
       expect_identical(
         res$p.value,
-        min(1, 2 * min(res$tails, na.rm = TRUE))
+        min(1, 2 * min(tails, na.rm = TRUE))
       )
     }
   }
@@ -132,11 +136,11 @@ test_that("reported one-sided p-values match binom.test()", {
 
 test_that("exactly one tail is reported, and it is the smaller one", {
   for (x in 0:15) {
-    res <- exact_binom_test_sas(x, 15, p = 0.3)
-    expect_identical(sum(is.na(res$tails)), 1L)
+    tails <- reported_tails(x, 15, p = 0.3)
+    expect_identical(sum(is.na(tails)), 1L)
     left <- stats::pbinom(x, 15, 0.3)
     right <- 1 - stats::pbinom(x - 1, 15, 0.3)
-    expect_identical(unname(res$tails[!is.na(res$tails)]), min(left, right))
+    expect_identical(unname(tails[!is.na(tails)]), min(left, right))
   }
 })
 
@@ -144,8 +148,7 @@ test_that("the result has the same elements as binom.test()", {
   res <- exact_binom_test_sas(7, 23, p = 0.1)
   ref <- stats::binom.test(7, 23, p = 0.1)
   expect_s3_class(res, "htest")
-  expect_named(res, c(setdiff(names(ref), "conf.int"), "tails"))
-  expect_named(res$tails, c("less", "greater"))
+  expect_named(res, setdiff(names(ref), "conf.int"))
   for (nm in c("statistic", "parameter", "estimate", "null.value")) {
     expect_identical(res[[nm]], ref[[nm]])
   }
@@ -165,7 +168,7 @@ test_that("successes and failures can be given as x", {
 
 test_that("no successes or no failures give the right tails", {
   none <- exact_binom_test_sas(0, 8, p = 0.2)
-  expect_equal(none$tails[["less"]], 0.8^8)
+  expect_equal(reported_tails(0, 8, p = 0.2)[["less"]], 0.8^8)
   expect_equal(none$p.value, 2 * 0.8^8)
 
   all <- exact_binom_test_sas(8, 8, p = 0.2, alternative = "greater")

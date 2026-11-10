@@ -38,10 +38,6 @@ one-sided alternative when the requested tail is not the smaller one.
 \item \code{alternative}, \code{method}, and \code{data.name}: strings that describe the
 test.
 }
-
-It also has \code{tails}, a named vector with the left (\code{less}) and right
-(\code{greater}) one-sided p-values, with the tail that \verb{Proc Freq} does not
-report set to \code{NA}.
 }
 \description{
 \code{exact_binom_test_sas()} takes similar arguments as
@@ -53,9 +49,15 @@ report set to \code{NA}.
 run;
 }\if{html}{\out{</div>}}
 
-The two functions differ in how the two-sided p-value is defined, in which
-one-sided p-values are reported, and in how the right tail is computed. Each
-difference is described below. Only the test is computed here.
+\code{\link[stats:binom.test]{stats::binom.test()}} and \verb{Proc Freq} differ in how the two-sided p-value is
+defined in terms of:
+\itemize{
+\item how one-sided p-values are reported, and
+\item how the correct tail is computed.
+}
+
+Each difference is described below. Only the hypothesis test is computed by
+this function (i.e., not automatic production of confidence intervals).
 }
 \details{
 \subsection{Notation}{
@@ -92,9 +94,6 @@ right tail (\code{XPR_BIN}) is missing.
 tail and \code{NA} otherwise. Since \eqn{p_L + p_R = 1 + \Pr(X = x) > 1}{p_L + p_R = 1 + Pr(X = x) > 1}, the
 smaller tail is the one on the same side of \eqn{n p_0} as \eqn{x}, apart
 from ties (see "Precision").
-
-The \code{tails} element of the result has both tails, with the one that SAS
-does not report set to \code{NA}.
 }
 
 \subsection{Two-sided p-value}{

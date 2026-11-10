@@ -11,9 +11,15 @@
 #' run;
 #' ```
 #'
-#' The two functions differ in how the two-sided p-value is defined, in which
-#' one-sided p-values are reported, and in how the right tail is computed. Each
-#' difference is described below. Only the test is computed here.
+#' [stats::binom.test()] and `Proc Freq` differ in how the two-sided p-value is
+#' defined in terms of:
+#'
+#'  - how one-sided p-values are reported, and
+#'  - how the correct tail is computed.
+#'
+#' Each difference is described below. Only the hypothesis test is computed by
+#' this function (i.e., not automatic production of confidence intervals).
+#'
 #'
 #' @details
 #'
@@ -49,9 +55,6 @@
 #' tail and `NA` otherwise. Since \eqn{p_L + p_R = 1 + \Pr(X = x) > 1}{p_L + p_R = 1 + Pr(X = x) > 1}, the
 #' smaller tail is the one on the same side of \eqn{n p_0} as \eqn{x}, apart
 #' from ties (see "Precision").
-#'
-#' The `tails` element of the result has both tails, with the one that SAS
-#' does not report set to `NA`.
 #'
 #' ## Two-sided p-value
 #'
@@ -128,10 +131,6 @@
 #'   - `null.value`: `p`.
 #'   - `alternative`, `method`, and `data.name`: strings that describe the
 #'     test.
-#'
-#'   It also has `tails`, a named vector with the left (`less`) and right
-#'   (`greater`) one-sided p-values, with the tail that `Proc Freq` does not
-#'   report set to `NA`.
 #'
 #' @references
 #' SAS Institute Inc. "Binomial Proportion." _SAS/STAT User's Guide: The FREQ
@@ -212,8 +211,7 @@ exact_binom_test_sas <- function(
       null.value = p,
       alternative = alternative,
       method = "Exact binomial test (SAS Proc Freq)",
-      data.name = data_name,
-      tails = c(less = tails$less, greater = tails$greater)
+      data.name = data_name
     ),
     class = "htest"
   )

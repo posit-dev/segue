@@ -39,3 +39,11 @@ sas_binom_fixture_results <- function(cases) {
 is_sas_binom_tie <- function(cases) {
   cases$p == 0.5 & 2 * cases$x == cases$n
 }
+
+# Both one-sided p-values, with NA for the tail that Proc Freq does not report.
+reported_tails <- function(x, n, p = 0.5) {
+  c(
+    less = exact_binom_test_sas(x, n, p = p, alternative = "less")$p.value,
+    greater = exact_binom_test_sas(x, n, p = p, alternative = "greater")$p.value
+  )
+}
