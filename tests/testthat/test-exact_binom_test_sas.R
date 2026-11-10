@@ -1,10 +1,10 @@
-# The expected values come from SAS PROC FREQ. See
+# The expected values come from SAS Proc Freq. See
 # fixtures/exact-binom-test-sas/ for the SAS program and the SAS data set it
 # wrote.
 
-# ---- Comparisons with PROC FREQ ----------------------------------------------
+# ---- Comparisons with Proc Freq ----------------------------------------------
 
-test_that("the same p-values are missing as in PROC FREQ", {
+test_that("the same p-values are missing as in Proc Freq", {
   cases <- read_sas_binom_fixture()
   res <- sas_binom_fixture_results(cases)
   keep <- !is_sas_binom_tie(cases)
@@ -13,12 +13,12 @@ test_that("the same p-values are missing as in PROC FREQ", {
   expect_all_false(is.na(res$p_value[cases$alternative == "two.sided"]))
 })
 
-test_that("p-values match PROC FREQ", {
+test_that("p-values match Proc Freq", {
   cases <- read_sas_binom_fixture()
   res <- sas_binom_fixture_results(cases)
   keep <- !is_sas_binom_tie(cases) & !is.na(cases$p_value)
 
-  # PROC FREQ and pbinom() use different algorithms, so the values agree to
+  # Proc Freq and pbinom() use different algorithms, so the values agree to
   # about 5.5e-14 but not to the last bit. The tolerance is absolute because
   # small right tails lose their relative precision in both.
   expect_lt(
@@ -27,7 +27,7 @@ test_that("p-values match PROC FREQ", {
   )
 })
 
-test_that("small right tails lose precision as in PROC FREQ", {
+test_that("small right tails lose precision as in Proc Freq", {
   cases <- read_sas_binom_fixture()
   res <- sas_binom_fixture_results(cases)
   right <- cases$alternative == "greater" &
@@ -42,13 +42,13 @@ test_that("small right tails lose precision as in PROC FREQ", {
   )
 })
 
-test_that("estimates are identical to PROC FREQ", {
+test_that("estimates are identical to Proc Freq", {
   cases <- read_sas_binom_fixture()
   res <- sas_binom_fixture_results(cases)
   expect_identical(res$estimate, cases$estimate)
 })
 
-test_that("tied tails report one tail with the PROC FREQ value", {
+test_that("tied tails report one tail with the Proc Freq value", {
   cases <- read_sas_binom_fixture()
   ties <- cases[is_sas_binom_tie(cases), ]
   one_sided <- ties[ties$alternative != "two.sided", ]

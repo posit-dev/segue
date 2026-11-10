@@ -4,7 +4,7 @@
       res
     Output
       
-      	Exact binomial test (SAS PROC FREQ)
+      	Exact binomial test (SAS Proc Freq)
       
       data:  7 and 23
       number of successes = 7, number of trials = 23, p-value = 0.01155

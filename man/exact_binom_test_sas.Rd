@@ -2,7 +2,7 @@
 % Please edit documentation in R/exact_binom_test_sas.R
 \name{exact_binom_test_sas}
 \alias{exact_binom_test_sas}
-\title{Exact binomial test, computed as SAS PROC FREQ does}
+\title{Exact binomial test, computed as SAS \verb{Proc Freq} does}
 \usage{
 exact_binom_test_sas(
   x,
@@ -31,7 +31,7 @@ An object of class \code{htest} with the same elements as the result of
 \itemize{
 \item \code{statistic}: the number of successes.
 \item \code{parameter}: the number of trials.
-\item \code{p.value}: the p-value, as PROC FREQ reports it. It is \code{NA} for a
+\item \code{p.value}: the p-value, as \verb{Proc Freq} reports it. It is \code{NA} for a
 one-sided alternative when the requested tail is not the smaller one.
 \item \code{estimate}: the sample proportion, \code{x / n}.
 \item \code{null.value}: \code{p}.
@@ -40,12 +40,12 @@ test.
 }
 
 It also has \code{tails}, a named vector with the left (\code{less}) and right
-(\code{greater}) one-sided p-values, with the tail that PROC FREQ does not
+(\code{greater}) one-sided p-values, with the tail that \verb{Proc Freq} does not
 report set to \code{NA}.
 }
 \description{
-\code{exact_binom_test_sas()} takes the similar arguments as
-\code{\link[stats:binom.test]{stats::binom.test()}} but returns the p-values that SAS PROC FREQ reports for
+\code{exact_binom_test_sas()} takes similar arguments as
+\code{\link[stats:binom.test]{stats::binom.test()}} but returns the p-values that SAS \verb{Proc Freq} reports for
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{proc freq;
   tables resp / binomial(p = <p> level = "<event>");
@@ -79,7 +79,7 @@ p_R = Pr(X >= x) = sum over k = x, ..., n of choose(n, k) p_0^k (1 - p_0)^(n - k
 
 \subsection{One-sided p-values}{
 
-PROC FREQ computes both tails but reports only the smaller one:
+\verb{Proc Freq} computes both tails but reports only the smaller one:
 \itemize{
 \item When \eqn{p_L \le p_R}, the left tail is reported (\code{XPL_BIN}) and the
 right tail (\code{XPR_BIN}) is missing.
@@ -100,7 +100,7 @@ does not report set to \code{NA}.
 \subsection{Two-sided p-value}{
 
 The two functions define the two-sided p-value differently. In the terms of
-Fay (2010), SAS PROC FREQ uses the "central" method: twice the smaller tail,
+Fay (2010), SAS \verb{Proc Freq} uses the "central" method: twice the smaller tail,
 capped at 1.  This is also  called "doubling" or "TST" by Hirji (2006).
 
 For example, with \eqn{n = 10}, \eqn{x = 5}, and \eqn{p_0 = 0.25}, the right
@@ -111,7 +111,7 @@ tail is \eqn{p_R = 0.0781269} and is the smaller tail, SAS computes:
 
 \subsection{Precision}{
 
-PROC FREQ computes the right tail as one minus the left tail at \eqn{x - 1}:
+\verb{Proc Freq} computes the right tail as one minus the left tail at \eqn{x - 1}:
 
 \deqn{
 p_R = 1 - \Pr(X \le x - 1)
@@ -129,25 +129,25 @@ usual 15 or 16. Right tails below about
 \code{exact_binom_test_sas()} uses the same subtraction,
 \code{1 - pbinom(x - 1, n, p)}, so that it returns these values too.
 
-The results are not identical to PROC FREQ's to the last bit. R's
-\code{\link[stats:pbinom]{stats::pbinom()}} and PROC FREQ use different algorithms for the binomial
+The results are not identical to \verb{Proc Freq}'s to the last bit. R's
+\code{\link[stats:pbinom]{stats::pbinom()}} and \verb{Proc Freq} use different algorithms for the binomial
 distribution function, and their results usually differ by a few dozen units in
 the last place (at most a few hundred). This is random rounding error
 in both, not a bias in either. Over 11,466 combinations of
 \eqn{1 \le x \le n \le 50} and \eqn{p_0 \in \{0.01, 0.25, 0.5\}}{p_0 = 0.01, 0.25, or 0.5}, the
 p-values from \code{exact_binom_test_sas()} are within
-\eqn{5.5 \times 10^{-14}}{5.5e-14} (absolute) of PROC FREQ's. Because of the
+\eqn{5.5 \times 10^{-14}}{5.5e-14} (absolute) of \verb{Proc Freq}'s. Because of the
 cancellation, the agreement for small right tails is only absolute: a right
 tail that is 0 in one can be about \eqn{10^{-16}}{1e-16} in the other.
 \subsection{Ties}{
 
 When \eqn{p_0 = 0.5} and \eqn{x = n / 2}, the two tails are exactly equal,
-and which tail is reported depends on rounding error. PROC FREQ reported the
+and which tail is reported depends on rounding error. \verb{Proc Freq} reported the
 right tail for some even \eqn{n} and the left tail for others, and
 \code{exact_binom_test_sas()} can choose differently. For the 25 ties with
-\eqn{n \le 50}{n <= 50}, PROC FREQ reported the right tail in 14, so the
+\eqn{n \le 50}{n <= 50}, \verb{Proc Freq} reported the right tail in 14, so the
 \code{NA} is on the other alternative in those cases. The reported values differ
-from PROC FREQ's by at most \eqn{1.2 \times 10^{-14}}{1.2e-14}, as in the
+from \verb{Proc Freq}'s by at most \eqn{1.2 \times 10^{-14}}{1.2e-14}, as in the
 cases without ties. When the computed tails are equal, the left tail is
 reported. The two-sided p-value is 1 either way.
 }

@@ -1,8 +1,8 @@
-#' Exact binomial test, computed as SAS PROC FREQ does
+#' Exact binomial test, computed as SAS `Proc Freq` does
 #'
 #' @description
 #' `exact_binom_test_sas()` takes similar arguments as
-#' [stats::binom.test()] but returns the p-values that SAS PROC FREQ reports for
+#' [stats::binom.test()] but returns the p-values that SAS `Proc Freq` reports for
 #'
 #' ```
 #' proc freq;
@@ -37,7 +37,7 @@
 #'
 #' ## One-sided p-values
 #'
-#' PROC FREQ computes both tails but reports only the smaller one:
+#' `Proc Freq` computes both tails but reports only the smaller one:
 #'
 #' - When \eqn{p_L \le p_R}, the left tail is reported (`XPL_BIN`) and the
 #'   right tail (`XPR_BIN`) is missing.
@@ -56,7 +56,7 @@
 #' ## Two-sided p-value
 #'
 #' The two functions define the two-sided p-value differently. In the terms of
-#' Fay (2010), SAS PROC FREQ uses the "central" method: twice the smaller tail,
+#' Fay (2010), SAS `Proc Freq` uses the "central" method: twice the smaller tail,
 #' capped at 1.  This is also  called "doubling" or "TST" by Hirji (2006).
 #'
 #' For example, with \eqn{n = 10}, \eqn{x = 5}, and \eqn{p_0 = 0.25}, the right
@@ -66,7 +66,7 @@
 #'
 #' ## Precision
 #'
-#' PROC FREQ computes the right tail as one minus the left tail at \eqn{x - 1}:
+#' `Proc Freq` computes the right tail as one minus the left tail at \eqn{x - 1}:
 #'
 #' \deqn{
 #' p_R = 1 - \Pr(X \le x - 1)
@@ -84,26 +84,26 @@
 #' `exact_binom_test_sas()` uses the same subtraction,
 #' `1 - pbinom(x - 1, n, p)`, so that it returns these values too.
 #'
-#' The results are not identical to PROC FREQ's to the last bit. R's
-#' [stats::pbinom()] and PROC FREQ use different algorithms for the binomial
+#' The results are not identical to `Proc Freq`'s to the last bit. R's
+#' [stats::pbinom()] and `Proc Freq` use different algorithms for the binomial
 #' distribution function, and their results usually differ by a few dozen units in
 #' the last place (at most a few hundred). This is random rounding error
 #' in both, not a bias in either. Over 11,466 combinations of
 #' \eqn{1 \le x \le n \le 50} and \eqn{p_0 \in \{0.01, 0.25, 0.5\}}{p_0 = 0.01, 0.25, or 0.5}, the
 #' p-values from `exact_binom_test_sas()` are within
-#' \eqn{5.5 \times 10^{-14}}{5.5e-14} (absolute) of PROC FREQ's. Because of the
+#' \eqn{5.5 \times 10^{-14}}{5.5e-14} (absolute) of `Proc Freq`'s. Because of the
 #' cancellation, the agreement for small right tails is only absolute: a right
 #' tail that is 0 in one can be about \eqn{10^{-16}}{1e-16} in the other.
 #'
 #' ### Ties
 #'
 #' When \eqn{p_0 = 0.5} and \eqn{x = n / 2}, the two tails are exactly equal,
-#' and which tail is reported depends on rounding error. PROC FREQ reported the
+#' and which tail is reported depends on rounding error. `Proc Freq` reported the
 #' right tail for some even \eqn{n} and the left tail for others, and
 #' `exact_binom_test_sas()` can choose differently. For the 25 ties with
-#' \eqn{n \le 50}{n <= 50}, PROC FREQ reported the right tail in 14, so the
+#' \eqn{n \le 50}{n <= 50}, `Proc Freq` reported the right tail in 14, so the
 #' `NA` is on the other alternative in those cases. The reported values differ
-#' from PROC FREQ's by at most \eqn{1.2 \times 10^{-14}}{1.2e-14}, as in the
+#' from `Proc Freq`'s by at most \eqn{1.2 \times 10^{-14}}{1.2e-14}, as in the
 #' cases without ties. When the computed tails are equal, the left tail is
 #' reported. The two-sided p-value is 1 either way.
 #'
@@ -122,7 +122,7 @@
 #'
 #'   - `statistic`: the number of successes.
 #'   - `parameter`: the number of trials.
-#'   - `p.value`: the p-value, as PROC FREQ reports it. It is `NA` for a
+#'   - `p.value`: the p-value, as `Proc Freq` reports it. It is `NA` for a
 #'     one-sided alternative when the requested tail is not the smaller one.
 #'   - `estimate`: the sample proportion, `x / n`.
 #'   - `null.value`: `p`.
@@ -130,7 +130,7 @@
 #'     test.
 #'
 #'   It also has `tails`, a named vector with the left (`less`) and right
-#'   (`greater`) one-sided p-values, with the tail that PROC FREQ does not
+#'   (`greater`) one-sided p-values, with the tail that `Proc Freq` does not
 #'   report set to `NA`.
 #'
 #' @references
@@ -211,7 +211,7 @@ exact_binom_test_sas <- function(
       estimate = estimate,
       null.value = p,
       alternative = alternative,
-      method = "Exact binomial test (SAS PROC FREQ)",
+      method = "Exact binomial test (SAS Proc Freq)",
       data.name = data_name,
       tails = c(less = tails$less, greater = tails$greater)
     ),
@@ -220,11 +220,11 @@ exact_binom_test_sas <- function(
 }
 
 # Both one-sided tails and the central two-sided p-value. `less` and `greater`
-# are NA for the tail that PROC FREQ does not report. Vectorized over x, n,
+# are NA for the tail that Proc Freq does not report. Vectorized over x, n,
 # and p.
 sas_binom_tails <- function(x, n, p) {
   left <- stats::pbinom(x, n, p)
-  # PROC FREQ gets the right tail by subtraction, so small right tails lose
+  # Proc Freq gets the right tail by subtraction, so small right tails lose
   # precision. This is done on purpose to return the same values as SAS.
   right <- 1 - stats::pbinom(x - 1, n, p)
 

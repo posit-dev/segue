@@ -1,4 +1,4 @@
-# PROC FREQ results written by
+# Proc Freq results written by
 # fixtures/exact-binom-test-sas/bin_prop_test.sas. The SAS data set stores
 # 8-byte doubles, so haven reads the values exactly as SAS computed them.
 read_sas_binom_fixture <- function() {
