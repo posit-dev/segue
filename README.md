@@ -9,9 +9,9 @@
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/segue)](https://CRAN.R-project.org/package=segue)
-[![R-CMD-check](https://github.com/topepo/segue/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/topepo/segue/actions/workflows/R-CMD-check.yaml)
+[![R-CMD-check](https://github.com/posit-dev/segue/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/posit-dev/segue/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
-coverage](https://codecov.io/gh/topepo/segue/graph/badge.svg)](https://app.codecov.io/gh/topepo/segue)
+coverage](https://codecov.io/gh/posit-dev/segue/graph/badge.svg)](https://app.codecov.io/gh/posit-dev/segue)
 <!-- badges: end -->
 
 segue is a package designed to help people transition from SAS to R with
@@ -23,15 +23,15 @@ difficult are:
   there are many options, picking the one that is optimal.
 - SAS has a very unified syntax; R does not. Overall, there is a huge
   strength for R, but for someone new, it can be a nightmare.
-- Defaults between the two can be different and produce different
-  results.
+- There are methodological differences between the languages, even for
+  commonly used methods. Also, defaults between the two can be different
+  and produce different results.
 - SAS has copious amounts of generally good documentation. R often has
   fantastic documentation, but more often than not, it is lacking or
   poorly written for users.
 - R revels in lazy computations; it often gives you a minimal amount of
   returned values and printed output, and you can ask for more. SAS
   tends to dump everything on you, even if you didn’t really need it.
-  segue tries to give you more verbose results.
 
 Most of these issues *are not technical problems*. segue is meant to be
 a way for SAS folks to use R in a way that meets them in the middle. It
@@ -54,14 +54,62 @@ repackages existing R functions such that:
 
 ## Installation
 
+You can install segue from CRAN with:
+
+``` r
+install.packages("segue")
+```
+
 You can install the development version of segue like so:
 
 ``` r
 install.packages("pak")
-pak::pak("topepo/segue")
+pak::pak("posit-dev/segue")
 ```
 
 ## Example
+
+`bin_prop_test()` tests a single binomial proportion using a two-level
+factor. Here, we test whether the proportion of patients with cognitive
+impairment is 0.5:
+
+``` r
+library(segue)
+
+cog_ability <- modeldata::ad_data$Class
+table(cog_ability)
+#> cog_ability
+#> Impaired  Control 
+#>       91      242
+
+test_res <- bin_prop_test(cog_ability)
+test_res
+#> Testing a Single Binomial Proportion via exact Test
+#> No missing values
+```
+
+The results can be tidied into a tibble:
+
+``` r
+tidy(test_res)
+#> # A tibble: 1 × 8
+#>   estimate statistic  p.value parameter conf.low conf.high method    alternative
+#>      <dbl>     <dbl>    <dbl>     <dbl>    <dbl>     <dbl> <chr>     <chr>      
+#> 1    0.273        91 5.86e-17       333    0.226     0.325 Exact bi… two.sided
+```
+
+`translate()` shows the R code that was used, along with the analogous
+SAS code:
+
+``` r
+translate(test_res)
+#> ── R Code template ─────────────────────────────────────────────────────────────
+#> stats::binom.test(x = 91L, n = 333L, alternative = "two.sided", 
+#>     p = 0.5)
+#> 
+#> ── SAS Code template ───────────────────────────────────────────────────────────
+#> No known SAS equivalent
+```
 
 ## Code of Conduct
 
