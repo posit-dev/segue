@@ -10,5 +10,6 @@
 ^codecov\.yml$
 ^[.]?air[.]toml$
 ^\.vscode$
+^plans$
 ^AGENTS\.md$
 ^\.panache-cache$

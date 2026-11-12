@@ -45,19 +45,12 @@ Most of these issues *are not technical problems*. segue is meant to be a way
 for SAS folks to use R in a way that meets them in the middle. It repackages
 existing R functions such that:
 
-- They are **discoverable**. Naming is hard but important, and segue has a
-  taxonomy built into its names that should make things obvious.
-- The computations for each function are **well documented** so that the user
-  can understand what they will get. We can explicitly show the underlying R
-  code and its SAS analog.
-- **Compatibility** is also documented. If there are numerical differences
-  between SAS and R implementations of the same thing, how large are they?
-- **Defaults** are biased towards those from SAS. In almost any case, there is
-  no uniformly "right" choice, but we can make the transition easier with
-  judicious choices.
-- Errors are more **informative** than what base R would produce.
-- In some cases, the R API isn't great (e.g., `binom.test()`) and the segue
-  functions have a different interface.
+- They are **discoverable**. Naming is hard but important, and segue has a taxonomy built into its names that should make things obvious. 
+- The computations for each function are **well documented** so that the user can understand what they will get. We can explicitly show the underlying R code and its SAS analog. 
+- **Compatibility** is also documented. If there are numerical differences between SAS and R implementations of the same thing, how large are they? 
+- **Defaults** are biased towards those from SAS. In almost any case, there is no uniformly "right" choice, but we can make the transition easier with judicious choices. 
+- Errors are more **informative** than what base R would produce. 
+- In some cases, the R API isn't great (e.g., `binom.test()`) and the segue functions have a different interface. 
 
 ## Installation
 
