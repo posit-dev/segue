@@ -6,7 +6,15 @@
 \alias{segue-package}
 \title{segue: Moving from 'SAS' to 'R'}
 \description{
-'SAS' and 'R' are different in many ways. To ease the transition, there are some convenience functions aimed at replicating 'SAS' analyses in a way that is slightly idiomatic to 'R' and 'SAS' users. The emphasis is on ease of use, compatibility, and discoverability.
+'SAS' and 'R' are different in many ways. To ease the transition to 'R' from 'SAS', 'segue' has convenience functions aimed at replicating 'SAS' analyses with an idiomatic 'R' syntax. The choice of functions is biased towards clinical statistics, with an emphasis on ease of use, compatibility, and discoverability.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/posit-dev/segue}
+  \item Report bugs at \url{https://github.com/posit-dev/segue/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: Max Kuhn \email{max@posit.co} (\href{https://orcid.org/0000-0003-2402-136X}{ORCID})

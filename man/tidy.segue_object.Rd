@@ -2,7 +2,7 @@
 % Please edit documentation in R/segue.R
 \name{tidy.segue_object}
 \alias{tidy.segue_object}
-\title{Turn a segue object object into a tidy tibble}
+\title{Turn a segue object into a tidy tibble}
 \usage{
 \method{tidy}{segue_object}(x, ...)
 }

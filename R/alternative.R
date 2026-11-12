@@ -1,4 +1,4 @@
-#' Convert the alternative hypothesis to the values used by stats
+#' Convert the Alternative Hypothesis to the Values Used by Stats
 #'
 #' Functions in this package use the values `"two_sided"`, `"greater"`, and
 #' `"lesser"` for the alternative hypothesis. The functions in the stats package

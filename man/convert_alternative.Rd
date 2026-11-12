@@ -2,7 +2,7 @@
 % Please edit documentation in R/alternative.R
 \name{convert_alternative}
 \alias{convert_alternative}
-\title{Convert the alternative hypothesis to the values used by stats}
+\title{Convert the Alternative Hypothesis to the Values Used by Stats}
 \usage{
 convert_alternative(alternative, call = rlang::caller_env())
 }

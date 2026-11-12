@@ -1,6 +1,6 @@
 Package: segue
 Title: Moving from 'SAS' to 'R'
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: c(
     person("Max", "Kuhn", , "max@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2402-136X")),
@@ -10,11 +10,13 @@ Authors@R: c(
            comment = c(ROR = "03wc8by49"))
   )
 Description: 'SAS' and 'R' are different in many ways. To ease the
-    transition, there are some convenience functions aimed at replicating
-    'SAS' analyses in a way that is slightly idiomatic to 'R' and 'SAS'
-    users. The emphasis is on ease of use, compatibility, and
-    discoverability.
+    transition to 'R' from 'SAS', 'segue' has convenience functions aimed
+    at replicating 'SAS' analyses with an idiomatic 'R' syntax. The choice
+    of functions is biased towards clinical statistics, with an emphasis
+    on ease of use, compatibility, and discoverability.
 License: MIT + file LICENSE
+URL: https://github.com/posit-dev/segue
+BugReports: https://github.com/posit-dev/segue/issues
 Imports: 
     broom,
     cli,
