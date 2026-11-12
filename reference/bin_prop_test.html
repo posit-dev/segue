@@ -131,14 +131,15 @@ the code using default argument values is</p>
 <p></p><div class="sourceCode r"><pre><code><span><span class="fu"><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test</a></span><span class="op">(</span><span class="va">num_events</span>, <span class="va">num_total</span>, alternative <span class="op">=</span> <span class="st">"two.sided"</span>, p <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span></span></code></pre><p></p></div>
 <p>There is no corresponding <code>Proc Freq</code> code; there are several
 methodological differences between the exact test produced by SAS and
-<code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test()</a></code>:</p><ol><li><p>One-sided p-values. Both use the same tail sums, \(P(X \le
+<code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test()</a></code>. Using the terminology of Fay (2010):</p><ol><li><p>One-sided p-values. Both use the same tail sums, \(P(X \le
 x)\) and \(P(X \ge x)\).</p></li>
 </ol><ul><li><p><code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test()</a></code> returns whichever tail you ask for.</p></li>
 <li><p><code>Proc Freq</code> keeps only the smaller tail, in variables <code>XPL_BIN</code> or
 <code>XPR_BIN</code>, and leaves the other variable missing.</p></li>
 </ul><ol><li><p>Two-sided p-values.</p></li>
-</ol><ul><li><p><code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test()</a></code> uses the “minlike” method: it adds the
-probabilities of every outcome no more likely than the observed one.</p></li>
+</ol><ul><li><p><code><a href="https://rdrr.io/r/stats/binom.test.html" class="external-link">binom.test()</a></code> uses the “minlike” method (short for
+“minimum likelihood”): it adds the probabilities of every outcome no
+more likely than the observed one.</p></li>
 <li><p>SAS uses the “central” method: twice the smaller tail, capped at 1.
 The two agree only when \(p_0 = 0.5\), where the null distribution
 is symmetric.</p></li>
@@ -207,6 +208,18 @@ lesser. R has no missing p-values.</p>
 ranging from -1.2e-15 to 8.3e-16.</p>
 </div>
 
+    </div>
+    <div id="references">
+    <h2>References</h2>
+    <p>Agresti, A. 2013. <em>Categorical Data Analysis</em>. John Wiley and
+Sons Inc., Hoboken.</p>
+<p>Fay, M. 2010. “Two-Sided Exact Tests and Matching Confidence
+Intervals for Discrete Data.” <em>The R Journal</em> 2 (1): 53–58.
+<a href="https://doi.org/10.32614/RJ-2010-008" class="external-link">doi:10.32614/RJ-2010-008</a>
+.</p>
+<p>Hirji, K. 2006. <em>Exact Analysis of Discrete Data</em>. Chapman and Hall/CRC.</p>
+<p>CAMIS Working Group page on the Binomial Test:
+<a href="https://psiaims.github.io/CAMIS/Comp/r-sas_binomial_test.html" class="external-link">https://psiaims.github.io/CAMIS/Comp/r-sas_binomial_test.html</a></p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
