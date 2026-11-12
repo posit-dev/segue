@@ -4,8 +4,12 @@
 ^README\.Rmd$
 ^cran-comments\.md$
 ^CODE_OF_CONDUCT\.md$
+^\.covrignore$
+^man/_rmd$
 ^\.github$
 ^codecov\.yml$
 ^[.]?air[.]toml$
 ^\.vscode$
 ^plans$
+^AGENTS\.md$
+^\.panache-cache$
