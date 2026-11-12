@@ -2,7 +2,7 @@
 % Please edit documentation in R/sas_round.R
 \name{sas_round}
 \alias{sas_round}
-\title{Round numbers the same way as SAS}
+\title{Round Numbers the Same Way as SAS}
 \usage{
 sas_round(x, digits = 0, unit = 10^-digits)
 }

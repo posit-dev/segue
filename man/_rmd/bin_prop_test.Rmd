@@ -6,13 +6,13 @@ R's [binom.test()] implements the exact test described in Section 1.4 of Agresti
 binom.test(num_events, num_total, alternative = "two.sided", p = 0.5)
 ```
 
-There is no corresponding `Proc Freq` code; there are several methodological differences between the exact test produced by SAS and [binom.test()]:
+There is no corresponding `Proc Freq` code; there are several methodological differences between the exact test produced by SAS and [binom.test()]. Using the terminology of Fay (2010):
 
 1. One-sided p-values. Both use the same tail sums, \\eqn{P(X \\le x)}{P(X <= x)} and \\eqn{P(X \\ge x)}{P(X >= x)}. 
   - [binom.test()] returns whichever tail you ask for. 
   - `Proc Freq` keeps only the smaller tail, in variables `XPL_BIN` or `XPR_BIN`, and leaves the other variable missing.
 3. Two-sided p-values.   
-  - [binom.test()] uses the "minlike" method: it adds the probabilities of every outcome no more likely than the observed one.
+  - [binom.test()] uses the "minlike" method (short for "minimum likelihood"): it adds the probabilities of every outcome no more likely than the observed one.
   - SAS uses the "central" method: twice the smaller tail, capped at 1. The two agree only when \\eqn{p_0 = 0.5}, where the null distribution is symmetric.
 3. Numerical calculation (not a definition difference). 
   - SAS's right tail behaves as if it were computed as \\eqn{1 - P(X \\le x - 1)}{1 - P(X <= x - 1)}. That subtraction leaves an absolute error of about 1e-14. 

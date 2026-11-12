@@ -1,3 +1,27 @@
+# bin_prop_test() reports errors from the underlying test
+
+    Code
+      bin_prop_test(all_missing, method = "exact")
+    Condition
+      Error:
+      ! `bin_prop_test()` with `method = 'exact'` failed with error: Error in stats::binom.test(x = 0L, n = 0L, alternative = "two.sided", : 'n' must be a positive integer >= 'x'
+
+---
+
+    Code
+      bin_prop_test(all_missing, method = "exact_sas")
+    Condition
+      Error:
+      ! `bin_prop_test()` with `method = 'exact_sas'` failed with error: Error in segue::exact_binom_test_sas(x = 0L, n = 0L, alternative = "two.sided", : `n` must be a whole number larger than or equal to 1, not the number 0.
+
+---
+
+    Code
+      bin_prop_test(all_missing, method = "score")
+    Condition
+      Error:
+      ! `bin_prop_test()` with `method = 'score'` failed with error: Error in stats::prop.test(x = 0L, n = 0L, alternative = "two.sided", p = 0.5, : elements of 'n' must be positive
+
 # bin_prop_test() validates inputs
 
     Code

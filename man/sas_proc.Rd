@@ -2,7 +2,7 @@
 % Please edit documentation in R/sas-proc.R
 \name{sas_proc}
 \alias{sas_proc}
-\title{Write SAS code for a procedure}
+\title{Write SAS Code for a Procedure}
 \usage{
 sas_proc(
   proc,

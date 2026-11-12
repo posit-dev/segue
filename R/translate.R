@@ -1,4 +1,4 @@
-#' Show code in R and SAS for an Analysis
+#' Show Code in R and SAS for an Analysis
 #'
 #' @param x An object
 #' @param ... Not currently used

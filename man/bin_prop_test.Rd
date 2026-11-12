@@ -72,7 +72,7 @@ the code using default argument values is
 
 There is no corresponding \verb{Proc Freq} code; there are several
 methodological differences between the exact test produced by SAS and
-\code{\link[=binom.test]{binom.test()}}:
+\code{\link[=binom.test]{binom.test()}}. Using the terminology of Fay (2010):
 \enumerate{
 \item One-sided p-values. Both use the same tail sums, \eqn{P(X \le
 x)}{P(X <= x)} and \eqn{P(X \ge x)}{P(X >= x)}.
@@ -86,8 +86,9 @@ x)}{P(X <= x)} and \eqn{P(X \ge x)}{P(X >= x)}.
 \item Two-sided p-values.
 }
 \itemize{
-\item \code{\link[=binom.test]{binom.test()}} uses the “minlike” method: it adds the
-probabilities of every outcome no more likely than the observed one.
+\item \code{\link[=binom.test]{binom.test()}} uses the “minlike” method (short for
+“minimum likelihood”): it adds the probabilities of every outcome no
+more likely than the observed one.
 \item SAS uses the “central” method: twice the smaller tail, capped at 1.
 The two agree only when \eqn{p_0 = 0.5}, where the null distribution
 is symmetric.
@@ -203,6 +204,19 @@ test_res
 # Can be tidied to obtain a tibble of results:
 tidy(test_res)
 \dontshow{\}) # examplesIf}
+}
+\references{
+Agresti, A. 2013. \emph{Categorical Data Analysis}. John Wiley and
+Sons Inc., Hoboken.
+
+Fay, M. 2010. “Two-Sided Exact Tests and Matching Confidence
+Intervals for Discrete Data.” \emph{The R Journal} 2 (1): 53–58.
+\doi{10.32614/RJ-2010-008}.
+
+Hirji, K. 2006. \emph{Exact Analysis of Discrete Data}. Chapman and Hall/CRC.
+
+CAMIS Working Group page on the Binomial Test:
+\url{https://psiaims.github.io/CAMIS/Comp/r-sas_binomial_test.html}
 }
 \seealso{
 \code{\link[=binom.test]{binom.test()}}, \code{\link[=prop.test]{prop.test()}},

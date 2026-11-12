@@ -2,7 +2,7 @@
 % Please edit documentation in R/exact_binom_test_sas.R
 \name{exact_binom_test_sas}
 \alias{exact_binom_test_sas}
-\title{Exact binomial test, computed as SAS \verb{Proc Freq} does}
+\title{Exact Binomial Test, Computed as SAS \verb{Proc Freq} Does}
 \usage{
 exact_binom_test_sas(
   x,

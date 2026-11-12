@@ -1,4 +1,4 @@
-#' Exact binomial test, computed as SAS `Proc Freq` does
+#' Exact Binomial Test, Computed as SAS `Proc Freq` Does
 #'
 #' @description
 #' `exact_binom_test_sas()` takes similar arguments as

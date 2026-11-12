@@ -1,4 +1,4 @@
-#' Write SAS code for a procedure
+#' Write SAS Code for a Procedure
 #'
 #' @description
 #' Writes the SAS code for one statistical procedure (proc) as text. Each

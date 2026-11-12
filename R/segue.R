@@ -68,7 +68,7 @@ new_segue <- function(
 
 # ------------------------------------------------------------------------------
 
-#' Turn a segue object into a tidy tibble
+#' Turn a segue Object into a Tidy Tibble
 #'
 #' This method tidies the original result, if it can.
 #'

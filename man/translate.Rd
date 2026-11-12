@@ -4,7 +4,7 @@
 \alias{translate}
 \alias{translate.default}
 \alias{translate.segue_object}
-\title{Show code in R and SAS for an Analysis}
+\title{Show Code in R and SAS for an Analysis}
 \usage{
 translate(x, ...)
 
@@ -21,7 +21,7 @@ translate(x, ...)
 \code{x} invisibly.
 }
 \description{
-Show code in R and SAS for an Analysis
+Show Code in R and SAS for an Analysis
 }
 \examples{
 \dontshow{if (rlang::is_installed("modeldata")) withAutoprint(\{ # examplesIf}

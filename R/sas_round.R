@@ -1,4 +1,4 @@
-#' Round numbers the same way as SAS
+#' Round Numbers the Same Way as SAS
 #'
 #' `sas_round()` replicates the SAS `ROUND()` function.
 #'
@@ -112,7 +112,7 @@ sas_round <- function(x, digits = 0, unit = 10^-digits) {
   res
 }
 
-#' Format numbers the same way as SAS
+#' Format Numbers the Same Way as SAS
 #'
 #' `sas_format()` formats numbers with a fixed number of decimal places so
 #' that the printed values match the SAS `w.d` format (e.g., `8.2`).

@@ -276,6 +276,11 @@ test_that("sas_format() behaves like format()", {
   )
   expect_identical(sas_format(1.5, width = 4), "   2")
   expect_identical(sas_format(1e10, scientific = TRUE), "1e+10")
+  expect_identical(sas_format(c(1.5, 10), trim = TRUE), c("2", "10"))
+  expect_identical(
+    sas_format(c(1.5, 10), justify = "left"),
+    c("2 ", "10")
+  )
 })
 
 test_that("sas_format() validates inputs", {

@@ -2,7 +2,7 @@
 % Please edit documentation in R/sas_round.R
 \name{sas_format}
 \alias{sas_format}
-\title{Format numbers the same way as SAS}
+\title{Format Numbers the Same Way as SAS}
 \usage{
 sas_format(x, digits = 0, ...)
 }

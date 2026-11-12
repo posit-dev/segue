@@ -137,6 +137,13 @@ use in Phase III clinical trials. Some *possible* future functions are:
     count_rate_interval()
     count_diff_test()
 
+## Related Work
+
+The Comparing Analysis Method Implementations in Software (CAMIS)
+project contains [numerical and methodological
+comparisons](https://psiaims.github.io/CAMIS/) between R and SAS for a
+variety of analytical methods.
+
 ## Code of Conduct
 
 Please note that the segue project is released with a [Contributor Code

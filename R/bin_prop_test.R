@@ -44,6 +44,18 @@
 #' tidy(test_res)
 #' @seealso [binom.test()], [prop.test()],
 #' [broom::tidy.htest()]
+#' @references
+#' Agresti, A. 2013. _Categorical Data Analysis_. John Wiley and
+#' Sons Inc., Hoboken.
+#'
+#' Fay, M. 2010. “Two-Sided Exact Tests and Matching Confidence
+#' Intervals for Discrete Data.” _The R Journal_ 2 (1): 53–58.
+#' \doi{10.32614/RJ-2010-008}.
+#'
+#' Hirji, K. 2006. _Exact Analysis of Discrete Data_. Chapman and Hall/CRC.
+#'
+#' CAMIS Working Group page on the Binomial Test:
+#' \url{https://psiaims.github.io/CAMIS/Comp/r-sas_binomial_test.html}
 #' @export
 bin_prop_test <- function(y, ...) {
   UseMethod("bin_prop_test")
