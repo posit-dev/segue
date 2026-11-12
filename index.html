@@ -66,9 +66,9 @@
 <ul>
 <li>SAS has a more limited number of options than R. It is often hard to discover if there is an R package that fits their needs, and when there are many options, picking the one that is optimal.</li>
 <li>SAS has a very unified syntax; R does not. Overall, there is a huge strength for R, but for someone new, it can be a nightmare.</li>
-<li>There are methodological differences between the languages, even for commonly used methods. Also, defaults between the two can be different and produce different results.</li>
+<li>Defaults between the two can be different and produce different results.</li>
 <li>SAS has copious amounts of generally good documentation. R often has fantastic documentation, but more often than not, it is lacking or poorly written for users.</li>
-<li>R revels in lazy computations; it often gives you a minimal amount of returned values and printed output, and you can ask for more. SAS tends to dump everything on you, even if you didn’t really need it.</li>
+<li>R revels in lazy computations; it often gives you a minimal amount of returned values and printed output, and you can ask for more. SAS tends to dump everything on you, even if you didn’t really need it. segue tries to give you more verbose results.</li>
 </ul>
 <p>Most of these issues <em>are not technical problems</em>. segue is meant to be a way for SAS folks to use R in a way that meets them in the middle. It repackages existing R functions such that:</p>
 <ul>
@@ -84,47 +84,14 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install segue from CRAN with:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"segue"</span><span class="op">)</span></span></code></pre></div>
 <p>You can install the development version of segue like so:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"posit-dev/segue"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"topepo/segue"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
 </h2>
-<p><code><a href="reference/bin_prop_test.html">bin_prop_test()</a></code> tests a single binomial proportion using a two-level factor. Here, we test whether the proportion of patients with cognitive impairment is 0.5:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">segue</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">cog_ability</span> <span class="op">&lt;-</span> <span class="fu">modeldata</span><span class="fu">::</span><span class="va"><a href="https://modeldata.tidymodels.org/reference/ad_data.html" class="external-link">ad_data</a></span><span class="op">$</span><span class="va">Class</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">cog_ability</span><span class="op">)</span></span>
-<span><span class="co">#&gt; cog_ability</span></span>
-<span><span class="co">#&gt; Impaired  Control </span></span>
-<span><span class="co">#&gt;       91      242</span></span>
-<span></span>
-<span><span class="va">test_res</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/bin_prop_test.html">bin_prop_test</a></span><span class="op">(</span><span class="va">cog_ability</span><span class="op">)</span></span>
-<span><span class="va">test_res</span></span>
-<span><span class="co">#&gt; Testing a Single Binomial Proportion via exact Test</span></span>
-<span><span class="co">#&gt; No missing values</span></span></code></pre></div>
-<p>The results can be tidied into a tibble:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">test_res</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 1 × 8</span></span>
-<span><span class="co">#&gt;   estimate statistic  p.value parameter conf.low conf.high method    alternative</span></span>
-<span><span class="co">#&gt;      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      </span></span>
-<span><span class="co">#&gt; 1    0.273        91 5.86e-17       333    0.226     0.325 Exact bi… two.sided</span></span></code></pre></div>
-<p><code><a href="reference/translate.html">translate()</a></code> shows the R code that was used, along with the analogous SAS code:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/translate.html">translate</a></span><span class="op">(</span><span class="va">test_res</span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── R Code template ─────────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; stats::binom.test(x = 91L, n = 333L, alternative = "two.sided", </span></span>
-<span><span class="co">#&gt;     p = 0.5)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; ── SAS Code template ───────────────────────────────────────────────────────────</span></span>
-<span><span class="co">#&gt; No known SAS equivalent</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="code-of-conduct">Code of Conduct<a class="anchor" aria-label="anchor" href="#code-of-conduct"></a>
@@ -171,8 +138,8 @@
 <ul class="list-unstyled">
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 <li><a href="https://CRAN.R-project.org/package=segue" class="external-link"><img src="https://www.r-pkg.org/badges/version/segue" alt="CRAN status"></a></li>
-<li><a href="https://github.com/posit-dev/segue/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/posit-dev/segue/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://app.codecov.io/gh/posit-dev/segue" class="external-link"><img src="https://codecov.io/gh/posit-dev/segue/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://github.com/topepo/segue/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/topepo/segue/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
+<li><a href="https://app.codecov.io/gh/topepo/segue" class="external-link"><img src="https://codecov.io/gh/topepo/segue/graph/badge.svg" alt="Codecov test coverage"></a></li>
 </ul>
 </div>
 
