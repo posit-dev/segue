@@ -41,6 +41,22 @@
 ---
 
     Code
+      sas_round(1, unit = .Machine$double.xmin)
+    Condition
+      Error in `sas_round()`:
+      ! `unit` should be larger than `.Machine$double.xmin` (2.23e-308), not 2.2250738585072e-308.
+
+---
+
+    Code
+      sas_round(1, unit = .Machine$double.xmin / 2)
+    Condition
+      Error in `sas_round()`:
+      ! `unit` should be larger than `.Machine$double.xmin` (2.23e-308), not 1.1125369292536e-308.
+
+---
+
+    Code
       sas_round(1, digits = 1.5)
     Condition
       Error in `sas_round()`:
@@ -101,4 +117,12 @@
     Condition
       Error in `sas_format()`:
       ! `nsmall` is set by `sas_format()` and cannot be passed to `format()`.
+
+---
+
+    Code
+      sas_format(1, drop0trailing = TRUE)
+    Condition
+      Error in `sas_format()`:
+      ! `sas_format()` does not use `drop0trailing`. It can use `big.mark`, `big.interval`, `small.mark`, `small.interval`, `decimal.mark`, `width`, `justify`, `trim`, and `scientific`.
 

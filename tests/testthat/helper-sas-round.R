@@ -35,3 +35,19 @@ sas_round_cases <- function(cases) {
   names(res) <- cases$id
   res
 }
+
+# Results observed in SAS; see fixtures/sas-round/make-sas-observed.R
+read_sas_observed <- function(type = c("round", "format")) {
+  type <- match.arg(type)
+  file <- paste0("sas-observed-", type, ".csv.gz")
+  path <- test_path("fixtures", "sas-round", file)
+  res <- utils::read.csv(path, colClasses = "character")
+  res$x <- hex_to_dbl(res$x_hex)
+  if (type == "round") {
+    res$unit <- hex_to_dbl(res$unit_hex)
+    res$sas <- hex_to_dbl(res$sas_hex)
+  } else {
+    res$digits <- as.integer(res$digits)
+  }
+  res
+}
