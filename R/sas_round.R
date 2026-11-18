@@ -162,7 +162,7 @@ sas_round <- function(x, digits = 0, unit = 10^-digits) {
 #' values share a common width and names are kept.
 #' @seealso [sas_round()]
 #' @examples
-#' format(round(1.005, 2), nsmall = 2)
+#' format(round(1.005, digits = 2), nsmall = 2)
 #' sas_format(1.005, digits = 2)
 #'
 #' sas_format(c(0.5, 1.5, 2.5, -2.5))

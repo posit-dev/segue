@@ -62,7 +62,7 @@ With \code{DECIMALCONV=STDIEEE}, SAS formats the exact binary value instead
 (\code{2.675} is shown as \code{2.67}); \code{sas_format()} does not replicate that.
 }
 \examples{
-format(round(1.005, 2), nsmall = 2)
+format(round(1.005, digits = 2), nsmall = 2)
 sas_format(1.005, digits = 2)
 
 sas_format(c(0.5, 1.5, 2.5, -2.5))

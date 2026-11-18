@@ -1,3 +1,48 @@
+#' segue objects
+#'
+#' @description
+#' The analysis functions in segue, such as [bin_prop_test()] and
+#' [numeric_rank_test()], return a segue object. A segue object is a list with
+#' two classes: the name of the function that made it and `"segue_object"`,
+#' for example `c("bin_prop_test", "segue_object")`.
+#'
+#' @section Elements:
+#' - `code`: A list with two elements, which [translate()] prints:
+#'   - `r`: The call to the R function that computed the results, or `NULL`
+#'     when there is no R equivalent.
+#'   - `sas`: A list of arguments to [sas_proc()] for the equivalent
+#'     \pkg{SAS} code, or an empty list when there is no \pkg{SAS}
+#'     equivalent. The code uses placeholders, such as `&dsn` and `&var`, for
+#'     the names of the data set and the variables.
+#' - `results`: The object from the R function that computed the results, as
+#'   it was returned. For example, an `htest` list from [stats::binom.test()]
+#'   or an S4 object from \pkg{coin}. Some functions adjust these results in
+#'   their [tidy()] method. The help page of each function describes these
+#'   adjustments.
+#' - `options`: A named list of the option values that the function used. The
+#'   names are the argument names of the segue function, not of the R function
+#'   that computed the results.
+#' - `data_characteristics`: A named list that describes the data after the
+#'   missing values are removed. It always has `missing`, the number of
+#'   observations or rows that were removed because of missing values. The
+#'   other elements depend on the function, such as `events` and `total` for
+#'   [bin_prop_test()].
+#'
+#' @section Methods:
+#' - `print()`: Shows a short description of the analysis and the number of
+#'   missing values that were removed.
+#' - [tidy()]: Returns the results as a tibble.
+#' - [translate()]: Shows the R and \pkg{SAS} code for the analysis.
+#'
+#' @examplesIf rlang::is_installed("modeldata")
+#' res <- bin_prop_test(modeldata::ad_data$Class)
+#' class(res)
+#' names(res)
+#' res$options
+#' res$data_characteristics
+#' @name segue_object
+NULL
+
 new_segue <- function(
   code = list(),
   results = list(),
@@ -40,9 +85,10 @@ new_segue <- function(
     )
   }
 
-  if (!is.list(results)) {
+  # S4 results come from engines such as coin.
+  if (!is.list(results) && !isS4(results)) {
     cli::cli_abort(
-      "The {.arg results} argument should be a list,
+      "The {.arg results} argument should be a list or an S4 object,
        not {.obj_type_friendly {results}}.",
       call = call
     )

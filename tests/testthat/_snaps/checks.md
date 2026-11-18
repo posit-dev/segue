@@ -46,3 +46,28 @@
       Error:
       ! Argument `"c"` must be one of "b" and "a".
 
+# select_single_column() selects one column
+
+    Code
+      select_single_column(rlang::quo(c(a, b)), df, "x")
+    Condition
+      Error:
+      ! `x` must select exactly one column of `data`, not 2.
+
+---
+
+    Code
+      select_single_column(rlang::quo(starts_with("z")), df, "x")
+    Condition
+      Error:
+      ! `x` must select exactly one column of `data`, not 0.
+
+---
+
+    Code
+      select_single_column(rlang::quo(z), df, "x")
+    Condition
+      Error:
+      ! Can't select columns that don't exist.
+      x Column `z` doesn't exist.
+

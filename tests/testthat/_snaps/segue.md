@@ -44,7 +44,7 @@
       new_segue(code = cls, results = 1)
     Condition
       Error:
-      ! The `results` argument should be a list, not a number.
+      ! The `results` argument should be a list or an S4 object, not a number.
 
 ---
 

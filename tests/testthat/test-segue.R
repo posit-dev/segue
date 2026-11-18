@@ -10,6 +10,12 @@ test_that("new_segue() creates objects", {
   expect_s3_class(res_null, "segue_object")
   expect_null(res_null$code$r)
   expect_equal(res_null$code$sas, list())
+
+  res_s4 <- new_segue(
+    code = list(r = NULL, sas = list()),
+    results = new("segue_test_s4", x = 1)
+  )
+  expect_s4_class(res_s4$results, "segue_test_s4")
 })
 
 test_that("new_segue() validates inputs", {

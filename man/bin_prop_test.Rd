@@ -42,13 +42,13 @@ null hypothesis.}
 and must be one of \code{"two_sided"}, \code{"greater"}, or \code{"lesser"}.}
 }
 \value{
-An object with classes \code{"bin_prop_test"} and \code{"segue_object"} with
-elements
+A \link[=segue_object]{segue object} with classes \code{"bin_prop_test"} and
+\code{"segue_object"}. \code{results} is an \code{htest} object. \code{data_characteristics}
+has these elements:
 \itemize{
-\item \code{code}: contains code in R and SAS for \code{\link[=translate]{translate()}}.
-\item \code{results}: the results,
-\item \code{data_characteristics}: characteristics of the data.
-\item \code{options}: records options that were used by the function.
+\item \code{missing}: The number of missing values that were removed.
+\item \code{events}: The number of events.
+\item \code{total}: The number of observations without missing values.
 }
 }
 \description{

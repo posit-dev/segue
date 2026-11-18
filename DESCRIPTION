@@ -21,8 +21,11 @@ Imports:
     broom,
     cli,
     purrr,
-    rlang (>= 1.2.0)
-Suggests: 
+    rlang (>= 1.2.0),
+    tibble,
+    tidyselect
+Suggests:
+    coin,
     haven,
     modeldata,
     spelling,

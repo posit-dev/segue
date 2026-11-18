@@ -150,16 +150,16 @@
 #'
 #' @examples
 #' # The two-sided p-values differ by definition
-#' exact_binom_test_sas(5, 10, p = 0.25)
-#' binom.test(5, 10, p = 0.25)$p.value
+#' exact_binom_test_sas(5, n = 10, p = 0.25)
+#' binom.test(5, n = 10, p = 0.25)$p.value
 #'
 #' # Only the smaller tail is reported
-#' exact_binom_test_sas(5, 10, p = 0.25, alternative = "greater")$p.value
-#' exact_binom_test_sas(5, 10, p = 0.25, alternative = "less")$p.value
+#' exact_binom_test_sas(5, n = 10, p = 0.25, alternative = "greater")$p.value
+#' exact_binom_test_sas(5, n = 10, p = 0.25, alternative = "less")$p.value
 #'
 #' # A small right tail loses precision, as in SAS
-#' exact_binom_test_sas(6, 6, p = 0.01, alternative = "greater")$p.value
-#' binom.test(6, 6, p = 0.01, alternative = "greater")$p.value
+#' exact_binom_test_sas(6, n = 6, p = 0.01, alternative = "greater")$p.value
+#' binom.test(6, n = 6, p = 0.01, alternative = "greater")$p.value
 #' @keywords internal
 #' @export
 exact_binom_test_sas <- function(
