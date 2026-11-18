@@ -57,6 +57,7 @@
 #' CAMIS Working Group page on the Binomial Test:
 #' \url{https://psiaims.github.io/CAMIS/Comp/r-sas_binomial_test.html}
 #' @export
+#'
 bin_prop_test <- function(y, ...) {
   UseMethod("bin_prop_test")
 }
