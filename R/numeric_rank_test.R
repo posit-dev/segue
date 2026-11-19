@@ -4,15 +4,15 @@
 #' using rank-based statistics such as the Wilcoxon test.
 #'
 #' @family Numeric Outcomes
-#' @param outcome <[`tidy-select`][tidyselect::language]> One numeric column
-#'   of `data` for the outcome.
-#' @param group <[`tidy-select`][tidyselect::language]> One factor or
-#'   character column of `data` for the groups.
+#' @param outcome One numeric column of `data` for the outcome. Uses
+#'  <[`tidy-select`][tidyselect::language]> to specify the value.
+#' @param group One factor or character column of `data` for the groups. Uses
+#'  <[`tidy-select`][tidyselect::language]> to specify the value.
 #' @param data A data frame.
 #' @param ... Not currently used.
-#' @param strata <[`tidy-select`][tidyselect::language]> One factor or
-#'   character column of `data` for the strata. Use only with
-#'   `method = "wilcoxon_stratified"`.
+#' @param strata One factor or character column of `data` for the strata. Uses
+#'  <[`tidy-select`][tidyselect::language]> to specify the value. Use only with
+#'  `method = "wilcoxon_stratified"`.
 #' @param method A single character string with possible values:
 #'   - `"wilcoxon"`: The Wilcoxon rank-sum test via [coin::wilcox_test()].
 #'     The `group` argument must have two levels.
@@ -37,8 +37,8 @@
 #' Rows with a missing value in the outcome, group, or strata column are
 #' removed before the analysis, as \pkg{SAS} does for the analysis variables.
 #' In \pkg{SAS}, the order of the group levels follows the `ORDER=` option
-#' (formatted values by default). In R, it follows the order of the factor
-#' levels.
+#' (formatted values by default). In \pkg{R}, it follows the order of the
+#' factor levels.
 #'
 #' ## Wilcoxon rank-sum test
 #'
@@ -51,25 +51,24 @@
 #' in one group. In \pkg{SAS}, this is achieved by using `Proc Npar1way`
 #' with the `wilcoxon` option.
 #'
-#' When assessing whether the R implementation used here is consistent with
-#' \pkg{SAS}, there are a few aspects to consider:
+#' When assessing whether the \pkg{R} implementation used here is consistent
+#' with \pkg{SAS}, there are a few aspects to consider:
 #'
 #' - **Reference group**: The \eqn{Z} statistic comes from the rank sum of one
 #'   group, which sets the sign of \eqn{Z} and the meaning of a one-sided
 #'   `alternative`. \pkg{SAS} uses the smaller group, or its first class level
 #'   when the groups are the same size. [coin::wilcox_test()] uses the first
 #'   factor level. The `reference_choice` argument selects either one. When the
-#'   groups are the same size, `"smaller"` uses the first factor level. The R
-#'   code from [translate()] assumes that the reference group is the first
-#'   factor level.
+#'   groups are the same size, `"smaller"` uses the first factor level. The
+#'   \pkg{R} code from [translate()] assumes that the reference group is the
+#'   first factor level.
 #' - **Continuity correction**: \pkg{SAS} applies a correction of 0.5 to the
 #'   asymptotic test by default. \pkg{coin} has no correction. [tidy()]
 #'   applies the correction to the \pkg{coin} results, so the object in
 #'   `results` is not corrected. Exact and Monte Carlo p-values have no
 #'   correction.
 #' - **One-sided correction**: The correction moves \eqn{Z} toward the null
-#'   mean for all alternatives. The direction that \pkg{SAS} uses for
-#'   one-sided alternatives has not been checked.
+#'   mean for all alternatives.
 #' - **Statistic**: \pkg{SAS} reports the rank sum \eqn{S}, \eqn{Z}, and a
 #'   \eqn{t} approximation. This function reports \eqn{Z}.
 #' - **Ties**: \pkg{SAS} and \pkg{coin} both use mid-ranks and the variance
@@ -78,8 +77,8 @@
 #'   asymptotic distribution by default. `distribution = "exact"` and
 #'   `"approximate"` match the \pkg{SAS} statements `exact wilcoxon;` and
 #'   `exact wilcoxon / mc;`.
-#' - **Alternative**: \pkg{SAS} has no option for the alternative. It reports
-#'   both the one-sided and the two-sided p-values.
+#' - **Alternative**: \pkg{SAS} has no option for the alternative.
+#'   `numeric_rank_test()` reports both the one-sided and the two-sided p-values.
 #'
 #' ## Stratified Wilcoxon rank-sum test
 #'
@@ -88,14 +87,16 @@
 #' stratum divided by the stratum size plus one. In \pkg{SAS}, this is
 #' `Proc Freq` with `cmh2 scores=modridit`.
 #'
+#' Some important aspects:
+#'
 #' - **Scores**: The stratified version of [coin::wilcox_test()] uses the ranks
 #'   within each stratum without weights (in \pkg{SAS}, `scores=rank`), which
 #'   is not van Elteren's test. This function uses [coin::independence_test()]
 #'   with van Elteren's scores instead.
 #' - **Statistic**: \pkg{SAS} reports a chi-square statistic (\eqn{Z^2}) with
-#'   one degree of freedom, which is two-sided only. This function reports
-#'   \eqn{Z} from \pkg{coin}, with the first factor level as the reference
-#'   group.
+#'   one degree of freedom, which is two-sided only. `numeric_rank_test()`
+#'   reports \eqn{Z} from \pkg{coin}, with the first factor level as the
+#'   reference group.
 #' - **Null distribution**: \pkg{SAS} has only the asymptotic test. The exact
 #'   and Monte Carlo versions from \pkg{coin} have no \pkg{SAS} code.
 #'
@@ -104,6 +105,8 @@
 #' `method = "kruskal_wallis"` compares two or more groups with the mean rank
 #' in each group. In \pkg{SAS}, this is `Proc Npar1way` with the `wilcoxon`
 #' option.
+#'
+#' Note:
 #'
 #' - **Statistic**: \pkg{SAS} and \pkg{coin} give the same chi-square
 #'   statistic, adjusted for ties, with one degree of freedom less than the
@@ -162,6 +165,9 @@
 #' Kruskal, W. H., and Wallis, W. A. 1952. "Use of Ranks in One-Criterion
 #' Variance Analysis." _Journal of the American Statistical Association_ 47
 #' (260): 583–621. \doi{10.1080/01621459.1952.10483441}.
+#'
+#' SAS Institute Inc. 2025. "The NPAR1WAY Procedure." In _SAS/STAT 15.4 User's
+#' Guide_. SAS Institute Inc., Cary, NC.
 #'
 #' van Elteren, P. H. 1960. "On the Combination of Independent Two-Sample
 #' Tests of Wilcoxon." _Bulletin of the International Statistical Institute_

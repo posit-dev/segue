@@ -28,7 +28,7 @@ bin_prop_test(y, ...)
 \itemize{
 \item \code{"exact"}: An exact test via \code{\link[=binom.test]{binom.test()}}.
 \item \code{"exact_sas"}: An exact test via \code{\link[=exact_binom_test_sas]{exact_binom_test_sas()}} that emulates
-SAS's \verb{Proc Freq} results.
+\pkg{SAS}'s \verb{Proc Freq} results.
 \item \code{"score"}: An asymptotic score test via \code{\link[=prop.test]{prop.test()}}.
 }}
 
@@ -83,7 +83,7 @@ x)}{P(X <= x)} and \eqn{P(X \ge x)}{P(X >= x)}.
 \code{XPR_BIN}, and leaves the other variable missing.
 }
 \enumerate{
-\item Two-sided p-values.
+\item Two-sided p-values.\
 }
 \itemize{
 \item \code{\link[=binom.test]{binom.test()}} uses the “minlike” method (short for
@@ -214,6 +214,9 @@ Intervals for Discrete Data.” \emph{The R Journal} 2 (1): 53–58.
 \doi{10.32614/RJ-2010-008}.
 
 Hirji, K. 2006. \emph{Exact Analysis of Discrete Data}. Chapman and Hall/CRC.
+
+SAS Institute Inc. 2025. "The FREQ Procedure." In \emph{SAS/STAT 15.4 User's
+Guide}. SAS Institute Inc., Cary, NC.
 
 CAMIS Working Group page on the Binomial Test:
 \url{https://psiaims.github.io/CAMIS/Comp/r-sas_binomial_test.html}

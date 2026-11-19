@@ -1,8 +1,8 @@
-#' Exact Binomial Test, Computed as SAS `Proc Freq` Does
+#' Exact Binomial Test, Computed as \pkg{SAS} `Proc Freq` Does
 #'
 #' @description
-#' `exact_binom_test_sas()` takes similar arguments as
-#' [stats::binom.test()] but returns the p-values that SAS `Proc Freq` reports for
+#' `exact_binom_test_sas()` takes similar arguments as [stats::binom.test()]
+#' but returns the p-values that \pkg{SAS} `Proc Freq` reports for
 #'
 #' ```
 #' proc freq;
@@ -59,11 +59,12 @@
 #' ## Two-sided p-value
 #'
 #' The two functions define the two-sided p-value differently. In the terms of
-#' Fay (2010), SAS `Proc Freq` uses the "central" method: twice the smaller tail,
-#' capped at 1.  This is also  called "doubling" or "TST" by Hirji (2006).
+#' Fay (2010), \pkg{SAS} `Proc Freq` uses the "central" method: twice the
+#' smaller tail, capped at 1.  This is also  called "doubling" or "TST" by Hirji
+#' (2006).
 #'
 #' For example, with \eqn{n = 10}, \eqn{x = 5}, and \eqn{p_0 = 0.25}, the right
-#' tail is \eqn{p_R = 0.0781269} and is the smaller tail, SAS computes:
+#' tail is \eqn{p_R = 0.0781269} and is the smaller tail, \pkg{SAS} computes:
 #'
 #' \preformatted{  p_2 = 2 * 0.0781269 = 0.1562538}
 #'
@@ -80,14 +81,14 @@
 #' When \eqn{p_R} is small, \eqn{\Pr(X \le x - 1)}{Pr(X <= x - 1)} is close to 1 and the
 #' subtraction loses relative precision. For example, with \eqn{n = 6},
 #' \eqn{x = 6}, and \eqn{p_0 = 0.01}, \eqn{p_R = 10^{-12}}{p_R = 1e-12}, and
-#' SAS's value is correct to only about four significant digits instead of the
-#' usual 15 or 16. Right tails below about
-#' \eqn{10^{-16}}{1e-16} come out as exactly 0.
+#' \pkg{SAS}'s value is correct to only about four significant digits instead of
+#' the usual 15 or 16. Right tails below about \eqn{10^{-16}}{1e-16} come out as
+#' exactly 0.
 #'
 #' `exact_binom_test_sas()` uses the same subtraction,
 #' `1 - pbinom(x - 1, n, p)`, so that it returns these values too.
 #'
-#' The results are not identical to `Proc Freq`'s to the last bit. R's
+#' The results are not identical to `Proc Freq`'s to the last bit. \pkg{R}'s
 #' [stats::pbinom()] and `Proc Freq` use different algorithms for the binomial
 #' distribution function, and their results usually differ by a few dozen units in
 #' the last place (at most a few hundred). This is random rounding error
@@ -133,8 +134,8 @@
 #'     test.
 #'
 #' @references
-#' SAS Institute Inc. "Binomial Proportion." _SAS/STAT User's Guide: The FREQ
-#' Procedure_.
+#' SAS Institute Inc. 2025. "The FREQ Procedure: Binomial Proportion." In
+#' _SAS/STAT 15.4 User's Guide_. SAS Institute Inc., Cary, NC.
 #'
 #' Fay, M. P. (2010). Two-sided exact tests and matching confidence intervals
 #' for discrete data. _The R Journal_, 2(1), 53-58.

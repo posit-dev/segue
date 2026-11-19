@@ -17,18 +17,18 @@ numeric_rank_test(
 )
 }
 \arguments{
-\item{outcome}{<\code{\link[tidyselect:language]{tidy-select}}> One numeric column
-of \code{data} for the outcome.}
+\item{outcome}{One numeric column of \code{data} for the outcome. Uses
+<\code{\link[tidyselect:language]{tidy-select}}> to specify the value.}
 
-\item{group}{<\code{\link[tidyselect:language]{tidy-select}}> One factor or
-character column of \code{data} for the groups.}
+\item{group}{One factor or character column of \code{data} for the groups. Uses
+<\code{\link[tidyselect:language]{tidy-select}}> to specify the value.}
 
 \item{data}{A data frame.}
 
 \item{...}{Not currently used.}
 
-\item{strata}{<\code{\link[tidyselect:language]{tidy-select}}> One factor or
-character column of \code{data} for the strata. Use only with
+\item{strata}{One factor or character column of \code{data} for the strata. Uses
+<\code{\link[tidyselect:language]{tidy-select}}> to specify the value. Use only with
 \code{method = "wilcoxon_stratified"}.}
 
 \item{method}{A single character string with possible values:
@@ -76,8 +76,8 @@ using rank-based statistics such as the Wilcoxon test.
 Rows with a missing value in the outcome, group, or strata column are
 removed before the analysis, as \pkg{SAS} does for the analysis variables.
 In \pkg{SAS}, the order of the group levels follows the \verb{ORDER=} option
-(formatted values by default). In R, it follows the order of the factor
-levels.
+(formatted values by default). In \pkg{R}, it follows the order of the
+factor levels.
 \subsection{Wilcoxon rank-sum test}{
 
 This hypothesis test, also known as the Mann–Whitney \eqn{U} test, is a
@@ -89,25 +89,24 @@ Using \code{method = "wilcoxon"} compares two groups with the sum of the ranks
 in one group. In \pkg{SAS}, this is achieved by using \verb{Proc Npar1way}
 with the \code{wilcoxon} option.
 
-When assessing whether the R implementation used here is consistent with
-\pkg{SAS}, there are a few aspects to consider:
+When assessing whether the \pkg{R} implementation used here is consistent
+with \pkg{SAS}, there are a few aspects to consider:
 \itemize{
 \item \strong{Reference group}: The \eqn{Z} statistic comes from the rank sum of one
 group, which sets the sign of \eqn{Z} and the meaning of a one-sided
 \code{alternative}. \pkg{SAS} uses the smaller group, or its first class level
 when the groups are the same size. \code{\link[coin:wilcox_test]{coin::wilcox_test()}} uses the first
 factor level. The \code{reference_choice} argument selects either one. When the
-groups are the same size, \code{"smaller"} uses the first factor level. The R
-code from \code{\link[=translate]{translate()}} assumes that the reference group is the first
-factor level.
+groups are the same size, \code{"smaller"} uses the first factor level. The
+\pkg{R} code from \code{\link[=translate]{translate()}} assumes that the reference group is the
+first factor level.
 \item \strong{Continuity correction}: \pkg{SAS} applies a correction of 0.5 to the
 asymptotic test by default. \pkg{coin} has no correction. \code{\link[=tidy]{tidy()}}
 applies the correction to the \pkg{coin} results, so the object in
 \code{results} is not corrected. Exact and Monte Carlo p-values have no
 correction.
 \item \strong{One-sided correction}: The correction moves \eqn{Z} toward the null
-mean for all alternatives. The direction that \pkg{SAS} uses for
-one-sided alternatives has not been checked.
+mean for all alternatives.
 \item \strong{Statistic}: \pkg{SAS} reports the rank sum \eqn{S}, \eqn{Z}, and a
 \eqn{t} approximation. This function reports \eqn{Z}.
 \item \strong{Ties}: \pkg{SAS} and \pkg{coin} both use mid-ranks and the variance
@@ -116,8 +115,8 @@ adjusted for ties.
 asymptotic distribution by default. \code{distribution = "exact"} and
 \code{"approximate"} match the \pkg{SAS} statements \verb{exact wilcoxon;} and
 \verb{exact wilcoxon / mc;}.
-\item \strong{Alternative}: \pkg{SAS} has no option for the alternative. It reports
-both the one-sided and the two-sided p-values.
+\item \strong{Alternative}: \pkg{SAS} has no option for the alternative.
+\code{numeric_rank_test()} reports both the one-sided and the two-sided p-values.
 }
 }
 
@@ -127,15 +126,17 @@ both the one-sided and the two-sided p-values.
 (also known as van Elteren's test). The scores are the ranks within each
 stratum divided by the stratum size plus one. In \pkg{SAS}, this is
 \verb{Proc Freq} with \verb{cmh2 scores=modridit}.
+
+Some important aspects:
 \itemize{
 \item \strong{Scores}: The stratified version of \code{\link[coin:wilcox_test]{coin::wilcox_test()}} uses the ranks
 within each stratum without weights (in \pkg{SAS}, \code{scores=rank}), which
 is not van Elteren's test. This function uses \code{\link[coin:independence_test]{coin::independence_test()}}
 with van Elteren's scores instead.
 \item \strong{Statistic}: \pkg{SAS} reports a chi-square statistic (\eqn{Z^2}) with
-one degree of freedom, which is two-sided only. This function reports
-\eqn{Z} from \pkg{coin}, with the first factor level as the reference
-group.
+one degree of freedom, which is two-sided only. \code{numeric_rank_test()}
+reports \eqn{Z} from \pkg{coin}, with the first factor level as the
+reference group.
 \item \strong{Null distribution}: \pkg{SAS} has only the asymptotic test. The exact
 and Monte Carlo versions from \pkg{coin} have no \pkg{SAS} code.
 }
@@ -146,6 +147,8 @@ and Monte Carlo versions from \pkg{coin} have no \pkg{SAS} code.
 \code{method = "kruskal_wallis"} compares two or more groups with the mean rank
 in each group. In \pkg{SAS}, this is \verb{Proc Npar1way} with the \code{wilcoxon}
 option.
+
+Note:
 \itemize{
 \item \strong{Statistic}: \pkg{SAS} and \pkg{coin} give the same chi-square
 statistic, adjusted for ties, with one degree of freedom less than the
@@ -198,6 +201,9 @@ System for Conditional Inference." \emph{The American Statistician} 60 (3):
 Kruskal, W. H., and Wallis, W. A. 1952. "Use of Ranks in One-Criterion
 Variance Analysis." \emph{Journal of the American Statistical Association} 47
 (260): 583–621. \doi{10.1080/01621459.1952.10483441}.
+
+SAS Institute Inc. 2025. "The NPAR1WAY Procedure." In \emph{SAS/STAT 15.4 User's
+Guide}. SAS Institute Inc., Cary, NC.
 
 van Elteren, P. H. 1960. "On the Combination of Independent Two-Sample
 Tests of Wilcoxon." \emph{Bulletin of the International Statistical Institute}

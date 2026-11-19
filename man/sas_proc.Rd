@@ -2,7 +2,7 @@
 % Please edit documentation in R/sas-proc.R
 \name{sas_proc}
 \alias{sas_proc}
-\title{Write SAS Code for a Procedure}
+\title{Write \pkg{SAS} Code for a Procedure}
 \usage{
 sas_proc(
   proc,
@@ -29,14 +29,14 @@ statement.}
 
 \item{class, model, tables, var, by, where}{Common statements. Each value is a
 string, or a character vector that is joined with spaces. Use a slash for
-statement options, as in SAS, for example \code{model = "mpg = wt / clb"}. If
-you do not pass a statement, the proc default is used, if there is one.
+statement options, as in \pkg{SAS}, for example \code{model = "mpg = wt / clb"}.
+If you do not pass a statement, the proc default is used, if there is one.
 Pass \code{NULL} to leave the statement out.}
 
 \item{data}{A single string with the data set name, or \code{NULL} to leave out
 \verb{data=}. The default is the \verb{&dsn} placeholder. The data set must exist
-in SAS when you run the code, for example after you import \code{mtcars} from
-a CSV file.}
+in \pkg{SAS} when you run the code, for example after you import \code{mtcars}
+from a CSV file.}
 
 \item{options}{A character or numeric vector of options for the \code{proc}
 line. Unnamed values are written as they are, and named values are
@@ -49,12 +49,11 @@ syntax colors. Use \code{as.character()} to get the code as plain text, for
 example to write it to a \code{.sas} file.
 }
 \description{
-Writes the SAS code for one statistical procedure (proc) as text. Each
-statement is one argument: the argument name is the SAS keyword, and the
-value is the rest of the statement, written as you would write it in SAS.
-The most common
-statements, such as \code{model} and \code{class}, have their own arguments. Any
-other statement can also be passed by name.
+Writes the \pkg{SAS} code for one statistical procedure (proc) as text. Each
+statement is one argument: the argument name is the \pkg{SAS} keyword, and
+the value is the rest of the statement, written as you would write it in
+\pkg{SAS}. The most common statements, such as \code{model} and \code{class}, have
+their own arguments. Any other statement can also be passed by name.
 }
 \details{
 Statements are written in this order, no matter the order you pass them:
@@ -72,7 +71,7 @@ The code ends with \code{quit;} for the interactive procs (\code{anova}, \code{c
 \section{Default statements}{
 
 If you leave out a statement that the proc needs, \code{sas_proc()} adds it.
-Default statements use SAS macro variables, such as \verb{&row}, as
+Default statements use \pkg{SAS} macro variables, such as \verb{&row}, as
 placeholders for the variable names.\tabular{ll}{
    Proc \tab Default statements \cr
    \code{freq} \tab \verb{tables &row*&col} \cr

@@ -8,20 +8,20 @@
 #'
 #' @section Elements:
 #' - `code`: A list with two elements, which [translate()] prints:
-#'   - `r`: The call to the R function that computed the results, or `NULL`
-#'     when there is no R equivalent.
+#'   - `r`: The call to the \pkg{R} function that computed the results, or
+#'     `NULL` when there is no \pkg{R} equivalent.
 #'   - `sas`: A list of arguments to [sas_proc()] for the equivalent
 #'     \pkg{SAS} code, or an empty list when there is no \pkg{SAS}
 #'     equivalent. The code uses placeholders, such as `&dsn` and `&var`, for
 #'     the names of the data set and the variables.
-#' - `results`: The object from the R function that computed the results, as
-#'   it was returned. For example, an `htest` list from [stats::binom.test()]
-#'   or an S4 object from \pkg{coin}. Some functions adjust these results in
-#'   their [tidy()] method. The help page of each function describes these
+#' - `results`: The object from the \pkg{R} function that computed the
+#'   results, as it was returned. For example, an `htest` list from
+#'   [stats::binom.test()] or an S4 object from \pkg{coin}. Some functions
+#'   adjust these results in their [tidy()] method. The help page of each function describes these
 #'   adjustments.
 #' - `options`: A named list of the option values that the function used. The
-#'   names are the argument names of the segue function, not of the R function
-#'   that computed the results.
+#'   names are the argument names of the segue function, not of the \pkg{R}
+#'   function that computed the results.
 #' - `data_characteristics`: A named list that describes the data after the
 #'   missing values are removed. It always has `missing`, the number of
 #'   observations or rows that were removed because of missing values. The
@@ -32,7 +32,7 @@
 #' - `print()`: Shows a short description of the analysis and the number of
 #'   missing values that were removed.
 #' - [tidy()]: Returns the results as a tibble.
-#' - [translate()]: Shows the R and \pkg{SAS} code for the analysis.
+#' - [translate()]: Shows the \pkg{R} and \pkg{SAS} code for the analysis.
 #'
 #' @examplesIf rlang::is_installed("modeldata")
 #' res <- bin_prop_test(modeldata::ad_data$Class)

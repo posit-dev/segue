@@ -2,7 +2,7 @@
 % Please edit documentation in R/sas_round.R
 \name{sas_round}
 \alias{sas_round}
-\title{Round Numbers the Same Way as SAS}
+\title{Round Numbers the Same Way as \pkg{SAS}}
 \usage{
 sas_round(x, digits = 0, unit = 10^-digits)
 }
@@ -14,40 +14,41 @@ decimal places, as in \code{\link[=round]{round()}}. Negative values round to a 
 (e.g., \code{digits = -2} rounds to the nearest hundred).}
 
 \item{unit}{A single positive number for the rounding unit (the
-\code{rounding-unit} argument of the SAS function). The default, \code{10^-digits},
-is determined by \code{digits}. Use \code{unit} for units that are not powers of ten,
-such as 0.25 or 1/7. Supply only one of \code{digits} and \code{unit}. As in SAS,
-units at or below \code{.Machine$double.xmin} (about 2.2e-308) are not allowed.}
+\code{rounding-unit} argument of the \pkg{SAS} function). The default,
+\code{10^-digits}, is determined by \code{digits}. Use \code{unit} for units that are not
+powers of ten, such as 0.25 or 1/7. Supply only one of \code{digits} and \code{unit}.
+As in \pkg{SAS}, units at or below \code{.Machine$double.xmin} (about 2.2e-308)
+are not allowed.}
 }
 \value{
 A double vector the same length as \code{x}.
 }
 \description{
-\code{sas_round()} replicates the SAS \code{ROUND()} function.
+\code{sas_round()} replicates the \pkg{SAS} \code{ROUND()} function.
 }
 \details{
-R's \code{\link[=round]{round()}} and SAS's \code{ROUND()} can give different answers for two
-reasons:
+\pkg{R}'s \code{\link[=round]{round()}} and \pkg{SAS}'s \code{ROUND()} can give different answers for
+two reasons:
 \itemize{
 \item When a value is halfway between two multiples of \code{unit}, \code{round()}
-returns the even multiple (e.g., \code{round(2.5)} is 2), while SAS returns
-the multiple farther from zero (3).
+returns the even multiple (e.g., \code{round(2.5)} is 2), while \pkg{SAS}
+returns the multiple farther from zero (3).
 \item Many decimal values do not have an exact binary representation. For
 example, \code{1.005} is stored as slightly less than 1.005, so
-\code{round(1.005, 2)} is 1. SAS treats values that are within a small
+\code{round(1.005, 2)} is 1. \pkg{SAS} treats values that are within a small
 relative tolerance of the halfway point as being halfway (called
 "fuzzing"), so \code{ROUND(1.005, 0.01)} is 1.01.
 }
 
-\code{sas_round()} follows the algorithm described in the SAS documentation:
+\code{sas_round()} follows the algorithm described in the \pkg{SAS} documentation:
 \itemize{
 \item \code{x / unit} is rounded half away from zero, after adding a tolerance of
 \code{min(1e-6, abs(x / unit) * 1e-12)} to its absolute value.
 \item When \code{unit} is the reciprocal of an integer (e.g., 0.01 or 1/7), the
 rounded value of \code{x / unit} is divided by that integer so that the
 result matches the decimal value (\code{sas_round(0.33, 0.1)} is identical to
-\code{0.3}). As in SAS, \code{1 / unit} must be within 16 units in the last place
-of the integer.
+\code{0.3}). As in \pkg{SAS}, \code{1 / unit} must be within 16 units in the last
+place of the integer.
 \item When \code{unit} is not an integer but has at most four decimal places, the
 result is computed with integer arithmetic so that it also matches the
 decimal value.
@@ -60,12 +61,12 @@ most four decimal places, the decimal value is returned instead
 
 Missing values are returned as missing.
 
-These results were compared with about 70,000 results of the SAS
+These results were compared with about 70,000 results of the \pkg{SAS}
 \code{ROUND()} function (SAS Viya, \code{V.04.00M0P060826}), including every value
 with up to three decimal places between -3 and 3, and every case in the
 package's tests. They are identical except
 when \code{abs(x)} or \code{abs(x / unit)} is 1e15 or more. There, values have more
-than 15 significant digits and SAS is not exact either: for example,
+than 15 significant digits and \pkg{SAS} is not exact either: for example,
 \code{ROUND(1000000000000000.5, 0.5)} is 1000000000000001, although the value is
 already a multiple of 0.5.
 }

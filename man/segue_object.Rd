@@ -14,21 +14,21 @@ for example \code{c("bin_prop_test", "segue_object")}.
 \itemize{
 \item \code{code}: A list with two elements, which \code{\link[=translate]{translate()}} prints:
 \itemize{
-\item \code{r}: The call to the R function that computed the results, or \code{NULL}
-when there is no R equivalent.
+\item \code{r}: The call to the \pkg{R} function that computed the results, or
+\code{NULL} when there is no \pkg{R} equivalent.
 \item \code{sas}: A list of arguments to \code{\link[=sas_proc]{sas_proc()}} for the equivalent
 \pkg{SAS} code, or an empty list when there is no \pkg{SAS}
 equivalent. The code uses placeholders, such as \verb{&dsn} and \verb{&var}, for
 the names of the data set and the variables.
 }
-\item \code{results}: The object from the R function that computed the results, as
-it was returned. For example, an \code{htest} list from \code{\link[stats:binom.test]{stats::binom.test()}}
-or an S4 object from \pkg{coin}. Some functions adjust these results in
-their \code{\link[=tidy]{tidy()}} method. The help page of each function describes these
+\item \code{results}: The object from the \pkg{R} function that computed the
+results, as it was returned. For example, an \code{htest} list from
+\code{\link[stats:binom.test]{stats::binom.test()}} or an S4 object from \pkg{coin}. Some functions
+adjust these results in their \code{\link[=tidy]{tidy()}} method. The help page of each function describes these
 adjustments.
 \item \code{options}: A named list of the option values that the function used. The
-names are the argument names of the segue function, not of the R function
-that computed the results.
+names are the argument names of the segue function, not of the \pkg{R}
+function that computed the results.
 \item \code{data_characteristics}: A named list that describes the data after the
 missing values are removed. It always has \code{missing}, the number of
 observations or rows that were removed because of missing values. The
@@ -43,7 +43,7 @@ other elements depend on the function, such as \code{events} and \code{total} fo
 \item \code{print()}: Shows a short description of the analysis and the number of
 missing values that were removed.
 \item \code{\link[=tidy]{tidy()}}: Returns the results as a tibble.
-\item \code{\link[=translate]{translate()}}: Shows the R and \pkg{SAS} code for the analysis.
+\item \code{\link[=translate]{translate()}}: Shows the \pkg{R} and \pkg{SAS} code for the analysis.
 }
 }
 
