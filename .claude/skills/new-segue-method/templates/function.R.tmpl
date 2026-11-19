@@ -1,0 +1,212 @@
+# Template for R/{{name}}.R
+#
+# Placeholders use {{double_braces}}. Blocks between `# >>> per-method` and
+# `# <<< per-method` are repeated once per value of `method`. Blocks marked
+# `# >>> test only`, `# >>> interval only`, or `# >>> factor only` are kept or
+# deleted depending on the analysis kind and input class. Delete every marker
+# comment and this header from the final file.
+
+#' {{Title}}
+#'
+#' {{One or two sentences: what the function computes and which engines it
+#' wraps, such as [stats::binom.test()].}}
+#'
+#' @family {{Family}}
+#' @param {{y}} {{Description of the dispatch argument, such as "A factor vector
+#'   with two levels."}}
+#' @param method A single character string with possible values:
+# >>> per-method
+#'   - `"{{method}}"`: {{method description}}
+# <<< per-method
+#'
+# >>> factor only
+#' @param event_level A single character value for the level of the factor that
+#' corresponds to the event of interest. The default is the first factor level.
+# <<< factor only
+# >>> test only
+#' @param alternative A character value indicating the alternative hypothesis
+#' and must be one of `"two_sided"`, `"greater"`, or `"lesser"`.
+#' @param null_value {{Description of the null value and its valid range.}}
+# <<< test only
+# >>> interval only
+#' @param conf_level A single number in `(0, 1)` for the confidence level of
+#' the interval.
+# <<< interval only
+#' @param ... Not currently used.
+#'
+#' @details
+#'
+#' {{Details about the analysis and the differences between the methods.}}
+#'
+#' @return An object with classes `"{{name}}"` and `"segue_object"` with
+#' elements
+#'   - `code`: contains code in R and SAS for [translate()].
+#'   - `results`: the results,
+#'   - `data_characteristics`: characteristics of the data.
+#'   - `options`: records options that were used by the function.
+#' @examplesIf rlang::is_installed("modeldata")
+#' {{example_data_line}}
+#' res <- {{name}}({{example_args}})
+#' res
+#'
+#' # Can be tidied to obtain a tibble of results:
+#' tidy(res)
+#'
+#' # Show the equivalent R and SAS code:
+#' translate(res)
+#' @seealso {{seealso links}}
+#' @references
+#' {{references}}
+#' @export
+{{name}} <- function({{y}}, ...) {
+  UseMethod("{{name}}")
+}
+
+#' @rdname {{name}}
+#' @export
+#' @export {{name}}.default
+{{name}}.default <- function({{y}}, ...) {
+  cli::cli_abort(
+    "There is no known method for {.fn {{name}}} for {.obj_type_friendly {{{y}}}}."
+  )
+}
+
+# >>> per-class (repeat for each input class)
+#' @rdname {{name}}
+#' @export
+#' @export {{name}}.{{class}}
+{{name}}.{{class}} <- function(
+  {{y}},
+  method = c({{"method_1", "method_2", ...}}),
+  # >>> factor only
+  event_level = NULL,
+  # <<< factor only
+  # >>> test only
+  null_value = {{null_default}},
+  alternative = "two_sided",
+  # <<< test only
+  # >>> interval only
+  conf_level = 0.95,
+  # <<< interval only
+  {{other arguments with defaults}},
+  ...
+) {
+  {{check for the class, such as check_factor(y)}}
+  # >>> factor only
+  event_level <- check_level(event_level, {{y}})
+  # <<< factor only
+  method <- rlang::arg_match(method, c({{"method_1", "method_2", ...}}))
+  # >>> test only
+  stats_alternative <- convert_alternative(alternative)
+  rlang::check_number_decimal(
+    null_value,
+    min = {{null_min}},
+    max = {{null_max}},
+    allow_infinite = FALSE
+  )
+  # <<< test only
+  # >>> interval only
+  rlang::check_number_decimal(
+    conf_level,
+    min = 0.0,
+    max = 1.0,
+    allow_infinite = FALSE
+  )
+  # <<< interval only
+  {{validation for other arguments}}
+  rlang::check_dots_empty()
+
+  # ----------------------------------------------------------------------------
+  # Spit out options
+
+  opts <- list(
+    method = method,
+    {{segue-side option names and values, in argument order}}
+  )
+  # Argument names and values used by the underlying engine functions
+  call_opts <- list({{engine-side names, such as alternative = stats_alternative,
+  p = null_value, conf.level = conf_level}})
+
+  # ----------------------------------------------------------------------------
+  # Account for missing data
+
+  is_na <- is.na({{y}})
+  num_missing <- sum(is_na)
+
+  compl_y <- {{y}}[!is_na]
+  {{data summaries, such as num_events <- sum(compl_y == event_level)}}
+
+  # ----------------------------------------------------------------------------
+
+  orig_res <- switch(
+    method,
+    # >>> per-method
+    {{method}} = {{name}}_{{method}}({{data summaries}}, call_opts, opts),
+    # <<< per-method
+  )
+
+  res <- new_segue(
+    code = orig_res$code,
+    options = opts,
+    results = orig_res$results,
+    data_characteristics = list(
+      missing = num_missing,
+      {{data summaries as name = value}}
+    ),
+    classes = "{{name}}"
+  )
+  res
+}
+# <<< per-class
+
+#' @export
+print.{{name}} <- function(x, ...) {
+  cli::cli_inform(
+    "{{Print header, such as Testing a Single Binomial Proportion via {x$options$method} Test}}"
+  )
+  report_missing_simple(x)
+  invisible(x)
+}
+
+# ------------------------------------------------------------------------------
+# Specific computational methods
+
+# >>> per-method
+{{name}}_{{method}} <- function(
+  {{data summaries}},
+  options = list(),
+  settings = list()
+) {
+  # TODO (only if the engine does not exist yet): implement {{engine}}.
+  cl <- rlang::call2(
+    "{{engine function}}",
+    .ns = "{{engine namespace}}",
+    {{engine data arguments, such as x = num_events, n = num_total}},
+    !!!options
+    {{, fixed engine arguments, such as correct = FALSE}}
+  )
+  res <- try(rlang::eval_tidy(cl), silent = TRUE)
+  if (inherits(res, "try-error")) {
+    cli::cli_abort(
+      "{.fn {{name}}} with {.code method = '{{method}}'} failed with error: {res}",
+      call = NULL
+    )
+  }
+
+  # Arguments for sas_proc(); use list() when there is no SAS equivalent.
+  # Build option-dependent statements from the segue-side `settings`, one
+  # temporary variable at a time (no inline if/else). Note options that have
+  # no SAS equivalent in a comment here.
+  {{for example:
+  sas_options <- paste0("p=", settings$null_value, " level=\"", settings$event_level, "\"")
+  }}
+  sas_code <- list(
+    proc = "{{proc}}",
+    {{other sas_proc() statements, such as
+    tables = paste0("&var / binomial(", sas_options, ")"),
+    exact = "binomial"}}
+  )
+
+  list(results = res, code = list(r = cl, sas = sas_code))
+}
+# <<< per-method

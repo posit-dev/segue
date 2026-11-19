@@ -1,4 +1,4 @@
-#' Show Code in R and SAS for an Analysis
+#' Show Code in \pkg{R} and \pkg{SAS} for an Analysis
 #'
 #' @param x An object
 #' @param ... Not currently used

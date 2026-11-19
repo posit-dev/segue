@@ -1,12 +1,11 @@
-#' Write SAS Code for a Procedure
+#' Write \pkg{SAS} Code for a Procedure
 #'
 #' @description
-#' Writes the SAS code for one statistical procedure (proc) as text. Each
-#' statement is one argument: the argument name is the SAS keyword, and the
-#' value is the rest of the statement, written as you would write it in SAS.
-#' The most common
-#' statements, such as `model` and `class`, have their own arguments. Any
-#' other statement can also be passed by name.
+#' Writes the \pkg{SAS} code for one statistical procedure (proc) as text. Each
+#' statement is one argument: the argument name is the \pkg{SAS} keyword, and
+#' the value is the rest of the statement, written as you would write it in
+#' \pkg{SAS}. The most common statements, such as `model` and `class`, have
+#' their own arguments. Any other statement can also be passed by name.
 #'
 #' @details
 #' Statements are written in this order, no matter the order you pass them:
@@ -22,7 +21,7 @@
 #'
 #' @section Default statements:
 #' If you leave out a statement that the proc needs, `sas_proc()` adds it.
-#' Default statements use SAS macro variables, such as `&row`, as
+#' Default statements use \pkg{SAS} macro variables, such as `&row`, as
 #' placeholders for the variable names.
 #'
 #' | Proc                  | Default statements                          |
@@ -49,13 +48,13 @@
 #'   statement.
 #' @param class,model,tables,var,by,where Common statements. Each value is a
 #'   string, or a character vector that is joined with spaces. Use a slash for
-#'   statement options, as in SAS, for example `model = "mpg = wt / clb"`. If
-#'   you do not pass a statement, the proc default is used, if there is one.
+#'   statement options, as in \pkg{SAS}, for example `model = "mpg = wt / clb"`.
+#'   If you do not pass a statement, the proc default is used, if there is one.
 #'   Pass `NULL` to leave the statement out.
 #' @param data A single string with the data set name, or `NULL` to leave out
 #'   `data=`. The default is the `&dsn` placeholder. The data set must exist
-#'   in SAS when you run the code, for example after you import `mtcars` from
-#'   a CSV file.
+#'   in \pkg{SAS} when you run the code, for example after you import `mtcars`
+#'   from a CSV file.
 #' @param options A character or numeric vector of options for the `proc`
 #'   line. Unnamed values are written as they are, and named values are
 #'   written as `name=value`. For example, `c("n", "mean", alpha = 0.05)`

@@ -1,38 +1,39 @@
-#' Round Numbers the Same Way as SAS
+#' Round Numbers the Same Way as \pkg{SAS}
 #'
-#' `sas_round()` replicates the SAS `ROUND()` function.
+#' `sas_round()` replicates the \pkg{SAS} `ROUND()` function.
 #'
 #' @param x A numeric vector.
 #' @param digits A single whole number between -15 and 15 for the number of
 #' decimal places, as in [round()]. Negative values round to a power of ten
 #' (e.g., `digits = -2` rounds to the nearest hundred).
 #' @param unit A single positive number for the rounding unit (the
-#' `rounding-unit` argument of the SAS function). The default, `10^-digits`,
-#' is determined by `digits`. Use `unit` for units that are not powers of ten,
-#' such as 0.25 or 1/7. Supply only one of `digits` and `unit`. As in SAS,
-#' units at or below `.Machine$double.xmin` (about 2.2e-308) are not allowed.
+#' `rounding-unit` argument of the \pkg{SAS} function). The default,
+#' `10^-digits`, is determined by `digits`. Use `unit` for units that are not
+#' powers of ten, such as 0.25 or 1/7. Supply only one of `digits` and `unit`.
+#' As in \pkg{SAS}, units at or below `.Machine$double.xmin` (about 2.2e-308)
+#' are not allowed.
 #' @details
-#' R's [round()] and SAS's `ROUND()` can give different answers for two
-#' reasons:
+#' \pkg{R}'s [round()] and \pkg{SAS}'s `ROUND()` can give different answers for
+#' two reasons:
 #'
 #'  - When a value is halfway between two multiples of `unit`, `round()`
-#'    returns the even multiple (e.g., `round(2.5)` is 2), while SAS returns
-#'    the multiple farther from zero (3).
+#'    returns the even multiple (e.g., `round(2.5)` is 2), while \pkg{SAS}
+#'    returns the multiple farther from zero (3).
 #'  - Many decimal values do not have an exact binary representation. For
 #'    example, `1.005` is stored as slightly less than 1.005, so
-#'    `round(1.005, 2)` is 1. SAS treats values that are within a small
+#'    `round(1.005, 2)` is 1. \pkg{SAS} treats values that are within a small
 #'    relative tolerance of the halfway point as being halfway (called
 #'    "fuzzing"), so `ROUND(1.005, 0.01)` is 1.01.
 #'
-#' `sas_round()` follows the algorithm described in the SAS documentation:
+#' `sas_round()` follows the algorithm described in the \pkg{SAS} documentation:
 #'
 #'  - `x / unit` is rounded half away from zero, after adding a tolerance of
 #'    `min(1e-6, abs(x / unit) * 1e-12)` to its absolute value.
 #'  - When `unit` is the reciprocal of an integer (e.g., 0.01 or 1/7), the
 #'    rounded value of `x / unit` is divided by that integer so that the
 #'    result matches the decimal value (`sas_round(0.33, 0.1)` is identical to
-#'    `0.3`). As in SAS, `1 / unit` must be within 16 units in the last place
-#'    of the integer.
+#'    `0.3`). As in \pkg{SAS}, `1 / unit` must be within 16 units in the last
+#'    place of the integer.
 #'  - When `unit` is not an integer but has at most four decimal places, the
 #'    result is computed with integer arithmetic so that it also matches the
 #'    decimal value.
@@ -44,12 +45,12 @@
 #'
 #' Missing values are returned as missing.
 #'
-#' These results were compared with about 70,000 results of the SAS
+#' These results were compared with about 70,000 results of the \pkg{SAS}
 #' `ROUND()` function (SAS Viya, `V.04.00M0P060826`), including every value
 #' with up to three decimal places between -3 and 3, and every case in the
 #' package's tests. They are identical except
 #' when `abs(x)` or `abs(x / unit)` is 1e15 or more. There, values have more
-#' than 15 significant digits and SAS is not exact either: for example,
+#' than 15 significant digits and \pkg{SAS} is not exact either: for example,
 #' `ROUND(1000000000000000.5, 0.5)` is 1000000000000001, although the value is
 #' already a multiple of 0.5.
 #' @return A double vector the same length as `x`.
@@ -112,10 +113,10 @@ sas_round <- function(x, digits = 0, unit = 10^-digits) {
   res
 }
 
-#' Format Numbers the Same Way as SAS
+#' Format Numbers the Same Way as \pkg{SAS}
 #'
 #' `sas_format()` formats numbers with a fixed number of decimal places so
-#' that the printed values match the SAS `w.d` format (e.g., `8.2`).
+#' that the printed values match the \pkg{SAS} `w.d` format (e.g., `8.2`).
 #'
 #' @param x A numeric vector.
 #' @param digits A single whole number between 0 and 15 for the number of
@@ -127,9 +128,9 @@ sas_round <- function(x, digits = 0, unit = 10^-digits) {
 #' `scientific = TRUE` is passed, in which case the rounded values are
 #' formatted with `format(digits = 15)`.
 #' @details
-#' SAS formats do not round with the `ROUND()` function, so `sas_format()`
+#' \pkg{SAS} formats do not round with the `ROUND()` function, so `sas_format()`
 #' does not use [sas_round()]. With the default `DECIMALCONV=COMPATIBLE`
-#' system option, SAS:
+#' system option, \pkg{SAS}:
 #'
 #'  - Rounds `x * 10^digits` half away from zero. Values within a relative
 #'    1e-16 of a halfway point (about one unit in the last place) are treated
@@ -148,21 +149,21 @@ sas_round <- function(x, digits = 0, unit = 10^-digits) {
 #' is 1. So `sas_format(x, digits)` can differ from
 #' `format(sas_round(x, digits), nsmall = digits)`.
 #'
-#' These results were compared with about 100,000 results of the SAS `32.d`
-#' formats (SAS Viya, `V.04.00M0P060826`), including every value with up to
-#' four decimal places in a range around zero. They are identical except
-#' within a few units in the last place of a halfway point, where SAS's
+#' These results were compared with about 100,000 results of the \pkg{SAS}
+#' `32.d` formats (SAS Viya, `V.04.00M0P060826`), including every value with up
+#' to four decimal places in a range around zero. They are identical except
+#' within a few units in the last place of a halfway point, where \pkg{SAS}'s
 #' tolerance varies from value to value, and when 15 or more digits are shown,
-#' where SAS's digits are not consistent (`1/3` is shown as
+#' where \pkg{SAS}'s digits are not consistent (`1/3` is shown as
 #' `0.333333333333330` with 15 decimal places).
 #'
-#' With `DECIMALCONV=STDIEEE`, SAS formats the exact binary value instead
+#' With `DECIMALCONV=STDIEEE`, \pkg{SAS} formats the exact binary value instead
 #' (`2.675` is shown as `2.67`); `sas_format()` does not replicate that.
 #' @return A character vector the same length as `x`. As with [format()], the
 #' values share a common width and names are kept.
 #' @seealso [sas_round()]
 #' @examples
-#' format(round(1.005, 2), nsmall = 2)
+#' format(round(1.005, digits = 2), nsmall = 2)
 #' sas_format(1.005, digits = 2)
 #'
 #' sas_format(c(0.5, 1.5, 2.5, -2.5))

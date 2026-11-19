@@ -17,3 +17,20 @@ test_that("check_level() validates levels", {
   expect_snapshot(error = TRUE, check_level(NA_character_, y))
   expect_snapshot(error = TRUE, check_level("c", y))
 })
+
+test_that("select_single_column() selects one column", {
+  df <- data.frame(a = 1, b = 2, c = 3)
+
+  expect_equal(select_single_column(rlang::quo(b), df, "x"), "b")
+  expect_equal(select_single_column(rlang::quo("c"), df, "x"), "c")
+
+  expect_snapshot(
+    error = TRUE,
+    select_single_column(rlang::quo(c(a, b)), df, "x")
+  )
+  expect_snapshot(
+    error = TRUE,
+    select_single_column(rlang::quo(starts_with("z")), df, "x")
+  )
+  expect_snapshot(error = TRUE, select_single_column(rlang::quo(z), df, "x"))
+})

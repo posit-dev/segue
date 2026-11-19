@@ -13,3 +13,4 @@
 ^plans$
 ^AGENTS\.md$
 ^\.panache-cache$
+^\.claude$

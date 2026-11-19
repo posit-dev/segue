@@ -9,7 +9,7 @@
 #' @param method A single character string with possible values:
 #'   - `"exact"`: An exact test via [binom.test()].
 #'   - `"exact_sas"`: An exact test via [exact_binom_test_sas()] that emulates
-#'      SAS's `Proc Freq` results.
+#'      \pkg{SAS}'s `Proc Freq` results.
 #'   - `"score"`: An asymptotic score test via [prop.test()].
 #'
 #' @param event_level A single character value for the level of the factor that
@@ -28,12 +28,12 @@
 #' @includeRmd man/_rmd/bin_prop_test.Rmd
 #'
 #'
-#' @return An object with classes `"bin_prop_test"` and `"segue_object"` with
-#' elements
-#'   - `code`: contains code in R and SAS for [translate()].
-#'   - `results`: the results,
-#'   - `data_characteristics`: characteristics of the data.
-#'   - `options`: records options that were used by the function.
+#' @return A [segue object][segue_object] with classes `"bin_prop_test"` and
+#' `"segue_object"`. `results` is an `htest` object. `data_characteristics`
+#' has these elements:
+#'   - `missing`: The number of missing values that were removed.
+#'   - `events`: The number of events.
+#'   - `total`: The number of observations without missing values.
 #' @examplesIf rlang::is_installed("modeldata")
 #' cog_ability <- modeldata::ad_data$Class
 #' str(cog_ability)
@@ -53,6 +53,9 @@
 #' \doi{10.32614/RJ-2010-008}.
 #'
 #' Hirji, K. 2006. _Exact Analysis of Discrete Data_. Chapman and Hall/CRC.
+#'
+#' SAS Institute Inc. 2025. "The FREQ Procedure." In _SAS/STAT 15.4 User's
+#' Guide_. SAS Institute Inc., Cary, NC.
 #'
 #' CAMIS Working Group page on the Binomial Test:
 #' \url{https://psiaims.github.io/CAMIS/Comp/r-sas_binomial_test.html}

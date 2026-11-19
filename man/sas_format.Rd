@@ -2,7 +2,7 @@
 % Please edit documentation in R/sas_round.R
 \name{sas_format}
 \alias{sas_format}
-\title{Format Numbers the Same Way as SAS}
+\title{Format Numbers the Same Way as \pkg{SAS}}
 \usage{
 sas_format(x, digits = 0, ...)
 }
@@ -25,12 +25,12 @@ values share a common width and names are kept.
 }
 \description{
 \code{sas_format()} formats numbers with a fixed number of decimal places so
-that the printed values match the SAS \code{w.d} format (e.g., \code{8.2}).
+that the printed values match the \pkg{SAS} \code{w.d} format (e.g., \code{8.2}).
 }
 \details{
-SAS formats do not round with the \code{ROUND()} function, so \code{sas_format()}
+\pkg{SAS} formats do not round with the \code{ROUND()} function, so \code{sas_format()}
 does not use \code{\link[=sas_round]{sas_round()}}. With the default \code{DECIMALCONV=COMPATIBLE}
-system option, SAS:
+system option, \pkg{SAS}:
 \itemize{
 \item Rounds \code{x * 10^digits} half away from zero. Values within a relative
 1e-16 of a halfway point (about one unit in the last place) are treated
@@ -50,19 +50,19 @@ The tolerance is much smaller than the one used by \code{ROUND()}:
 is 1. So \code{sas_format(x, digits)} can differ from
 \code{format(sas_round(x, digits), nsmall = digits)}.
 
-These results were compared with about 100,000 results of the SAS \verb{32.d}
-formats (SAS Viya, \code{V.04.00M0P060826}), including every value with up to
-four decimal places in a range around zero. They are identical except
-within a few units in the last place of a halfway point, where SAS's
+These results were compared with about 100,000 results of the \pkg{SAS}
+\verb{32.d} formats (SAS Viya, \code{V.04.00M0P060826}), including every value with up
+to four decimal places in a range around zero. They are identical except
+within a few units in the last place of a halfway point, where \pkg{SAS}'s
 tolerance varies from value to value, and when 15 or more digits are shown,
-where SAS's digits are not consistent (\code{1/3} is shown as
+where \pkg{SAS}'s digits are not consistent (\code{1/3} is shown as
 \code{0.333333333333330} with 15 decimal places).
 
-With \code{DECIMALCONV=STDIEEE}, SAS formats the exact binary value instead
+With \code{DECIMALCONV=STDIEEE}, \pkg{SAS} formats the exact binary value instead
 (\code{2.675} is shown as \code{2.67}); \code{sas_format()} does not replicate that.
 }
 \examples{
-format(round(1.005, 2), nsmall = 2)
+format(round(1.005, digits = 2), nsmall = 2)
 sas_format(1.005, digits = 2)
 
 sas_format(c(0.5, 1.5, 2.5, -2.5))

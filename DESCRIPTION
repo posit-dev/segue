@@ -1,6 +1,6 @@
 Package: segue
 Title: Moving from 'SAS' to 'R'
-Version: 0.0.1
+Version: 0.0.1.9000
 Authors@R: c(
     person("Max", "Kuhn", , "max@posit.co", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0003-2402-136X")),
@@ -21,8 +21,11 @@ Imports:
     broom,
     cli,
     purrr,
-    rlang (>= 1.2.0)
-Suggests: 
+    rlang (>= 1.2.0),
+    tibble,
+    tidyselect
+Suggests:
+    coin,
     haven,
     modeldata,
     spelling,

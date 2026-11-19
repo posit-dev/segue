@@ -1,0 +1,112 @@
+# Template for tests/testthat/test-{{name}}.R
+#
+# Placeholders use {{double_braces}}. Blocks between `# >>> per-method` and
+# `# <<< per-method` are repeated once per value of `method`. Delete every
+# marker comment and this header from the final file. Shared data builders go
+# in tests/testthat/helper-{{name}}.R, never outside a test_that() block.
+
+test_that("{{name}}() returns a segue object", {
+  {{y}} <- {{small inline data with one NA}}
+  res <- {{name}}({{y}})
+
+  expect_s3_class(res, c("{{name}}", "segue_object"))
+  expect_named(res, c("code", "results", "options", "data_characteristics"))
+  expect_named(res$code, c("r", "sas"))
+  expect_equal(
+    res$options,
+    list(
+      method = "{{default method}}",
+      {{default option values}}
+    )
+  )
+  expect_equal(res$data_characteristics$missing, 1L)
+  {{expect_equal() for each data summary}}
+  expect_s3_class(res$results, "{{results class, such as htest}}")
+  expect_equal(
+    res$code$r,
+    rlang::call2(
+      "{{engine function}}",
+      .ns = "{{engine namespace}}",
+      {{expected engine arguments}}
+    )
+  )
+})
+
+test_that("{{name}}() passes options to the engine", {
+  {{y}} <- {{small inline data without NA}}
+  res <- {{name}}({{y}}, {{non-default option values}})
+
+  expect_equal(res$data_characteristics$missing, 0L)
+  expect_equal(
+    res$results{{$statistic of interest}},
+    {{direct engine call with the same options}}{{$statistic of interest}}
+  )
+})
+
+# >>> per-method
+test_that("{{name}}() can use method = '{{method}}'", {
+  # skip("until {{engine}} is available")  # keep only if the engine is missing
+  {{y}} <- {{small inline data with NA}}
+  res <- {{name}}({{y}}, method = "{{method}}", {{option values}})
+
+  expect_s3_class(res, c("{{name}}", "segue_object"))
+  expect_equal(res$options$method, "{{method}}")
+  expect_equal(
+    res$results{{$statistic of interest}},
+    {{direct engine call}}{{$statistic of interest}}
+  )
+  expect_equal(
+    res$code$r,
+    rlang::call2(
+      "{{engine function}}",
+      .ns = "{{engine namespace}}",
+      {{expected engine arguments}}
+    )
+  )
+  expect_equal(res$code$sas, list({{expected sas_proc() arguments}}))
+})
+# <<< per-method
+
+test_that("{{name}}() reports errors from the underlying engine", {
+  {{y}} <- {{data that makes every engine fail, such as all missing}}
+
+  # >>> per-method
+  expect_snapshot(error = TRUE, {{name}}({{y}}, method = "{{method}}"))
+  # <<< per-method
+})
+
+test_that("{{name}}() validates inputs", {
+  {{y}} <- {{small valid data}}
+
+  expect_snapshot(error = TRUE, {{name}}({{object with no method}}))
+  expect_snapshot(error = TRUE, {{name}}({{y}}, method = "{{bad method}}"))
+  {{one expect_snapshot(error = TRUE, ...) per argument validation rule}}
+  expect_snapshot(error = TRUE, {{name}}({{y}}, not_an_arg = 1))
+})
+
+test_that("{{name}}() creates SAS code", {
+  {{y}} <- {{small valid data}}
+
+  # >>> per-method with SAS code
+  expect_snapshot(
+    rlang::exec("sas_proc", !!!{{name}}({{y}}, method = "{{method}}")$code$sas)
+  )
+  expect_snapshot(
+    rlang::exec(
+      "sas_proc",
+      !!!{{name}}({{y}}, method = "{{method}}", {{non-default options}})$code$sas
+    )
+  )
+  # <<< per-method with SAS code
+})
+
+test_that("{{name}}() print method", {
+  {{y}} <- {{data with no missing values}}
+  {{y}}_one <- {{data with one missing value}}
+  {{y}}_miss <- {{data with two missing values}}
+
+  expect_snapshot(res <- print({{name}}({{y}})))
+  expect_s3_class(res, "{{name}}")
+  expect_snapshot(print({{name}}({{y}}_one)))
+  expect_snapshot(print({{name}}({{y}}_miss)))
+})

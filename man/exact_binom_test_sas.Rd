@@ -2,7 +2,7 @@
 % Please edit documentation in R/exact_binom_test_sas.R
 \name{exact_binom_test_sas}
 \alias{exact_binom_test_sas}
-\title{Exact Binomial Test, Computed as SAS \verb{Proc Freq} Does}
+\title{Exact Binomial Test, Computed as \pkg{SAS} \verb{Proc Freq} Does}
 \usage{
 exact_binom_test_sas(
   x,
@@ -40,8 +40,8 @@ test.
 }
 }
 \description{
-\code{exact_binom_test_sas()} takes similar arguments as
-\code{\link[stats:binom.test]{stats::binom.test()}} but returns the p-values that SAS \verb{Proc Freq} reports for
+\code{exact_binom_test_sas()} takes similar arguments as \code{\link[stats:binom.test]{stats::binom.test()}}
+but returns the p-values that \pkg{SAS} \verb{Proc Freq} reports for
 
 \if{html}{\out{<div class="sourceCode">}}\preformatted{proc freq;
   tables resp / binomial(p = <p> level = "<event>");
@@ -99,11 +99,12 @@ from ties (see "Precision").
 \subsection{Two-sided p-value}{
 
 The two functions define the two-sided p-value differently. In the terms of
-Fay (2010), SAS \verb{Proc Freq} uses the "central" method: twice the smaller tail,
-capped at 1.  This is also  called "doubling" or "TST" by Hirji (2006).
+Fay (2010), \pkg{SAS} \verb{Proc Freq} uses the "central" method: twice the
+smaller tail, capped at 1.  This is also  called "doubling" or "TST" by Hirji
+(2006).
 
 For example, with \eqn{n = 10}, \eqn{x = 5}, and \eqn{p_0 = 0.25}, the right
-tail is \eqn{p_R = 0.0781269} and is the smaller tail, SAS computes:
+tail is \eqn{p_R = 0.0781269} and is the smaller tail, \pkg{SAS} computes:
 
 \preformatted{  p_2 = 2 * 0.0781269 = 0.1562538}
 }
@@ -121,14 +122,14 @@ p_R = 1 - Pr(X <= x - 1)
 When \eqn{p_R} is small, \eqn{\Pr(X \le x - 1)}{Pr(X <= x - 1)} is close to 1 and the
 subtraction loses relative precision. For example, with \eqn{n = 6},
 \eqn{x = 6}, and \eqn{p_0 = 0.01}, \eqn{p_R = 10^{-12}}{p_R = 1e-12}, and
-SAS's value is correct to only about four significant digits instead of the
-usual 15 or 16. Right tails below about
-\eqn{10^{-16}}{1e-16} come out as exactly 0.
+\pkg{SAS}'s value is correct to only about four significant digits instead of
+the usual 15 or 16. Right tails below about \eqn{10^{-16}}{1e-16} come out as
+exactly 0.
 
 \code{exact_binom_test_sas()} uses the same subtraction,
 \code{1 - pbinom(x - 1, n, p)}, so that it returns these values too.
 
-The results are not identical to \verb{Proc Freq}'s to the last bit. R's
+The results are not identical to \verb{Proc Freq}'s to the last bit. \pkg{R}'s
 \code{\link[stats:pbinom]{stats::pbinom()}} and \verb{Proc Freq} use different algorithms for the binomial
 distribution function, and their results usually differ by a few dozen units in
 the last place (at most a few hundred). This is random rounding error
@@ -155,20 +156,20 @@ reported. The two-sided p-value is 1 either way.
 }
 \examples{
 # The two-sided p-values differ by definition
-exact_binom_test_sas(5, 10, p = 0.25)
-binom.test(5, 10, p = 0.25)$p.value
+exact_binom_test_sas(5, n = 10, p = 0.25)
+binom.test(5, n = 10, p = 0.25)$p.value
 
 # Only the smaller tail is reported
-exact_binom_test_sas(5, 10, p = 0.25, alternative = "greater")$p.value
-exact_binom_test_sas(5, 10, p = 0.25, alternative = "less")$p.value
+exact_binom_test_sas(5, n = 10, p = 0.25, alternative = "greater")$p.value
+exact_binom_test_sas(5, n = 10, p = 0.25, alternative = "less")$p.value
 
 # A small right tail loses precision, as in SAS
-exact_binom_test_sas(6, 6, p = 0.01, alternative = "greater")$p.value
-binom.test(6, 6, p = 0.01, alternative = "greater")$p.value
+exact_binom_test_sas(6, n = 6, p = 0.01, alternative = "greater")$p.value
+binom.test(6, n = 6, p = 0.01, alternative = "greater")$p.value
 }
 \references{
-SAS Institute Inc. "Binomial Proportion." \emph{SAS/STAT User's Guide: The FREQ
-Procedure}.
+SAS Institute Inc. 2025. "The FREQ Procedure: Binomial Proportion." In
+\emph{SAS/STAT 15.4 User's Guide}. SAS Institute Inc., Cary, NC.
 
 Fay, M. P. (2010). Two-sided exact tests and matching confidence intervals
 for discrete data. \emph{The R Journal}, 2(1), 53-58.
